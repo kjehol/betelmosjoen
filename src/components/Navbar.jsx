@@ -32,7 +32,7 @@ export default function Navbar() {
 
       {/* Bunnmeny på mobil */}
       <nav className="fixed bottom-0 left-0 right-0 sm:hidden bg-white border-t shadow z-50">
-        <div className="flex justify-around text-xs py-2">
+        <div className="flex justify-around text-xs pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
           {links.map((link) => (
             <Link
               key={link.to}
