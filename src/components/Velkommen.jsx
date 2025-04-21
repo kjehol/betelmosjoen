@@ -159,7 +159,7 @@ export default function Velkommen() {
       {shortsVideoIds.length > 0 && (
         <div className="mb-12">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold">Siste YouTube Shorts</h2>
+            <h2 className="text-2xl font-semibold">🎬 Siste Shorts</h2>
             <a
               href="https://www.youtube.com/playlist?list=PLVK1cH92NjJOzN1Ufj84wpZUVWysGLOQE"
               target="_blank"
