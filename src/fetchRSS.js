@@ -12,12 +12,30 @@ export const fetchFeed = async () => {
 
     const items = xml.querySelectorAll("item");
 
-    return Array.from(items).map((item) => ({
-      title: item.querySelector("title")?.textContent ?? "",
-      link: item.querySelector("link")?.textContent ?? "",
-      pubDate: item.querySelector("pubDate")?.textContent ?? "",
-      contentSnippet: item.querySelector("description")?.textContent ?? "",
-    }));
+    return Array.from(items).map((item) => {
+      const description = item.querySelector("description")?.textContent ?? "";
+
+      // 📸 Hent bilde fra <enclosure>
+      const enclosure = item.querySelector("enclosure");
+      const image = enclosure?.getAttribute("url") ?? null;
+
+      // 🆕 Hent fulltekst fra <content:encoded>
+      const content = item.getElementsByTagName("content:encoded")[0]?.textContent ?? "";
+
+      const categories = Array.from(item.querySelectorAll("category")).map((c) =>
+        c.textContent.trim()
+      );
+
+      return {
+        title: item.querySelector("title")?.textContent ?? "",
+        link: item.querySelector("link")?.textContent ?? "",
+        pubDate: item.querySelector("pubDate")?.textContent ?? "",
+        contentSnippet: description.replace(/<[^>]+>/g, "").substring(0, 200),
+        fullContent: content.replace(/<[^>]+>/g, ""), // ✅ Nå fungerer det!
+        image,
+        categories,
+      };
+    });
   } catch (err) {
     console.error("RSS-feil:", err);
     return [];
