@@ -166,7 +166,7 @@ export default function Velkommen() {
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline text-sm"
             >
-              Vis hele spillelisten på YouTube
+              Vis hele spillelisten
             </a>
           </div>
 
