@@ -62,13 +62,6 @@ export default function Artikler() {
     }
   };
 
-  const beregnLesetid = (text) => {
-    if (!text) return "1 min lesetid";
-    const ord = text.split(/\s+/).filter(Boolean).length;
-    const minutter = Math.max(1, Math.round(ord / 200));
-    return `${minutter} min lesetid`;
-  };
-
   return (
     <div>
       <h1 className="text-2xl font-bold mb-2">Nyeste artikler</h1>
@@ -129,16 +122,13 @@ export default function Artikler() {
               >
                 {post.title}
               </a>
-              <div className="text-sm text-gray-500 flex items-center gap-4 mt-1">
-                <span className="flex items-center gap-1">
-                  <FaRegCalendarAlt />
-                  {new Date(post.pubDate).toLocaleDateString("nb-NO", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </span>
-                <span>{beregnLesetid(post.fullContent)}</span>
+              <div className="text-sm text-gray-500 flex items-center gap-2 mt-1">
+                <FaRegCalendarAlt />
+                {new Date(post.pubDate).toLocaleDateString("nb-NO", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
               </div>
               <p className="mt-2 text-sm text-gray-700">{post.contentSnippet}...</p>
 
