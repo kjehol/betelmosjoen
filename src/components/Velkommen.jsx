@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 import ShortsModal from "./ShortsModal"; // Juster path hvis nødvendig
+import { Link } from "react-router-dom";
 
 const bibelvers = [
   { vers: "Salme 46:2", tekst: "Gud er vår tilflukt og styrke, en hjelp i nød og alltid nær" },
@@ -39,6 +40,13 @@ export default function Velkommen() {
     } else {
       setKalenderLastet(true);
     }
+    setTimeout(() => {
+        const el = document.getElementById("elvanto-events-3724");
+        if (el && el.innerHTML.trim().length === 0) {
+          setKalenderLastet(false);
+        }
+      }, 3000);
+      
   }, []);
 
   useEffect(() => {
@@ -125,35 +133,66 @@ export default function Velkommen() {
         </div>
       )}
 
-      {/* Kommende uke */}
-      <div className="mb-12">
+     {/* Kommende uke */}
+        <div className="mb-12">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">📅 Kommende uke</h2>
-          <a href="/kalender" className="text-blue-600 hover:underline text-sm">Vis hele kalenderen</a>
+            <h2 className="text-2xl font-semibold">📅 Kommende uke</h2>
+            <Link to="/kalender" className="text-blue-600 hover:underline text-sm">
+            Vis hele kalenderen
+            </Link>
         </div>
         <div id="elvanto-events-3724" className="bg-gray-50 rounded p-4 shadow-inner">
-          {!kalenderLastet && <p className="text-gray-500 text-sm italic">Laster kalender...</p>}
+            {!kalenderLastet && (
+            <p className="text-gray-500 text-sm italic">Laster kalender...</p>
+            )}
         </div>
-      </div>
+        <div id="elvanto-events-3724" className="bg-gray-50 rounded p-4 shadow-inner">
+            {!kalenderLastet && (
+        <div className="text-sm text-gray-500 text-center italic">
+        Kalenderen lastet ikke.{" "}
+        <button
+            className="underline text-blue-600"
+            onClick={() => window.location.reload()}
+        >
+            Last siden på nytt
+        </button>
+        </div>
+  )}
+</div>
 
-      {/* Podcast */}
-      {podcast && (
-        <div className="mb-12">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold">🎧 Siste tale</h2>
-            <a href="/podcast" className="text-blue-600 hover:underline text-sm">Vis alle episoder</a>
-          </div>
-          <h3 className="text-xl font-bold mb-1">{podcast.title}</h3>
-          <p className="text-sm text-gray-500 mb-2">
-            {new Date(podcast.pubDate).toLocaleDateString("nb-NO", { day: "numeric", month: "long", year: "numeric" })}
-            {podcast.duration && <span className="text-xs text-gray-400 ml-2">🕒 {podcast.duration}</span>}
-          </p>
-          <blockquote className="border-l-4 border-blue-500 pl-4 italic text-sm text-gray-700 mb-3">
-            {podcast.description}
-          </blockquote>
-          <audio controls className="w-full"><source src={podcast.audioUrl} type="audio/mpeg" /></audio>
         </div>
-      )}
+
+    {/* Podcast */}
+        {podcast && (
+        <div className="mb-12">
+            <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold">🎧 Siste tale</h2>
+            <Link to="/podcast" className="text-blue-600 hover:underline text-sm">
+                Vis alle episoder
+            </Link>
+            </div>
+            <h3 className="text-xl font-bold mb-1">{podcast.title}</h3>
+            <p className="text-sm text-gray-500 mb-2">
+            {new Date(podcast.pubDate).toLocaleDateString("nb-NO", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+            })}
+            {podcast.duration && (
+                <span className="text-xs text-gray-400 ml-2">
+                🕒 {podcast.duration}
+                </span>
+            )}
+            </p>
+            <blockquote className="border-l-4 border-blue-500 pl-4 italic text-sm text-gray-700 mb-3">
+            {podcast.description}
+            </blockquote>
+            <audio controls className="w-full">
+            <source src={podcast.audioUrl} type="audio/mpeg" />
+            </audio>
+        </div>
+        )}
+
 
       {/* Shorts */}
       {shortsVideoIds.length > 0 && (
