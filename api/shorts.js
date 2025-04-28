@@ -3,16 +3,13 @@ import axios from "axios";
 
 const redis = Redis.fromEnv();
 
-export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).send("Method Not Allowed");
-  }
-
+export async function GET() {
   try {
-    // Prøv å hente fra cache først
     const cached = await redis.get("shorts-ids");
     if (cached) {
-      return res.status(200).json(cached);
+      return new Response(JSON.stringify(cached), {
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     const allIds = [];
@@ -30,8 +27,8 @@ export default async function handler(req, res) {
       });
 
       if (!data.items) {
-        console.error("Mangler items fra YouTube API:", data);
-        return res.status(500).json({ error: "Feil: Mangler items i svar fra YouTube" });
+        console.error("Ingen items fra YouTube API:", data);
+        return new Response(JSON.stringify({ error: "Mangler items fra YouTube" }), { status: 500 });
       }
 
       const ids = data.items.map((item) => item.contentDetails.videoId);
@@ -39,11 +36,14 @@ export default async function handler(req, res) {
       nextPageToken = data.nextPageToken;
     } while (nextPageToken);
 
-    await redis.set("shorts-ids", allIds, { ex: 3600 }); // Cache i 1 time
+    await redis.set("shorts-ids", allIds, { ex: 3600 });
 
-    return res.status(200).json(allIds);
+    return new Response(JSON.stringify(allIds), {
+      headers: { "Content-Type": "application/json" },
+    });
+
   } catch (err) {
     console.error("Feil i /api/shorts:", JSON.stringify(err, null, 2));
-    return res.status(500).json({ error: "Feil ved henting av shorts" });
+    return new Response(JSON.stringify({ error: "Feil ved henting av shorts" }), { status: 500 });
   }
 }

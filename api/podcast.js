@@ -1,17 +1,16 @@
 import { Redis } from "@upstash/redis";
 import axios from "axios";
+import { XMLParser } from "fast-xml-parser";
 
 const redis = Redis.fromEnv();
 
-export default async function handler(req, res) {
-  if (req.method !== "GET") {
-    return res.status(405).send("Method Not Allowed");
-  }
-
+export async function GET() {
   try {
     const cached = await redis.get("latest-podcast");
     if (cached) {
-      return res.status(200).json(cached);
+      return new Response(JSON.stringify(cached), {
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     const proxy = "https://api.allorigins.win/raw?url=";
@@ -19,27 +18,34 @@ export default async function handler(req, res) {
     const fullUrl = proxy + encodeURIComponent(feedUrl);
 
     const { data } = await axios.get(fullUrl);
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(data, "text/xml");
-    const first = xml.querySelector("item");
 
-    const durationRaw = first.getElementsByTagName("itunes:duration")[0]?.textContent || "";
+    const parser = new XMLParser({
+      ignoreAttributes: false,
+    });
+
+    const parsed = parser.parse(data);
+    const first = parsed.rss.channel.item[0];
+
+    const durationRaw = first["itunes:duration"] || "";
     const duration = parseDuration(durationRaw);
 
     const episode = {
-      title: first.querySelector("title")?.textContent || "",
-      pubDate: first.querySelector("pubDate")?.textContent || "",
-      audioUrl: first.querySelector("enclosure")?.getAttribute("url") || "",
-      description: first.querySelector("description")?.textContent.replace(/(<([^>]+)>)/gi, "").substring(0, 150) + "...",
+      title: first.title || "",
+      pubDate: first.pubDate || "",
+      audioUrl: first.enclosure["@_url"] || "",
+      description: (first.description || "").replace(/(<([^>]+)>)/gi, "").substring(0, 150) + "...",
       duration,
     };
 
     await redis.set("latest-podcast", episode, { ex: 3600 }); // Cache i 1 time
 
-    return res.status(200).json(episode);
+    return new Response(JSON.stringify(episode), {
+      headers: { "Content-Type": "application/json" },
+    });
+
   } catch (err) {
-    console.error("Feil i /api/podcast:", err);
-    return res.status(500).json({ error: "Feil ved henting av podcast" });
+    console.error("Feil i /api/podcast:", JSON.stringify(err, null, 2));
+    return new Response(JSON.stringify({ error: "Feil ved henting av podcast" }), { status: 500 });
   }
 }
 
