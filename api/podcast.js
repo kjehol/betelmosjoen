@@ -1,5 +1,4 @@
 import { Redis } from "@upstash/redis";
-import axios from "axios";
 import { XMLParser } from "fast-xml-parser";
 
 const redis = Redis.fromEnv();
@@ -17,13 +16,18 @@ export async function GET() {
     const feedUrl = "https://feed.podbean.com/pinsekirkenbetel/feed.xml";
     const fullUrl = proxy + encodeURIComponent(feedUrl);
 
-    const { data } = await axios.get(fullUrl);
+    const response = await fetch(fullUrl);
+    if (!response.ok) {
+      console.error("Feil ved henting av RSS-feed:", response.status);
+      return new Response(JSON.stringify({ error: "Kunne ikke hente RSS-feed" }), { status: 500 });
+    }
 
+    const xml = await response.text();
     const parser = new XMLParser({
       ignoreAttributes: false,
     });
 
-    const parsed = parser.parse(data);
+    const parsed = parser.parse(xml);
     const first = parsed.rss.channel.item[0];
 
     const durationRaw = first["itunes:duration"] || "";
@@ -37,7 +41,7 @@ export async function GET() {
       duration,
     };
 
-    await redis.set("latest-podcast", episode, { ex: 3600 }); // Cache i 1 time
+    await redis.set("latest-podcast", episode, { ex: 3600 });
 
     return new Response(JSON.stringify(episode), {
       headers: { "Content-Type": "application/json" },
