@@ -1,13 +1,15 @@
+// src/components/Velkommen.jsx
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
-import ShortsModal from "./ShortsModal"; // Juster path hvis nødvendig
+import ShortsModal from "./ShortsModal";
 import { Link } from "react-router-dom";
 
 const bibelvers = [
   { vers: "Salme 46:2", tekst: "Gud er vår tilflukt og styrke, en hjelp i nød og alltid nær" },
   { vers: "Romerne 8:1", tekst: "Så er det da ingen fordømmelse for dem som er i Kristus Jesus." },
-  { vers: "Johannes 3:16", tekst: "For så har Gud elsket verden at han gav sin Sønn, den enbårne, for at hver den som tror på ham, ikke skal fortapes, men ha evig liv." },
+  { vers: "Johannes 3:16", tekst: "For så har Gud elsket verden at han gav Sin Sønn, den enbårne, for at hver den som tror på ham, ikke skal fortapes, men ha evig liv." },
   { vers: "Filipperne 4:13", tekst: "Alt makter jeg i Ham som gjør meg sterk." },
   { vers: "2 Korinter 5:17", tekst: "Derfor, om noen er i Kristus, da er han en ny skapning. Det gamle er forbi, se, alt er blitt nytt." },
   { vers: "Salme 23:1", tekst: "Herren er min hyrde, jeg mangler ikke noe." },
@@ -19,78 +21,64 @@ const bibelvers = [
 
 export default function Velkommen() {
   const [dagensVers, setDagensVers] = useState(null);
+  const [events, setEvents] = useState([]);
   const [kalenderLastet, setKalenderLastet] = useState(false);
   const [podcast, setPodcast] = useState(null);
   const [shortsOpen, setShortsOpen] = useState(false);
   const [shortsVideoIds, setShortsVideoIds] = useState([]);
 
+  // Velg dagens bibelvers
   useEffect(() => {
     const tilfeldig = Math.floor(Math.random() * bibelvers.length);
     setDagensVers(bibelvers[tilfeldig]);
   }, []);
 
+  // Hent og cache de tre neste kalenderhendelsene
   useEffect(() => {
-    if (!document.getElementById("elvanto-script-3724")) {
-      const script = document.createElement("script");
-      script.id = "elvanto-script-3724";
-      script.src = "https://minbetel.elvanto.eu/calendar_embed.js?c[]=904a47d1-5f81-4ad9-a3c6-f9c1a4898461&ca[]=services&events=1&upcoming[count]=1&upcoming[timeframe]=w&max=3&el_id=3724";
-      script.async = true;
-      script.onload = () => setKalenderLastet(true);
-      document.body.appendChild(script);
-    } else {
-      setKalenderLastet(true);
-    }
-    setTimeout(() => {
-        const el = document.getElementById("elvanto-events-3724");
-        if (el && el.innerHTML.trim().length === 0) {
-          setKalenderLastet(false);
-        }
-      }, 3000);
-      
+    const loadKalender = async () => {
+      try {
+        const { data } = await axios.get("/api/kalender");
+        setEvents(data);
+      } catch (err) {
+        console.error("Feil ved henting av kalender:", err);
+      } finally {
+        setKalenderLastet(true);
+      }
+    };
+    loadKalender();
   }, []);
 
+  // Hent siste podcast-episode (via ditt eget API)
   useEffect(() => {
     const fetchPodcast = async () => {
-        try {
-          const { data } = await axios.get("/api/podcast");
-          setPodcast(data);
-        } catch (err) {
-          console.error("Feil ved henting av podcast fra API:", err);
-        }
-      };
-      
-  
+      try {
+        const { data } = await axios.get("/api/podcast");
+        setPodcast(data);
+      } catch (err) {
+        console.error("Feil ved henting av podcast fra API:", err);
+      }
+    };
     fetchPodcast();
   }, []);
-  
+
+  // Hent siste YouTube-shorts (via ditt eget API)
   useEffect(() => {
     const fetchAllShorts = async () => {
-        try {
-          const { data } = await axios.get("/api/shorts");
-          setShortsVideoIds(data);
-        } catch (err) {
-          console.error("Feil ved henting av shorts fra API:", err);
-        }
-      };
-      
-  
+      try {
+        const { data } = await axios.get("/api/shorts");
+        setShortsVideoIds(data);
+      } catch (err) {
+        console.error("Feil ved henting av shorts fra API:", err);
+      }
+    };
     fetchAllShorts();
   }, []);
-  
-
-  const parseDuration = (str) => {
-    if (!str) return null;
-    const parts = str.split(":").map(Number);
-    if (parts.length === 1) return `${Math.round(parts[0] / 60)} min`;
-    if (parts.length === 2) return `${Math.round(parts[0] + parts[1] / 60)} min`;
-    if (parts.length === 3) return `${Math.round(parts[0] * 60 + parts[1] + parts[2] / 60)} min`;
-    return null;
-  };
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-center">Velkommen til Betel-appen!</h1>
 
+      {/* Dagens bibelvers */}
       {dagensVers && (
         <div className="bg-blue-50 border-l-4 border-blue-600 p-4 mb-8 shadow-sm rounded">
           <p className="text-gray-800 text-lg">“{dagensVers.tekst}”</p>
@@ -98,66 +86,66 @@ export default function Velkommen() {
         </div>
       )}
 
-     {/* Kommende uke */}
-        <div className="mb-12">
+      {/* Kommende uke */}
+      <div className="mb-12">
         <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold">📅 Kommende uke</h2>
-            <Link to="/kalender" className="text-blue-600 hover:underline text-sm">
+          <h2 className="text-2xl font-semibold">📅 Kommende uke</h2>
+          <Link to="/kalender" className="text-blue-600 hover:underline text-sm">
             Vis hele kalenderen
-            </Link>
+          </Link>
         </div>
-        <div id="elvanto-events-3724" className="bg-gray-50 rounded p-4 shadow-inner">
-            {!kalenderLastet && (
-            <p className="text-gray-500 text-sm italic">Laster kalender...</p>
-            )}
-        </div>
-        <div id="elvanto-events-3724" className="bg-gray-50 rounded p-4 shadow-inner">
-            {!kalenderLastet && (
-        <div className="text-sm text-gray-500 text-center italic">
-        Kalenderen lastet ikke.{" "}
-        <button
-            className="underline text-blue-600"
-            onClick={() => window.location.reload()}
-        >
-            Last siden på nytt
-        </button>
-        </div>
-  )}
-</div>
+        {!kalenderLastet ? (
+          <p className="text-gray-500 text-sm italic">Laster kalender…</p>
+        ) : events.length === 0 ? (
+          <p className="text-gray-500 text-sm italic">Ingen kommende hendelser.</p>
+        ) : (
+          events.map((evt, i) => (
+            <div key={i} className="mb-4 p-4 bg-gray-50 rounded shadow-sm">
+              <h3 className="font-semibold">{evt.title}</h3>
+              <p className="text-sm text-gray-600">
+                {new Date(evt.start).toLocaleDateString("nb-NO", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
+              {evt.location && <p className="text-sm text-gray-500">{evt.location}</p>}
+              {evt.description && (
+                <p className="mt-1 text-sm text-gray-700">{evt.description.substring(0, 100)}...</p>
+              )}
+            </div>
+          ))
+        )}
+      </div>
 
-        </div>
-
-    {/* Podcast */}
-        {podcast && (
+      {/* Podcast */}
+      {podcast && (
         <div className="mb-12">
-            <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold">🎧 Siste tale</h2>
             <Link to="/podcast" className="text-blue-600 hover:underline text-sm">
-                Vis alle episoder
+              Vis alle episoder
             </Link>
-            </div>
-            <h3 className="text-xl font-bold mb-1">{podcast.title}</h3>
-            <p className="text-sm text-gray-500 mb-2">
+          </div>
+          <h3 className="text-xl font-bold mb-1">{podcast.title}</h3>
+          <p className="text-sm text-gray-500 mb-2">
             {new Date(podcast.pubDate).toLocaleDateString("nb-NO", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
+              day: "numeric",
+              month: "long",
+              year: "numeric",
             })}
-            {podcast.duration && (
-                <span className="text-xs text-gray-400 ml-2">
-                🕒 {podcast.duration}
-                </span>
-            )}
-            </p>
-            <blockquote className="border-l-4 border-blue-500 pl-4 italic text-sm text-gray-700 mb-3">
+            {podcast.duration && <span className="text-xs text-gray-400 ml-2">🕒 {podcast.duration}</span>}
+          </p>
+          <blockquote className="border-l-4 border-blue-500 pl-4 italic text-sm text-gray-700 mb-3">
             {podcast.description}
-            </blockquote>
-            <audio controls className="w-full">
+          </blockquote>
+          <audio controls className="w-full">
             <source src={podcast.audioUrl} type="audio/mpeg" />
-            </audio>
+          </audio>
         </div>
-        )}
-
+      )}
 
       {/* Shorts */}
       {shortsVideoIds.length > 0 && (
@@ -173,25 +161,18 @@ export default function Velkommen() {
               Vis hele spillelisten
             </a>
           </div>
-
           <div
             className="relative mx-auto w-[180px] sm:w-[220px] md:w-[260px] rounded-xl overflow-hidden shadow-md cursor-pointer"
             onClick={() => setShortsOpen(true)}
           >
-            <div className="w-full" style={{ paddingBottom: "177.78%" }}></div>
+            <div className="w-full" style={{ paddingBottom: "177.78%" }} />
             <div
               className="absolute top-0 left-0 w-full h-full bg-center bg-cover"
               style={{
-                backgroundImage: shortsVideoIds[0]
-                ? `url(https://img.youtube.com/vi/${shortsVideoIds[0]}/maxresdefault.jpg)`
-                : "none",
+                backgroundImage: `url(https://img.youtube.com/vi/${shortsVideoIds[0]}/maxresdefault.jpg)`,
               }}
-              onError={(e) => {
-                e.currentTarget.style.backgroundImage = `url(https://img.youtube.com/vi/${shortsVideoIds[0]}/hqdefault.jpg)`;
-              }}
-            ></div>
+            />
           </div>
-
           <div className="text-center mt-4">
             <button
               onClick={() => setShortsOpen(true)}
@@ -200,14 +181,7 @@ export default function Velkommen() {
               Åpne Shorts-video
             </button>
           </div>
-
-          {shortsOpen && (
-            <ShortsModal
-              videos={shortsVideoIds}
-              index={0}
-              onClose={() => setShortsOpen(false)}
-            />
-          )}
+          {shortsOpen && <ShortsModal videos={shortsVideoIds} index={0} onClose={() => setShortsOpen(false)} />}
         </div>
       )}
 
@@ -228,9 +202,33 @@ export default function Velkommen() {
       <div className="mb-8 text-center">
         <h2 className="text-xl font-semibold mb-4">Følg oss på sosiale medier</h2>
         <div className="flex justify-center space-x-6">
-          <a href="https://www.facebook.com/pinsekirken/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-blue-600 hover:text-blue-800 text-3xl"><FaFacebook /></a>
-          <a href="https://www.instagram.com/pinsekirkenbetel/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-pink-500 hover:text-pink-700 text-3xl"><FaInstagram /></a>
-          <a href="https://www.youtube.com/channel/UCTh9NjVRJloHl7XXCiP_f3A" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-red-600 hover:text-red-800 text-3xl"><FaYoutube /></a>
+          <a
+            href="https://www.facebook.com/pinsekirken/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+            className="text-blue-600 hover:text-blue-800 text-3xl"
+          >
+            <FaFacebook />
+          </a>
+          <a
+            href="https://www.instagram.com/pinsekirkenbetel/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="text-pink-500 hover:text-pink-700 text-3xl"
+          >
+            <FaInstagram />
+          </a>
+          <a
+            href="https://www.youtube.com/channel/UCTh9NjVRJloHl7XXCiP_f3A"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="YouTube"
+            className="text-red-600 hover:text-red-800 text-3xl"
+          >
+            <FaYoutube />
+          </a>
         </div>
       </div>
     </div>
