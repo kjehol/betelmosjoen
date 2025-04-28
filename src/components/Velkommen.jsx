@@ -52,63 +52,28 @@ export default function Velkommen() {
 
   useEffect(() => {
     const fetchPodcast = async () => {
-      try {
-        const proxy = "https://api.allorigins.win/raw?url=";
-        const feedUrl = "https://feed.podbean.com/pinsekirkenbetel/feed.xml";
-        const fullUrl = proxy + encodeURIComponent(feedUrl);
-  
-        const { data } = await axios.get(fullUrl);
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(data, "text/xml");
-        const first = xml.querySelector("item");
-  
-        const durationRaw = first.getElementsByTagName("itunes:duration")[0]?.textContent || "";
-        const duration = parseDuration(durationRaw);
-  
-        const episode = {
-          title: first.querySelector("title")?.textContent || "",
-          pubDate: first.querySelector("pubDate")?.textContent || "",
-          audioUrl: first.querySelector("enclosure")?.getAttribute("url") || "",
-          description: first.querySelector("description")?.textContent.replace(/(<([^>]+)>)/gi, "").substring(0, 150) + "...",
-          duration,
-        };
-  
-        setPodcast(episode);
-      } catch (err) {
-        console.error("Feil ved henting av podcast:", err);
-      }
-    };
+        try {
+          const { data } = await axios.get("/api/podcast");
+          setPodcast(data);
+        } catch (err) {
+          console.error("Feil ved henting av podcast fra API:", err);
+        }
+      };
+      
   
     fetchPodcast();
   }, []);
   
   useEffect(() => {
     const fetchAllShorts = async () => {
-      const allIds = [];
-      let nextPageToken = null;
-  
-      try {
-        do {
-          const response = await axios.get("https://www.googleapis.com/youtube/v3/playlistItems", {
-            params: {
-              part: "contentDetails",
-              maxResults: 50,
-              playlistId: "PLVK1cH92NjJOzN1Ufj84wpZUVWysGLOQE",
-              key: "AIzaSyALsDU-cXaIxAU52QtOO-A-muJboPt-CBo",
-              pageToken: nextPageToken,
-            },
-          });
-  
-          const ids = response.data.items.map((item) => item.contentDetails.videoId);
-          allIds.push(...ids);
-          nextPageToken = response.data.nextPageToken;
-        } while (nextPageToken);
-  
-        setShortsVideoIds(allIds);
-      } catch (err) {
-        console.error("Feil ved henting av shorts:", err);
-      }
-    };
+        try {
+          const { data } = await axios.get("/api/shorts");
+          setShortsVideoIds(data);
+        } catch (err) {
+          console.error("Feil ved henting av shorts fra API:", err);
+        }
+      };
+      
   
     fetchAllShorts();
   }, []);
