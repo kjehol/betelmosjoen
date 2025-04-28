@@ -23,55 +23,37 @@ export default function Velkommen() {
   const [dagensVers, setDagensVers] = useState(null);
   const [events, setEvents] = useState([]);
   const [kalenderLastet, setKalenderLastet] = useState(false);
+  const [expandedEvent, setExpandedEvent] = useState(null);
   const [podcast, setPodcast] = useState(null);
   const [shortsOpen, setShortsOpen] = useState(false);
   const [shortsVideoIds, setShortsVideoIds] = useState([]);
 
-  // Velg dagens bibelvers
+  // Velg tilfeldig bibelvers
   useEffect(() => {
-    const tilfeldig = Math.floor(Math.random() * bibelvers.length);
-    setDagensVers(bibelvers[tilfeldig]);
+    const idx = Math.floor(Math.random() * bibelvers.length);
+    setDagensVers(bibelvers[idx]);
   }, []);
 
-  // Hent og cache de tre neste kalenderhendelsene
+  // Hent kalenderhendelser fra vårt API
   useEffect(() => {
-    const loadKalender = async () => {
-      try {
-        const { data } = await axios.get("/api/kalender");
-        setEvents(data);
-      } catch (err) {
-        console.error("Feil ved henting av kalender:", err);
-      } finally {
-        setKalenderLastet(true);
-      }
-    };
-    loadKalender();
+    axios.get("/api/kalender")
+      .then(res => setEvents(res.data))
+      .catch(err => console.error("Feil ved henting av kalender:", err))
+      .finally(() => setKalenderLastet(true));
   }, []);
 
-  // Hent siste podcast-episode (via ditt eget API)
+  // Hent siste podcast
   useEffect(() => {
-    const fetchPodcast = async () => {
-      try {
-        const { data } = await axios.get("/api/podcast");
-        setPodcast(data);
-      } catch (err) {
-        console.error("Feil ved henting av podcast fra API:", err);
-      }
-    };
-    fetchPodcast();
+    axios.get("/api/podcast")
+      .then(res => setPodcast(res.data))
+      .catch(err => console.error("Feil ved henting av podcast:", err));
   }, []);
 
-  // Hent siste YouTube-shorts (via ditt eget API)
+  // Hent YouTube-shorts
   useEffect(() => {
-    const fetchAllShorts = async () => {
-      try {
-        const { data } = await axios.get("/api/shorts");
-        setShortsVideoIds(data);
-      } catch (err) {
-        console.error("Feil ved henting av shorts fra API:", err);
-      }
-    };
-    fetchAllShorts();
+    axios.get("/api/shorts")
+      .then(res => setShortsVideoIds(res.data))
+      .catch(err => console.error("Feil ved henting av shorts:", err));
   }, []);
 
   return (
@@ -94,6 +76,7 @@ export default function Velkommen() {
             Vis hele kalenderen
           </Link>
         </div>
+
         {!kalenderLastet ? (
           <p className="text-gray-500 text-sm italic">Laster kalender…</p>
         ) : events.length === 0 ? (
@@ -104,16 +87,22 @@ export default function Velkommen() {
               <h3 className="font-semibold">{evt.title}</h3>
               <p className="text-sm text-gray-600">
                 {new Date(evt.start).toLocaleDateString("nb-NO", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
+                  day: "numeric", month: "long", year: "numeric",
+                  hour: "2-digit", minute: "2-digit"
                 })}
               </p>
               {evt.location && <p className="text-sm text-gray-500">{evt.location}</p>}
+
+              {evt.description && expandedEvent === i && (
+                <p className="mt-1 text-sm text-gray-700">{evt.description}</p>
+              )}
               {evt.description && (
-                <p className="mt-1 text-sm text-gray-700">{evt.description.substring(0, 100)}...</p>
+                <button
+                  onClick={() => setExpandedEvent(expandedEvent === i ? null : i)}
+                  className="mt-1 text-blue-600 hover:underline text-sm"
+                >
+                  {expandedEvent === i ? "Skjul" : "Les mer..."}
+                </button>
               )}
             </div>
           ))
@@ -132,11 +121,11 @@ export default function Velkommen() {
           <h3 className="text-xl font-bold mb-1">{podcast.title}</h3>
           <p className="text-sm text-gray-500 mb-2">
             {new Date(podcast.pubDate).toLocaleDateString("nb-NO", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
+              day: "numeric", month: "long", year: "numeric"
             })}
-            {podcast.duration && <span className="text-xs text-gray-400 ml-2">🕒 {podcast.duration}</span>}
+            {podcast.duration && (
+              <span className="text-xs text-gray-400 ml-2">🕒 {podcast.duration}</span>
+            )}
           </p>
           <blockquote className="border-l-4 border-blue-500 pl-4 italic text-sm text-gray-700 mb-3">
             {podcast.description}
@@ -202,31 +191,13 @@ export default function Velkommen() {
       <div className="mb-8 text-center">
         <h2 className="text-xl font-semibold mb-4">Følg oss på sosiale medier</h2>
         <div className="flex justify-center space-x-6">
-          <a
-            href="https://www.facebook.com/pinsekirken/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Facebook"
-            className="text-blue-600 hover:text-blue-800 text-3xl"
-          >
+          <a href="https://www.facebook.com/pinsekirken/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-blue-600 hover:text-blue-800 text-3xl">
             <FaFacebook />
           </a>
-          <a
-            href="https://www.instagram.com/pinsekirkenbetel/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Instagram"
-            className="text-pink-500 hover:text-pink-700 text-3xl"
-          >
+          <a href="https://www.instagram.com/pinsekirkenbetel/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-pink-500 hover:text-pink-700 text-3xl">
             <FaInstagram />
           </a>
-          <a
-            href="https://www.youtube.com/channel/UCTh9NjVRJloHl7XXCiP_f3A"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="YouTube"
-            className="text-red-600 hover:text-red-800 text-3xl"
-          >
+          <a href="https://www.youtube.com/channel/UCTh9NjVRJloHl7XXCiP_f3A" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="text-red-600 hover:text-red-800 text-3xl">
             <FaYoutube />
           </a>
         </div>
