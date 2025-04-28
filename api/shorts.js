@@ -1,20 +1,20 @@
 import { Redis } from "@upstash/redis";
 
-const redis = Redis.fromEnv();
+const redisShorts = Redis.fromEnv();
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
-    return res.status(405).end(); 
+    return res.status(405).end();
   }
 
   try {
     // 1) Sjekk cache
-    const cached = await redis.get("shorts-ids");
+    const cached = await redisShorts.get("shorts-ids");
     if (cached) {
       return res.status(200).json(cached);
     }
 
-    // 2) Hent fra YouTube med innebygd fetch (Node 18+)
+    // 2) Hent fra YouTube med innebygd fetch
     const allIds = [];
     let pageToken = "";
     do {
@@ -26,7 +26,10 @@ export default async function handler(req, res) {
       if (pageToken) url.searchParams.set("pageToken", pageToken);
 
       const r = await fetch(url.toString());
-      if (!r.ok) throw new Error(`YouTube API feilet: ${r.status}`);
+      if (!r.ok) {
+        const txt = await r.text();
+        throw new Error(`YouTube API feilet: ${r.status} - ${txt}`);
+      }
       const data = await r.json();
       if (!data.items) throw new Error("Mangler items fra YouTube");
 
@@ -34,12 +37,12 @@ export default async function handler(req, res) {
       pageToken = data.nextPageToken || "";
     } while (pageToken);
 
-    // 3) Cache og returner
-    await redis.set("shorts-ids", allIds, { ex: 3600 });
+    // 3) Cache i 1 time
+    await redisShorts.set("shorts-ids", allIds, { ex: 3600 });
     return res.status(200).json(allIds);
 
   } catch (err) {
     console.error("Shorts API feilet:", err);
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message || "Server error" });
   }
 }
