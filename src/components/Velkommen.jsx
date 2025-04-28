@@ -3,7 +3,6 @@ import axios from "axios";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 import ShortsModal from "./ShortsModal"; // Juster path hvis nødvendig
 import { Link } from "react-router-dom";
-import { getCache, setCache } from "../lib/cache"; // Legg til denne importen
 
 const bibelvers = [
   { vers: "Salme 46:2", tekst: "Gud er vår tilflukt og styrke, en hjelp i nød og alltid nær" },
