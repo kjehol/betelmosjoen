@@ -4,8 +4,11 @@ import axios from "axios";
 const redis = Redis.fromEnv();
 
 export default async function handler(req, res) {
+  if (req.method !== "GET") {
+    return res.status(405).send("Method Not Allowed");
+  }
+
   try {
-    // Prøv å hente fra cache først
     const cached = await redis.get("shorts-ids");
     if (cached) {
       return res.status(200).json(cached);
@@ -19,8 +22,8 @@ export default async function handler(req, res) {
         params: {
           part: "contentDetails",
           maxResults: 50,
-          playlistId: "PLVK1cH92NjJOzN1Ufj84wpZUVWysGLOQE",
-          key: "AIzaSyALsDU-cXaIxAU52QtOO-A-muJboPt-CBo",
+          playlistId: "PLVK1cH92NjJOzN1Ufj84wpZUVWysGLOQE", // Din YouTube playlist ID
+          key: "AIzaSyALsDU-cXaIxAU52QtOO-A-muJboPt-CBo", // Din YouTube API nøkkel
           pageToken: nextPageToken,
         },
       });
@@ -30,12 +33,11 @@ export default async function handler(req, res) {
       nextPageToken = response.data.nextPageToken;
     } while (nextPageToken);
 
-    // Lagre i cache
-    await redis.set("shorts-ids", allIds, { ex: 3600 }); // 1 time
+    await redis.set("shorts-ids", allIds, { ex: 3600 }); // Cache i 1 time
 
     return res.status(200).json(allIds);
   } catch (err) {
-    console.error("API-feil /api/shorts", err);
+    console.error("Feil i /api/shorts:", err);
     return res.status(500).json({ error: "Feil ved henting av shorts" });
   }
 }

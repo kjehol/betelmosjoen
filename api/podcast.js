@@ -4,14 +4,16 @@ import axios from "axios";
 const redis = Redis.fromEnv();
 
 export default async function handler(req, res) {
+  if (req.method !== "GET") {
+    return res.status(405).send("Method Not Allowed");
+  }
+
   try {
-    // Prøv å hente fra cache først
     const cached = await redis.get("latest-podcast");
     if (cached) {
       return res.status(200).json(cached);
     }
 
-    // Hvis ikke cachet: hent live
     const proxy = "https://api.allorigins.win/raw?url=";
     const feedUrl = "https://feed.podbean.com/pinsekirkenbetel/feed.xml";
     const fullUrl = proxy + encodeURIComponent(feedUrl);
@@ -32,12 +34,11 @@ export default async function handler(req, res) {
       duration,
     };
 
-    // Lagre i cache
-    await redis.set("latest-podcast", episode, { ex: 3600 }); // 1 time
+    await redis.set("latest-podcast", episode, { ex: 3600 }); // Cache i 1 time
 
     return res.status(200).json(episode);
   } catch (err) {
-    console.error("API-feil /api/podcast", err);
+    console.error("Feil i /api/podcast:", err);
     return res.status(500).json({ error: "Feil ved henting av podcast" });
   }
 }
