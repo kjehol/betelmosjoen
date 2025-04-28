@@ -1,7 +1,0 @@
-{
-  "functions": {
-    "src/api/*.js": {
-      "runtime": "edge"
-    }
-  }
-}
