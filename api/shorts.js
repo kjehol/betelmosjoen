@@ -1,21 +1,20 @@
-// api/shorts.js
-export const config = { runtime: "edge" };
-
 import { Redis } from "@upstash/redis";
 
 const redis = Redis.fromEnv();
 
-export default async function handler(request) {
+export default async function handler(req, res) {
+  if (req.method !== "GET") {
+    return res.status(405).end(); 
+  }
+
   try {
-    // 1) Prøv cache
+    // 1) Sjekk cache
     const cached = await redis.get("shorts-ids");
     if (cached) {
-      return new Response(JSON.stringify(cached), {
-        headers: { "Content-Type": "application/json" },
-      });
+      return res.status(200).json(cached);
     }
 
-    // 2) Hent fra YouTube med fetch
+    // 2) Hent fra YouTube med innebygd fetch (Node 18+)
     const allIds = [];
     let pageToken = "";
     do {
@@ -26,22 +25,21 @@ export default async function handler(request) {
       url.searchParams.set("key", "AIzaSyALsDU-cXaIxAU52QtOO-A-muJboPt-CBo");
       if (pageToken) url.searchParams.set("pageToken", pageToken);
 
-      const res = await fetch(url.toString());
-      if (!res.ok) throw new Error(`YouTube API feilet: ${res.status}`);
-      const data = await res.json();
+      const r = await fetch(url.toString());
+      if (!r.ok) throw new Error(`YouTube API feilet: ${r.status}`);
+      const data = await r.json();
       if (!data.items) throw new Error("Mangler items fra YouTube");
 
       allIds.push(...data.items.map((i) => i.contentDetails.videoId));
       pageToken = data.nextPageToken || "";
     } while (pageToken);
 
-    // 3) Cache og return
+    // 3) Cache og returner
     await redis.set("shorts-ids", allIds, { ex: 3600 });
-    return new Response(JSON.stringify(allIds), {
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (e) {
-    console.error("Shorts API feilet:", e);
-    return new Response(JSON.stringify({ error: e.message }), { status: 500 });
+    return res.status(200).json(allIds);
+
+  } catch (err) {
+    console.error("Shorts API feilet:", err);
+    return res.status(500).json({ error: err.message });
   }
 }
