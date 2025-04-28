@@ -3,6 +3,7 @@ import axios from "axios";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 import ShortsModal from "./ShortsModal"; // Juster path hvis nødvendig
 import { Link } from "react-router-dom";
+import { getCache, setCache } from "../lib/cache"; // Legg til denne importen
 
 const bibelvers = [
   { vers: "Salme 46:2", tekst: "Gud er vår tilflukt og styrke, en hjelp i nød og alltid nær" },
@@ -51,32 +52,40 @@ export default function Velkommen() {
 
   useEffect(() => {
     const fetchPodcast = async () => {
-      try {
-        const proxy = "https://api.allorigins.win/raw?url=";
-        const feedUrl = "https://feed.podbean.com/pinsekirkenbetel/feed.xml";
-        const fullUrl = proxy + encodeURIComponent(feedUrl);
-  
-        const { data } = await axios.get(fullUrl);
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(data, "text/xml");
-        const first = xml.querySelector("item");
-  
-        const durationRaw = first.getElementsByTagName("itunes:duration")[0]?.textContent || "";
-        const duration = parseDuration(durationRaw);
-  
-        const episode = {
-          title: first.querySelector("title")?.textContent || "",
-          pubDate: first.querySelector("pubDate")?.textContent || "",
-          audioUrl: first.querySelector("enclosure")?.getAttribute("url") || "",
-          description: first.querySelector("description")?.textContent.replace(/(<([^>]+)>)/gi, "").substring(0, 150) + "...",
-          duration,
-        };
-  
-        setPodcast(episode);
-      } catch (err) {
-        console.error("Feil ved henting av podcast:", err);
-      }
-    };
+        try {
+          const cachedPodcast = await getCache("latest-podcast");
+          if (cachedPodcast) {
+            setPodcast(cachedPodcast);
+            return;
+          }
+      
+          const proxy = "https://api.allorigins.win/raw?url=";
+          const feedUrl = "https://feed.podbean.com/pinsekirkenbetel/feed.xml";
+          const fullUrl = proxy + encodeURIComponent(feedUrl);
+      
+          const { data } = await axios.get(fullUrl);
+          const parser = new DOMParser();
+          const xml = parser.parseFromString(data, "text/xml");
+          const first = xml.querySelector("item");
+      
+          const durationRaw = first.getElementsByTagName("itunes:duration")[0]?.textContent || "";
+          const duration = parseDuration(durationRaw);
+      
+          const episode = {
+            title: first.querySelector("title")?.textContent || "",
+            pubDate: first.querySelector("pubDate")?.textContent || "",
+            audioUrl: first.querySelector("enclosure")?.getAttribute("url") || "",
+            description: first.querySelector("description")?.textContent.replace(/(<([^>]+)>)/gi, "").substring(0, 150) + "...",
+            duration,
+          };
+      
+          await setCache("latest-podcast", episode, 3600); // Cache i 1 time
+          setPodcast(episode);
+        } catch (err) {
+          console.error("Feil ved henting av podcast:", err);
+        }
+      };
+      
   
     fetchPodcast();
   }, []);
