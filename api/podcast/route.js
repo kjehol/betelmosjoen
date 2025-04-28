@@ -23,10 +23,7 @@ export async function GET() {
     }
 
     const xml = await response.text();
-    const parser = new XMLParser({
-      ignoreAttributes: false,
-    });
-
+    const parser = new XMLParser({ ignoreAttributes: false });
     const parsed = parser.parse(xml);
     const first = parsed.rss.channel.item[0];
 
@@ -46,7 +43,6 @@ export async function GET() {
     return new Response(JSON.stringify(episode), {
       headers: { "Content-Type": "application/json" },
     });
-
   } catch (err) {
     console.error("Feil i /api/podcast:", JSON.stringify(err, null, 2));
     return new Response(JSON.stringify({ error: "Feil ved henting av podcast" }), { status: 500 });

@@ -1,11 +1,11 @@
 import { Redis } from "@upstash/redis";
 import axios from "axios";
 
-const redis = Redis.fromEnv();
+const redisShorts = Redis.fromEnv();
 
 export async function GET() {
   try {
-    const cached = await redis.get("shorts-ids");
+    const cached = await redisShorts.get("shorts-ids");
     if (cached) {
       return new Response(JSON.stringify(cached), {
         headers: { "Content-Type": "application/json" },
@@ -36,12 +36,11 @@ export async function GET() {
       nextPageToken = data.nextPageToken;
     } while (nextPageToken);
 
-    await redis.set("shorts-ids", allIds, { ex: 3600 });
+    await redisShorts.set("shorts-ids", allIds, { ex: 3600 });
 
     return new Response(JSON.stringify(allIds), {
       headers: { "Content-Type": "application/json" },
     });
-
   } catch (err) {
     console.error("Feil i /api/shorts:", JSON.stringify(err, null, 2));
     return new Response(JSON.stringify({ error: "Feil ved henting av shorts" }), { status: 500 });
