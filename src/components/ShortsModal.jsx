@@ -1,105 +1,91 @@
-import React, { useEffect, useCallback } from "react";
+// src/components/ShortsModal.jsx
 
-export default function ShortsModal({ videos, index, onClose }) {
-  const [current, setCurrent] = React.useState(index || 0);
+import React, { useState, useEffect, useCallback } from "react";
+import { useSwipeable } from "react-swipeable";
 
-  const goNext = () => {
-    if (current < videos.length - 1) setCurrent(current + 1);
-  };
+export default function ShortsModal({ videos, index = 0, onClose }) {
+  const [current, setCurrent] = useState(index);
 
-  const goPrev = () => {
-    if (current > 0) setCurrent(current - 1);
-  };
+  // Oppdater current når index endres utenfra
+  useEffect(() => {
+    setCurrent(index);
+  }, [index]);
 
-  const handleKey = useCallback((e) => {
-    if (e.key === "ArrowRight") goNext();
-    if (e.key === "ArrowLeft") goPrev();
-    if (e.key === "Escape") onClose();
-  }, [current]);
+  // Gå til neste video
+  const goNext = useCallback(() => {
+    setCurrent((i) => Math.min(i + 1, videos.length - 1));
+  }, [videos.length]);
+
+  // Gå til forrige video
+  const goPrev = useCallback(() => {
+    setCurrent((i) => Math.max(i - 1, 0));
+  }, []);
+
+  // Tastaturnavigasjon: pil opp/ned, Escape for å lukke
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (e.key === "ArrowUp") goNext();
+      if (e.key === "ArrowDown") goPrev();
+      if (e.key === "Escape") onClose();
+    },
+    [goNext, goPrev, onClose]
+  );
 
   useEffect(() => {
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [handleKey]);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
 
-  // For mobil swipe
-  useEffect(() => {
-    const handleTouch = {
-      startX: 0,
-      endX: 0,
-      onTouchStart(e) {
-        this.startX = e.touches[0].clientX;
-      },
-      onTouchEnd(e) {
-        this.endX = e.changedTouches[0].clientX;
-        if (this.endX - this.startX > 50) goPrev();
-        if (this.startX - this.endX > 50) goNext();
-      }
-    };
-
-    const el = document.getElementById("shorts-modal");
-    if (el) {
-      el.addEventListener("touchstart", handleTouch.onTouchStart.bind(handleTouch));
-      el.addEventListener("touchend", handleTouch.onTouchEnd.bind(handleTouch));
-    }
-
-    return () => {
-      if (el) {
-        el.removeEventListener("touchstart", handleTouch.onTouchStart.bind(handleTouch));
-        el.removeEventListener("touchend", handleTouch.onTouchEnd.bind(handleTouch));
-      }
-    };
-  }, [current]);
+  // Swipe-oppsett: sveip opp = neste, sveip ned = forrige
+  const handlers = useSwipeable({
+    onSwipedUp: goNext,
+    onSwipedDown: goPrev,
+    trackTouch: true,
+    trackMouse: false,
+  });
 
   return (
     <div
-      id="shorts-modal"
+      {...handlers}
       className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center px-4"
+      onClick={onClose}
     >
-      {/* Lukke-knapp */}
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 text-white text-3xl font-bold hover:text-red-400"
-        aria-label="Lukk"
+      <div
+        className="relative w-full h-full max-w-sm mx-auto select-none"
+        onClick={(e) => e.stopPropagation()}
       >
-        ×
-      </button>
-
-      <div className="flex flex-col items-center w-full max-w-sm">
-        {/* Video-visning i 9:16-format */}
-        <div className="relative w-full rounded-lg overflow-hidden" style={{ aspectRatio: "9/16" }}>
+        {/* YouTube-iframe i 9:16-format */}
+        <div className="relative w-full h-full rounded-lg overflow-hidden" style={{ aspectRatio: "9/16" }}>
           <iframe
             key={videos[current]}
-            src={`https://www.youtube.com/embed/${videos[current]}?autoplay=1&rel=0&modestbranding=1`}
+            src={`https://www.youtube.com/embed/${videos[current]}?autoplay=1&rel=0&modestbranding=1&showinfo=0`}
             title={`Short ${current + 1}`}
             className="absolute inset-0 w-full h-full"
+            frameBorder="0"
             allow="autoplay; encrypted-media"
             allowFullScreen
-          ></iframe>
+          />
         </div>
 
-        {/* Info og navigering */}
-        <p className="text-white mt-3 text-sm">
-          Video {current + 1} av {videos.length}
-        </p>
+        {/* Lukk-knapp */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-white text-3xl font-bold hover:text-red-400"
+          aria-label="Lukk"
+        >
+          ×
+        </button>
 
-        <div className="flex gap-4 mt-3">
-          {current > 0 && (
-            <button
-              onClick={goPrev}
-              className="px-4 py-2 bg-white text-black rounded hover:bg-gray-300 text-sm"
-            >
-              ◀ Forrige
-            </button>
-          )}
-          {current < videos.length - 1 && (
-            <button
-              onClick={goNext}
-              className="px-4 py-2 bg-white text-black rounded hover:bg-gray-300 text-sm"
-            >
-              Neste ▶
-            </button>
-          )}
+        {/* Indikator-punkter */}
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+          {videos.map((_, i) => (
+            <span
+              key={i}
+              className={`block w-2 h-2 rounded-full ${
+                i === current ? "bg-white" : "bg-gray-500"
+              }`}
+            />
+          ))}
         </div>
       </div>
     </div>
