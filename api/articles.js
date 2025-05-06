@@ -13,7 +13,8 @@ export default async function handler(req, res) {
     // 1) Prøv cache
     const cached = await redis.get("articles-feed");
     if (cached) {
-      return res.status(200).json(cached);
+      const parsed = typeof cached === "string" ? JSON.parse(cached) : cached;
+      return res.status(200).json(parsed);
     }
 
     // 2) Hent RSS-XML direkte
@@ -48,8 +49,9 @@ export default async function handler(req, res) {
       };
     });
 
-    // 5) Cache i 1 time
-    await redis.set("articles-feed", articles, { ex: 3600 });
+    // 5) Cache som JSON-streng i 1 time
+    await redis.set("articles-feed", JSON.stringify(articles), { ex: 3600 });
+
     return res.status(200).json(articles);
   } catch (err) {
     console.error("Articles API feilet:", err);

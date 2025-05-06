@@ -12,10 +12,11 @@ export default async function handler(req, res) {
     // 1) Sjekk cache
     const cached = await redis.get("latest-podcast");
     if (cached) {
-      return res.status(200).json(cached);
+      const parsed = typeof cached === "string" ? JSON.parse(cached) : cached;
+      return res.status(200).json(parsed);
     }
 
-    // 2) Hent RSS-feed direkte med native fetch
+    // 2) Hent RSS-feed direkte
     const feedUrl = "https://feed.podbean.com/pinsekirkenbetel/feed.xml";
     const rssRes = await fetch(feedUrl);
     if (!rssRes.ok) {
@@ -46,8 +47,8 @@ export default async function handler(req, res) {
       duration,
     };
 
-    // 5) Cache i 1 time
-    await redis.set("latest-podcast", episode, { ex: 3600 });
+    // 5) Cache som JSON-streng i 1 time
+    await redis.set("latest-podcast", JSON.stringify(episode), { ex: 3600 });
     return res.status(200).json(episode);
 
   } catch (err) {

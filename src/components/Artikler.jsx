@@ -1,6 +1,9 @@
+// src/components/Artikler.jsx
+
 import { useEffect, useState } from "react";
-import { fetchFeed } from "../fetchRSS";
+import axios from "axios";
 import { FaRegCalendarAlt, FaShareAlt } from "react-icons/fa";
+import Layout from "./Layout";
 
 export default function Artikler() {
   const [posts, setPosts] = useState([]);
@@ -14,29 +17,52 @@ export default function Artikler() {
   useEffect(() => {
     const load = async () => {
       try {
-        const items = await fetchFeed();
-        setPosts(items);
+        const res = await axios.get("/api/articles");
+        const data = res.data;
+
+        if (Array.isArray(data)) {
+          setPosts(data);
+        } else if (typeof data === "string") {
+          try {
+            const parsed = JSON.parse(data);
+            setPosts(Array.isArray(parsed) ? parsed : []);
+          } catch (err) {
+            console.warn("Klarte ikke å parse artikler som JSON:", err);
+            setPosts([]);
+          }
+        } else {
+          console.warn("Ugyldig data fra API:", data);
+          setPosts([]);
+        }
       } catch (err) {
-        console.error("Feil ved lasting av artikler:", err);
+        console.error("Feil ved henting av artikler:", err);
+        setPosts([]);
       } finally {
         setLoading(false);
       }
     };
+
     load();
   }, []);
 
   const allCategories = [
     "Alle",
-    ...new Set(posts.flatMap((post) => post.categories || [])),
+    ...new Set(
+      posts.flatMap((post) =>
+        Array.isArray(post.categories) ? post.categories : []
+      )
+    ),
   ];
 
   const filteredPosts = posts.filter((post) => {
     const inCategory =
-      selectedCategory === "Alle" || post.categories?.includes(selectedCategory);
+      selectedCategory === "Alle" ||
+      (Array.isArray(post.categories) &&
+        post.categories.includes(selectedCategory));
     const matchesSearch =
-      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.contentSnippet.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.fullContent?.toLowerCase().includes(searchTerm.toLowerCase());
+      (post.title?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (post.contentSnippet?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+      (post.fullContent?.toLowerCase() || "").includes(searchTerm.toLowerCase());
     return inCategory && matchesSearch;
   });
 
@@ -63,7 +89,7 @@ export default function Artikler() {
   };
 
   return (
-    <div>
+    <Layout>
       <h1 className="text-2xl font-bold mb-2">Nyeste artikler</h1>
       <p className="text-sm text-gray-600 mb-4">
         Artikler, andakter og undervisning.
@@ -73,7 +99,10 @@ export default function Artikler() {
         type="text"
         placeholder="Søk i artikler..."
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(e) => {
+          setSearchTerm(e.target.value);
+          setCurrentPage(1);
+        }}
         className="border rounded px-3 py-2 text-sm w-full mb-4"
       />
 
@@ -164,6 +193,6 @@ export default function Artikler() {
           </button>
         </div>
       )}
-    </div>
+    </Layout>
   );
 }

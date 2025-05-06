@@ -5,6 +5,7 @@ import axios from "axios";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 import ShortsModal from "./ShortsModal";
 import { Link } from "react-router-dom";
+import Layout from "./Layout";
 
 const bibelvers = [
   { vers: "Salme 46:2", tekst: "Gud er vår tilflukt og styrke, en hjelp i nød og alltid nær" },
@@ -34,11 +35,30 @@ export default function Velkommen() {
     setDagensVers(bibelvers[idx]);
   }, []);
 
-  // Hent kalenderhendelser fra vårt API
+  // Hent kalenderhendelser med robust håndtering
   useEffect(() => {
     axios.get("/api/kalender")
-      .then(res => setEvents(res.data))
-      .catch(err => console.error("Feil ved henting av kalender:", err))
+      .then(res => {
+        const data = res.data;
+        if (Array.isArray(data)) {
+          setEvents(data);
+        } else if (typeof data === "string") {
+          try {
+            const parsed = JSON.parse(data);
+            setEvents(Array.isArray(parsed) ? parsed : []);
+          } catch (err) {
+            console.warn("Kunne ikke parse kalender-data som JSON:", err);
+            setEvents([]);
+          }
+        } else {
+          console.warn("Ugyldig kalender-format:", data);
+          setEvents([]);
+        }
+      })
+      .catch(err => {
+        console.error("Feil ved henting av kalender:", err);
+        setEvents([]);
+      })
       .finally(() => setKalenderLastet(true));
   }, []);
 
@@ -57,7 +77,7 @@ export default function Velkommen() {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <Layout>
       <h1 className="text-3xl font-bold mb-6 text-center">Velkommen til Betel-appen!</h1>
 
       {/* Dagens bibelvers */}
@@ -79,9 +99,9 @@ export default function Velkommen() {
 
         {!kalenderLastet ? (
           <p className="text-gray-500 text-sm italic">Laster kalender…</p>
-        ) : events.length === 0 ? (
+        ) : Array.isArray(events) && events.length === 0 ? (
           <p className="text-gray-500 text-sm italic">Ingen kommende hendelser.</p>
-        ) : (
+        ) : Array.isArray(events) ? (
           events.map((evt, i) => (
             <div key={i} className="mb-4 p-4 bg-gray-50 rounded shadow-sm">
               <h3 className="font-semibold">{evt.title}</h3>
@@ -106,6 +126,8 @@ export default function Velkommen() {
               )}
             </div>
           ))
+        ) : (
+          <p className="text-red-600 text-sm">Ugyldig kalenderdata mottatt.</p>
         )}
       </div>
 
@@ -202,6 +224,6 @@ export default function Velkommen() {
           </a>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

@@ -1,3 +1,5 @@
+// src/components/Podcast.jsx
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 import PodcastModal from "./PodcastModal";
@@ -10,19 +12,36 @@ export default function Podcast() {
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const { data } = await axios.get("/api/podcasts");
-        setEpisodes(data);
+        const res = await axios.get("/api/podcasts");
+        const data = res.data;
+
+        if (Array.isArray(data)) {
+          setEpisodes(data);
+        } else if (typeof data === "string") {
+          try {
+            const parsed = JSON.parse(data);
+            setEpisodes(Array.isArray(parsed) ? parsed : []);
+          } catch (err) {
+            console.warn("Klarte ikke å parse podcast-data:", err);
+            setEpisodes([]);
+          }
+        } else {
+          console.warn("Ugyldig format fra /api/podcasts:", data);
+          setEpisodes([]);
+        }
       } catch (err) {
-        console.error("Feil ved henting av alle podcastepisoder:", err);
+        console.error("Feil ved henting av podcastepisoder:", err);
+        setEpisodes([]);
       } finally {
         setLoading(false);
       }
     };
+
     fetchAll();
   }, []);
 
   return (
-    <div>
+    <div className="max-w-4xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-2">Podcast</h1>
       <p className="text-sm text-gray-600 mb-6">
         Her kan du høre forkynnelse og undervisning fra Gudstjenester & Samlinger i
