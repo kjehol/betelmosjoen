@@ -1,60 +1,24 @@
-import React, { useEffect, useCallback } from "react";
+// src/components/ShortsModal.jsx
 
-export default function ShortsModal({ videos, index, onClose }) {
-  const [current, setCurrent] = React.useState(index || 0);
+import React, { useState } from "react";
 
-  const goNext = () => {
-    if (current < videos.length - 1) setCurrent(current + 1);
+export default function ShortsModal({ videos, index = null, onClose }) {
+  const [current, setCurrent] = useState(index);
+  const [mode, setMode] = useState(index !== null ? "video" : "list");
+
+  const openVideo = (idx) => {
+    setCurrent(idx);
+    setMode("video");
   };
 
-  const goPrev = () => {
-    if (current > 0) setCurrent(current - 1);
+  const goBackToList = () => {
+    setMode("list");
+    setCurrent(null);
   };
-
-  const handleKey = useCallback((e) => {
-    if (e.key === "ArrowRight") goNext();
-    if (e.key === "ArrowLeft") goPrev();
-    if (e.key === "Escape") onClose();
-  }, [current]);
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [handleKey]);
-
-  // For mobil swipe
-  useEffect(() => {
-    const handleTouch = {
-      startX: 0,
-      endX: 0,
-      onTouchStart(e) {
-        this.startX = e.touches[0].clientX;
-      },
-      onTouchEnd(e) {
-        this.endX = e.changedTouches[0].clientX;
-        if (this.endX - this.startX > 50) goPrev();
-        if (this.startX - this.endX > 50) goNext();
-      }
-    };
-
-    const el = document.getElementById("shorts-modal");
-    if (el) {
-      el.addEventListener("touchstart", handleTouch.onTouchStart.bind(handleTouch));
-      el.addEventListener("touchend", handleTouch.onTouchEnd.bind(handleTouch));
-    }
-
-    return () => {
-      if (el) {
-        el.removeEventListener("touchstart", handleTouch.onTouchStart.bind(handleTouch));
-        el.removeEventListener("touchend", handleTouch.onTouchEnd.bind(handleTouch));
-      }
-    };
-  }, [current]);
 
   return (
     <div
-      id="shorts-modal"
-      className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center px-4"
+      className="fixed inset-0 z-50 bg-black bg-opacity-90 flex flex-col items-center justify-start px-4 py-6 overflow-y-auto"
     >
       {/* Lukke-knapp */}
       <button
@@ -65,43 +29,48 @@ export default function ShortsModal({ videos, index, onClose }) {
         ×
       </button>
 
-      <div className="flex flex-col items-center w-full max-w-sm">
-        {/* Video-visning i 9:16-format */}
-        <div className="relative w-full rounded-lg overflow-hidden" style={{ aspectRatio: "9/16" }}>
-          <iframe
-            key={videos[current]}
-            src={`https://www.youtube.com/embed/${videos[current]}?autoplay=1&rel=0&modestbranding=1`}
-            title={`Short ${current + 1}`}
-            className="absolute inset-0 w-full h-full"
-            allow="autoplay; encrypted-media"
-            allowFullScreen
-          ></iframe>
+      {mode === "list" && (
+        <div className="w-full max-w-md text-white mt-12">
+          <h2 className="text-2xl font-bold text-center mb-6">🎬 Shorts-videoer</h2>
+          <div className="space-y-2">
+            {videos.map((video, idx) => (
+              <button
+                key={video.id}
+                onClick={() => openVideo(idx)}
+                className="w-full text-left p-3 bg-gray-800 hover:bg-gray-700 rounded shadow text-sm sm:text-base"
+              >
+                {video.title}
+              </button>
+            ))}
+          </div>
         </div>
+      )}
 
-        {/* Info og navigering */}
-        <p className="text-white mt-3 text-sm">
-          Video {current + 1} av {videos.length}
-        </p>
+      {mode === "video" && current !== null && (
+        <div className="w-full max-w-sm mt-16 flex flex-col items-center">
+          <div className="relative w-full rounded-lg overflow-hidden" style={{ aspectRatio: "9/16" }}>
+            <iframe
+              key={videos[current].id}
+              src={`https://www.youtube.com/embed/${videos[current].id}?autoplay=1&modestbranding=1&rel=0&controls=1`}
+              title={videos[current].title}
+              className="absolute inset-0 w-full h-full"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+            />
+          </div>
 
-        <div className="flex gap-4 mt-3">
-          {current > 0 && (
-            <button
-              onClick={goPrev}
-              className="px-4 py-2 bg-white text-black rounded hover:bg-gray-300 text-sm"
-            >
-              ◀ Forrige
-            </button>
-          )}
-          {current < videos.length - 1 && (
-            <button
-              onClick={goNext}
-              className="px-4 py-2 bg-white text-black rounded hover:bg-gray-300 text-sm"
-            >
-              Neste ▶
-            </button>
-          )}
+          <p className="text-white mt-4 text-center text-sm sm:text-base">
+            {videos[current].title}
+          </p>
+
+          <button
+            onClick={goBackToList}
+            className="mt-4 text-blue-400 hover:underline text-sm sm:text-base"
+          >
+            ← Tilbake til liste
+          </button>
         </div>
-      </div>
+      )}
     </div>
   );
 }
