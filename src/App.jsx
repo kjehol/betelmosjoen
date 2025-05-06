@@ -15,7 +15,7 @@ function App() {
     const handleBeforeInstall = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
-    };    
+    };
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
 
     // Oppdag iOS enheter uten standalone
@@ -53,7 +53,10 @@ function App() {
 
       {/* Instruksjoner for iOS/Safari */}
       {!deferredPrompt && showIosInstall && (
-        <div className="fixed left-4 right-4 bg-white p-3 border rounded shadow-lg z-[9999]" style={{ bottom: 'calc(3rem + env(safe-area-inset-bottom))' }}>
+        <div
+          className="fixed left-4 right-4 bg-white p-3 border rounded shadow-lg z-[9999]"
+          style={{ bottom: 'calc(4rem + env(safe-area-inset-bottom))' }}
+        >
           <p className="font-semibold">Legg til appen på hjemskjermen</p>
           <ol className="list-decimal list-inside">
             <li>Trykk på <span className="font-bold">Del</span> (firkant med pil).</li>
