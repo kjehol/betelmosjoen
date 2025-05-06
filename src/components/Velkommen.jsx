@@ -172,7 +172,7 @@ export default function Velkommen() {
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline text-sm"
             >
-              Vis hele spillelisten
+              Vis hele spillelisten (YouTube)
             </a>
           </div>
           <div
@@ -192,7 +192,7 @@ export default function Velkommen() {
               onClick={() => setShortsOpen(true)}
               className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm mt-3"
             >
-              Åpne Shorts-video
+              Se Shorts-videoer
             </button>
           </div>
           {shortsOpen && (
