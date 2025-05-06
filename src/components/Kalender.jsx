@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Layout from "./Layout";
 
 export default function Kalender() {
   const [visning, setVisning] = useState("month");
@@ -29,7 +30,7 @@ export default function Kalender() {
   }, [visning]);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
+    <Layout>
       <h1 className="text-3xl font-bold mb-6 text-center">Kalender</h1>
 
       {/* Toggle */}
@@ -123,6 +124,6 @@ export default function Kalender() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
