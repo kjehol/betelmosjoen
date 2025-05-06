@@ -106,9 +106,12 @@ export default function Velkommen() {
             <div key={i} className="mb-4 p-4 bg-gray-50 rounded shadow-sm">
               <h3 className="font-semibold">{evt.title}</h3>
               <p className="text-sm text-gray-600">
-                {new Date(evt.start).toLocaleDateString("nb-NO", {
-                  day: "numeric", month: "long", year: "numeric",
-                  hour: "2-digit", minute: "2-digit"
+                {new Date(evt.start).toLocaleString("nb-NO", {
+                  weekday: "long",
+                  day: "numeric",
+                  month: "long",
+                  hour: "2-digit",
+                  minute: "2-digit",
                 })}
               </p>
               {evt.location && <p className="text-sm text-gray-500">{evt.location}</p>}
