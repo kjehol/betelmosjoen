@@ -27,7 +27,7 @@ export default function Velkommen() {
   const [expandedEvent, setExpandedEvent] = useState(null);
   const [podcast, setPodcast] = useState(null);
   const [shortsOpen, setShortsOpen] = useState(false);
-  const [shortsVideoIds, setShortsVideoIds] = useState([]);
+  const [shortsList, setShortsList] = useState([]);
 
   // Velg tilfeldig bibelvers
   useEffect(() => {
@@ -72,7 +72,7 @@ export default function Velkommen() {
   // Hent YouTube-shorts
   useEffect(() => {
     axios.get("/api/shorts")
-      .then(res => setShortsVideoIds(res.data))
+      .then(res => setShortsList(res.data))
       .catch(err => console.error("Feil ved henting av shorts:", err));
   }, []);
 
@@ -162,7 +162,7 @@ export default function Velkommen() {
       )}
 
       {/* Shorts */}
-      {shortsVideoIds.length > 0 && (
+      {shortsList.length > 0 && (
         <div className="mb-12">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold">🎬 Siste Shorts</h2>
@@ -183,7 +183,7 @@ export default function Velkommen() {
             <div
               className="absolute top-0 left-0 w-full h-full bg-center bg-cover"
               style={{
-                backgroundImage: `url(https://img.youtube.com/vi/${shortsVideoIds[0]}/maxresdefault.jpg)`,
+                backgroundImage: `url(https://img.youtube.com/vi/${shortsList[0].id}/maxresdefault.jpg)`,
               }}
             />
           </div>
@@ -195,9 +195,16 @@ export default function Velkommen() {
               Åpne Shorts-video
             </button>
           </div>
-          {shortsOpen && <ShortsModal videos={shortsVideoIds} index={0} onClose={() => setShortsOpen(false)} />}
+          {shortsOpen && (
+            <ShortsModal
+              videos={shortsList}
+              index={0}
+              onClose={() => setShortsOpen(false)}
+            />
+          )}
         </div>
       )}
+
 
       {/* Nettside */}
       <div className="mb-10 text-center">
