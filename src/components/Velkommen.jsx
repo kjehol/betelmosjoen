@@ -198,7 +198,7 @@ export default function Velkommen() {
           {shortsOpen && (
             <ShortsModal
               videos={shortsList}
-              index={0}
+              //index={0} åpner den første videoen
               onClose={() => setShortsOpen(false)}
             />
           )}
