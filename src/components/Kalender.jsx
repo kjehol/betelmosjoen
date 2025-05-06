@@ -53,21 +53,17 @@ export default function Kalender() {
 
       {/* Visning */}
       {visning === "month" ? (
-        <div className="rounded-xl overflow-hidden border shadow-md min-h-[500px]">
-            <iframe
-                title="Månedsvisning Elvanto"
-                src="https://minbetel.elvanto.eu/calendar_embed/?c[]=904a47d1-5f81-4ad9-a3c6-f9c1a4898461&ca[]=services"
-                allowTransparency="true"
-                frameBorder="0"
-                style={{
-                width: "100%",
-                height: "950px",
-                border: "none",
-                overflow: "hidden",
-                }}
-            />
-        </div>
-      ) : (
+  <div className="rounded-xl overflow-hidden border shadow-md">
+    <iframe
+      title="Månedsvisning Elvanto"
+      src="https://minbetel.elvanto.eu/calendar_embed/?c[]=904a47d1-5f81-4ad9-a3c6-f9c1a4898461&ca[]=services"
+      allowTransparency="true"
+      frameBorder="0"
+      className="w-full border-none h-[600px] sm:h-[600px] md:h-[750px] lg:h-[750px] xl:h-[750px]"
+      style={{ overflow: "hidden" }}
+    />
+  </div>
+) : (
         <>
           <div id="kalender-wrapper" />
           {laster && (
