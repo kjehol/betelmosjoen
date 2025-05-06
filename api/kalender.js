@@ -14,34 +14,43 @@ export default async function handler(req, res) {
       return res.status(200).json(cached);
     }
 
-    // 2) Hent .ics-feed direkte fra Elvanto
-    const icsUrl =
-      "https://r.elvanto.eu/fullcalendar/3b80c6e3-5b09-41c4-ad5d-64a3ac452897/904a47d1-5f81-4ad9-a3c6-f9c1a4898461.ics";
-    const rsp = await fetch(icsUrl, { timeout: 7000 });
-    if (!rsp.ok) throw new Error(`Feil fra Elvanto: ${rsp.status}`);
-    const text = await rsp.text();
+    // 2) Hent begge .ics-feeds
+    const urls = [
+      "https://r.elvanto.eu/fullcalendar/3b80c6e3-5b09-41c4-ad5d-64a3ac452897/904a47d1-5f81-4ad9-a3c6-f9c1a4898461.ics", // Gudstjenester
+      "https://r.elvanto.eu/fullcalendar/3b80c6e3-5b09-41c4-ad5d-64a3ac452897/admin-services.ics" // Aktiviteter
+    ];
 
-    // 3) Parse ICS
-    const data = ical.parseICS(text);
     const now = new Date();
+    const allEvents = [];
 
-    // 4) plukk ut kommende 3 events
-    const events = Object.values(data)
-      .filter((e) => e.type === "VEVENT" && e.start >= now)
-      .sort((a, b) => a.start - b.start)
-      .slice(0, 3)
-      .map((e) => ({
-        title: e.summary,
-        start: e.start.toISOString(),
-        end: e.end.toISOString(),
-        description: e.description || "",
-        location: e.location || "",
-      }));
+    for (const url of urls) {
+      const rsp = await fetch(url, { timeout: 7000 });
+      if (!rsp.ok) throw new Error(`Feil fra Elvanto: ${rsp.status}`);
+      const text = await rsp.text();
 
-    // 5) cache i Redis i 1 time
-    await redis.set("elvanto-events", events, { ex: 3600 });
+      const data = ical.parseICS(text);
+      const events = Object.values(data)
+        .filter((e) => e.type === "VEVENT" && e.start >= now)
+        .map((e) => ({
+          title: e.summary,
+          start: e.start.toISOString(),
+          end: e.end.toISOString(),
+          description: e.description || "",
+          location: e.location || "",
+        }));
 
-    return res.status(200).json(events);
+      allEvents.push(...events);
+    }
+
+    // 3) Sorter og ta de neste 3 hendelsene
+    const upcoming = allEvents
+      .sort((a, b) => new Date(a.start) - new Date(b.start))
+      .slice(0, 3);
+
+    // 4) Cache i Redis
+    await redis.set("elvanto-events", upcoming, { ex: 3600 });
+
+    return res.status(200).json(upcoming);
   } catch (err) {
     console.error("API /kalender feilet:", err);
     return res.status(500).json({ error: err.message });
