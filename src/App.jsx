@@ -11,14 +11,14 @@ function App() {
   const [showIosInstall, setShowIosInstall] = useState(false);
 
   useEffect(() => {
-    // Fang Chrome/Android install prompt
+    // Capture Chrome/Android install prompt
     const handleBeforeInstall = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
     };
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
 
-    // Oppdag iOS enheter uten standalone
+    // Detect iOS devices without standalone
     const ua = window.navigator.userAgent.toLowerCase();
     const isIos = /iphone|ipad|ipod/.test(ua);
     const isInStandalone = window.navigator.standalone === true;
@@ -35,13 +35,13 @@ function App() {
     if (!deferredPrompt) return;
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    console.log('Bruker valgte:', outcome);
+    console.log('Install outcome:', outcome);
     setDeferredPrompt(null);
   };
 
   return (
     <>
-      {/* Knapp for Chrome/Android */}
+      {/* Button for Chrome/Android install */}
       {deferredPrompt && (
         <button
           onClick={handleInstallClick}
@@ -51,7 +51,7 @@ function App() {
         </button>
       )}
 
-      {/* Instruksjoner for iOS/Safari */}
+      {/* iOS/Safari install instructions */}
       {!deferredPrompt && showIosInstall && (
         <div
           className="fixed left-4 right-4 bg-white p-3 border rounded shadow-lg z-[9999]"
