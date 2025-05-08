@@ -30,14 +30,17 @@ export default function Velkommen() {
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
 
-  // Init OneSignal SDK
+  // Init OneSignal SDK & subscription state
   useEffect(() => {
     window.OneSignal = window.OneSignal || [];
-    OneSignal.push(() => {
-      OneSignal.init({
+    OneSignal.push(async () => {
+      await OneSignal.init({
         appId: "91a37b72-ff1d-466b-a530-067784114675",
         allowLocalhostAsSecureOrigin: true,
         notifyButton: false
+      });
+      OneSignal.isPushNotificationsEnabled(enabled => {
+        setPushEnabled(enabled);
       });
     });
   }, []);
@@ -102,17 +105,21 @@ export default function Velkommen() {
       .catch(err => console.error("Feil ved henting av shorts:", err));
   }, []);
 
-  // Administrer abonnement: trigge native prompt for tillatelse
-  function handleManageNotifications() {
-    if (!window.OneSignal || !window.OneSignal.push) {
-      alert("Varslingstjenesten er ikke lastet ennå. Prøv igjen om noen sekunder.");
-      return;
-    }
+  // Abonner på varsler
+  function subscribePush() {
     OneSignal.push(() => {
-      // Bruk native prompt for tillatelse
-      OneSignal.promptForPushNotificationsWithUserResponse(accepted => {
-        console.log('Push tillatelse:', accepted);
+      OneSignal.showSlidedownPrompt();
+      OneSignal.on('subscriptionChange', () => {
+        OneSignal.isPushNotificationsEnabled(enabled => setPushEnabled(enabled));
       });
+    });
+  }
+
+  // Avslutt abonnement
+  function unsubscribePush() {
+    OneSignal.push(() => {
+      OneSignal.setSubscription(false);
+      setPushEnabled(false);
     });
   }
 
@@ -145,7 +152,7 @@ export default function Velkommen() {
               <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
                 <h3 className="font-bold text-lg">{n.title}</h3>
                 <p className="text-gray-700 mt-1">{n.body}</p>
-                <small className="text-gray-500">{new Date(n.time).toLocaleString('nb-NO')}</small>
+                <small className="text-gray-500">{new Date(n.time).toLocaleString("nb-NO")}</small>
               </li>
             ))}
           </ul>
