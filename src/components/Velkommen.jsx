@@ -30,7 +30,7 @@ export default function Velkommen() {
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
 
-  // Initialize OneSignal (notifyButton for bell icon)
+  // Initialize OneSignal and detect support
   useEffect(() => {
     window.OneSignal = window.OneSignal || [];
     OneSignal.push(() => {
@@ -39,25 +39,24 @@ export default function Velkommen() {
         allowLocalhostAsSecureOrigin: true,
         notifyButton: { enable: true, position: "bottom-left" },
       });
+      OneSignal.isPushNotificationsSupported(supported => {
+        setPushSupported(supported);
+      });
     });
   }, []);
 
-  // Subscribe prompt function
+  // Prompt subscription behavior
   function subscribePush() {
-    if (window.OneSignal) {
-      OneSignal.push(() => {
-        OneSignal.isPushNotificationsEnabled(enabled => {
-          if (!enabled) {
-            // Tving opp slide-down
-            OneSignal.showSlidedownPrompt({ force: true });
-          } else {
-            alert("Du er allerede abonnert på varsler.");
-          }
-        });
+    if (!pushSupported) return;
+    OneSignal.push(() => {
+      OneSignal.isPushNotificationsEnabled(enabled => {
+        if (!enabled) {
+          OneSignal.showSlidedownPrompt({ force: true });
+        } else {
+          alert("Du er allerede abonnert på varsler.");
+        }
       });
-    } else {
-      alert("Varslingstjenesten er ikke klar enda. Prøv om et øyeblikk.");
-    }
+    });
   }
   
   
@@ -139,12 +138,14 @@ export default function Velkommen() {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">🛎️ Siste nytt</h2>
-          <button
-            onClick={subscribePush}
-            className="text-blue-600 hover:underline text-sm"
-          >
-            Abonner på varsler
-          </button>
+          {pushSupported && (
+            <button
+              onClick={subscribePush}
+              className="text-blue-600 hover:underline text-sm"
+            >
+              Abonner på varsler
+            </button>
+          )}
         </div>
         {notifications.length > 0 ? (
           <ul className="space-y-4">
