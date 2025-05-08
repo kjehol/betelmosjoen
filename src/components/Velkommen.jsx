@@ -83,28 +83,29 @@ export default function Velkommen() {
   useEffect(() => {
     const idx = Math.floor(Math.random() * bibelvers.length);
     setDagensVers(bibelvers[idx]);
-
+  
     axios.get('/api/onesignal-history')
-  .then(res => {
-    if (Array.isArray(res.data)) {
-      const oneWeekMs = 7 * 24 * 60 * 60 * 1000;
-      const now = Date.now();
-
-      const list = res.data
-        .map(n => ({
-          title: n.title || 'Melding',
-          body: n.body || '',
-          time: typeof n.time === 'number' ? n.time : new Date(n.time).getTime()
-        }))
-        .filter(n => now - n.time <= oneWeekMs); // behold bare de siste 7 dagene
-
-      setNotifications(list);
-    } else {
-      setNotifications([]);
-    }
-  })
-  .catch(err => console.error('Kunne ikke hente varsler:', err));
+      .then(res => {
+        if (Array.isArray(res.data)) {
+          const list = res.data
+            .map(n => ({
+              title: n.headings?.en || '',
+              body: n.contents?.en || '',
+              time: new Date(n.created_at).getTime()
+            }))
+            .filter(n => n.body?.trim().length > 0) // kun meldinger med innhold
+            .sort((a, b) => b.time - a.time) // nyeste først
+            .slice(0, 2); // maks to
+  
+          setNotifications(list);
+        } else {
+          setNotifications([]);
+        }
+      })
+      .catch(err => console.error('Kunne ikke hente varsler:', err));
   }, []);
+  
+
 
 
 
@@ -177,9 +178,9 @@ export default function Velkommen() {
           <ul className="space-y-4">
             {notifications.map((n, i) => (
               <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
-                <h3 className="font-bold text-lg">{n.title}</h3>
-                <p className="text-gray-700 mt-1">{n.body}</p>
-                <small className="text-gray-500">{formatRelativeTime(n.time)}</small>
+                <h3 className="font-bold text-lg">{n.title || 'Melding'}</h3>
+                {n.body && <p className="text-gray-700 mt-1">{n.body}</p>}
+                <small className="text-gray-500">{new Date(n.time).toLocaleString("nb-NO")}</small>
               </li>
             ))}
           </ul>
