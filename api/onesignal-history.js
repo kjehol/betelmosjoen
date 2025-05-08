@@ -1,6 +1,10 @@
+// api/onesignal-history.js
 export default async function handler(req, res) {
+  // Debug logging for Vercel environment variables
   const APP_ID = process.env.ONESIGNAL_APP_ID;
   const API_KEY = process.env.ONESIGNAL_REST_API_KEY;
+  console.log('🔹 OneSignal APP_ID:', APP_ID);
+  console.log('🔹 OneSignal API_KEY present:', Boolean(process.env.ONESIGNAL_REST_API_KEY));
 
   if (!APP_ID || !API_KEY) {
     return res.status(500).json({ error: 'Missing ONESIGNAL_APP_ID or ONESIGNAL_REST_API_KEY' });
@@ -8,10 +12,10 @@ export default async function handler(req, res) {
 
   try {
     const url = `https://onesignal.com/api/v1/notifications?app_id=${APP_ID}&limit=2`;
+    // Use built-in fetch in Vercel's Node runtime
     const response = await fetch(url, {
-      headers: { Authorization: `Basic ${API_KEY}` },
+      headers: { Authorization: `Basic ${API_KEY}` }
     });
-
     const data = await response.json();
 
     if (!response.ok) {
@@ -19,33 +23,10 @@ export default async function handler(req, res) {
       return res.status(response.status).json({ error: data });
     }
 
-    const result = (data.notifications || []).map(n => ({
-      title: n.headings?.en || 'Melding',
-      body: n.contents?.en || '',
-      time: new Date(n.completed_at || n.send_after || n.created_at || Date.now()).getTime()
-    }));
-
-    // Sorter nyeste først
-    result.sort((a, b) => b.time - a.time);
-
-    return res.status(200).json(result);
+    // Return only the notifications array
+    return res.status(200).json(data.notifications || []);
   } catch (err) {
     console.error('Server error in onesignal-history:', err);
-    const result = (data.notifications || [])
-  .map(n => ({
-    title: n.headings?.en   || 'Melding',
-    body:  n.contents?.en   || '',
-    time:  new Date(
-             n.completed_at ||
-             n.send_after   ||
-             n.created_at   ||
-             Date.now()
-           ).getTime()
-  }))
-  .sort((a, b) => b.time - a.time)  // nyeste først
-  .slice(0, 2);                     // bare de to siste
-
-return res.status(200).json(result);
-
+    return res.status(500).json({ error: err.message });
   }
 }
