@@ -31,6 +31,21 @@ export default async function handler(req, res) {
     return res.status(200).json(result);
   } catch (err) {
     console.error('Server error in onesignal-history:', err);
-    return res.status(500).json({ error: err.message });
+    const result = (data.notifications || [])
+  .map(n => ({
+    title: n.headings?.en   || 'Melding',
+    body:  n.contents?.en   || '',
+    time:  new Date(
+             n.completed_at ||
+             n.send_after   ||
+             n.created_at   ||
+             Date.now()
+           ).getTime()
+  }))
+  .sort((a, b) => b.time - a.time)  // nyeste først
+  .slice(0, 2);                     // bare de to siste
+
+return res.status(200).json(result);
+
   }
 }
