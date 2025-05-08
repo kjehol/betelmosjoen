@@ -33,8 +33,8 @@ export default function Velkommen() {
   // Init OneSignal SDK
   useEffect(() => {
     window.OneSignal = window.OneSignal || [];
-    OneSignal.push(async () => {
-      await OneSignal.init({
+    OneSignal.push(() => {
+      OneSignal.init({
         appId: "91a37b72-ff1d-466b-a530-067784114675",
         allowLocalhostAsSecureOrigin: true,
         notifyButton: false
@@ -102,13 +102,17 @@ export default function Velkommen() {
       .catch(err => console.error("Feil ved henting av shorts:", err));
   }, []);
 
-  // Administrer abonnement: trigge prompt
+  // Administrer abonnement: trigge native prompt for tillatelse
   function handleManageNotifications() {
     if (!window.OneSignal || !window.OneSignal.push) {
-      return alert("Varslingstjenesten er ikke lastet ennå. Prøv igjen om noen sekunder.");
+      alert("Varslingstjenesten er ikke lastet ennå. Prøv igjen om noen sekunder.");
+      return;
     }
     OneSignal.push(() => {
-      OneSignal.showSlidedownPrompt();
+      // Bruk native prompt for tillatelse
+      OneSignal.promptForPushNotificationsWithUserResponse(accepted => {
+        console.log('Push tillatelse:', accepted);
+      });
     });
   }
 
