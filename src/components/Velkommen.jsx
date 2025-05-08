@@ -48,25 +48,21 @@ export default function Velkommen() {
       alert("Varslingstjenesten er ikke klar enda. Prøv om et øyeblikk.");
       return;
     }
+    if (!('Notification' in window)) {
+      alert("Push-varsler støttes ikke i denne nettleseren.");
+      return;
+    }
     OneSignal.push(() => {
-      OneSignal.isPushNotificationsSupported(supported => {
-        if (!supported) {
-          alert("Push-varsler støttes ikke i denne nettleseren.");
-          return;
+      OneSignal.isPushNotificationsEnabled(enabled => {
+        if (!enabled) {
+          OneSignal.showSlidedownPrompt({ force: true });
+        } else {
+          alert("Du er allerede abonnert på varsler.");
         }
-        OneSignal.isPushNotificationsEnabled(enabled => {
-          if (!enabled) {
-            OneSignal.showSlidedownPrompt({ force: true });
-          } else {
-            alert("Du er allerede abonnert på varsler.");
-          }
-        });
       });
     });
   }
   
-  
-
   // Velg tilfeldig bibelvers og hent push-historikk
   useEffect(() => {
     const idx = Math.floor(Math.random() * bibelvers.length);
