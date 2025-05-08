@@ -46,29 +46,20 @@ export default function Velkommen() {
   function subscribePush() {
     if (window.OneSignal) {
       OneSignal.push(() => {
-        // Sjekk om vi allerede har varsler
         OneSignal.isPushNotificationsEnabled(enabled => {
           if (!enabled) {
-            // Prøv først browser-native prompt (krever at bruker aldri har svart)
-            OneSignal.showNativePrompt?.() 
-              || OneSignal.showSlidedownPrompt();
+            // Tving opp slide-down
+            OneSignal.showSlidedownPrompt({ force: true });
           } else {
             alert("Du er allerede abonnert på varsler.");
           }
         });
       });
-    } 
-    // Safari / eldre nettlesere fallback:
-    else if ("Notification" in window && Notification.permission === "default") {
-      Notification.requestPermission().then(permission => {
-        if (permission === "granted") {
-          alert("Nå har du aktivert varsler i din nettleser.");
-        }
-      });
     } else {
-      alert("Push-varsler støttes ikke i denne nettleseren.");
+      alert("Varslingstjenesten er ikke klar enda. Prøv om et øyeblikk.");
     }
   }
+  
   
 
   // Velg tilfeldig bibelvers og hent push-historikk
