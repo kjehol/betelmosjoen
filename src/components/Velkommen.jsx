@@ -39,9 +39,7 @@ export default function Velkommen() {
         allowLocalhostAsSecureOrigin: true,
         notifyButton: false
       });
-      OneSignal.isPushNotificationsEnabled(enabled => {
-        setPushEnabled(enabled);
-      });
+      OneSignal.isPushNotificationsEnabled(enabled => setPushEnabled(enabled));
     });
   }, []);
 
@@ -139,12 +137,15 @@ export default function Velkommen() {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">🛎️ Siste nytt</h2>
-          <button
-            onClick={handleManageNotifications}
-            className="text-blue-600 hover:underline text-sm"
-          >
-            Administrer varsler
-          </button>
+          {pushEnabled ? (
+            <button onClick={unsubscribePush} className="text-red-600 hover:underline text-sm">
+              Avslutt varsler
+            </button>
+          ) : (
+            <button onClick={subscribePush} className="text-blue-600 hover:underline text-sm">
+              Abonner på varsler
+            </button>
+          )}
         </div>
         {notifications.length > 0 ? (
           <ul className="space-y-4">
