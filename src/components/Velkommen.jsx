@@ -30,16 +30,15 @@ export default function Velkommen() {
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
 
-  // Initialize OneSignal and subscription state
+  // Init OneSignal SDK
   useEffect(() => {
     window.OneSignal = window.OneSignal || [];
-    OneSignal.push(async () => {
-      await OneSignal.init({
+    OneSignal.push(() => {
+      OneSignal.init({
         appId: "91a37b72-ff1d-466b-a530-067784114675",
         allowLocalhostAsSecureOrigin: true,
-        notifyButton: false
+        notifyButton: false,
       });
-      OneSignal.isPushNotificationsEnabled(enabled => setPushEnabled(enabled));
     });
   }, []);
 
@@ -103,22 +102,13 @@ export default function Velkommen() {
       .catch(err => console.error("Feil ved henting av shorts:", err));
   }, []);
 
-  // Subscribe to push notifications
-  function subscribePush() {
-    OneSignal.push(() => {
-      OneSignal.showSlidedownPrompt();
-      OneSignal.on("subscriptionChange", () => {
-        OneSignal.isPushNotificationsEnabled(enabled => setPushEnabled(enabled));
+  // Always show prompt
+  function handleManageNotifications() {
+    if (window.OneSignal) {
+      window.OneSignal.push(() => {
+        window.OneSignal.showSlidedownPrompt();
       });
-    });
-  }
-
-  // Unsubscribe from push notifications
-  function unsubscribePush() {
-    OneSignal.push(() => {
-      OneSignal.setSubscription(false);
-      setPushEnabled(false);
-    });
+    } else alert("Varslingstjenesten er ikke klar. Prøv igjen om noen sekunder.");
   }
 
   return (
@@ -137,15 +127,9 @@ export default function Velkommen() {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">🛎️ Siste nytt</h2>
-          {pushEnabled ? (
-            <button onClick={unsubscribePush} className="text-red-600 hover:underline text-sm">
-              Avslutt abonnement
-            </button>
-          ) : (
-            <button onClick={subscribePush} className="text-blue-600 hover:underline text-sm">
-              Abonner på varsler
-            </button>
-          )}
+          <button onClick={handleManageNotifications} className="text-blue-600 hover:underline text-sm">
+            Administrer varsler
+          </button>
         </div>
         {notifications.length > 0 ? (
           <ul className="space-y-4">
