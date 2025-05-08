@@ -44,12 +44,29 @@ export default function Velkommen() {
 
   // Subscribe prompt function
   function subscribePush() {
-    if (window.OneSignal && OneSignal.push) {
+    if (window.OneSignal) {
       OneSignal.push(() => {
-        OneSignal.showSlidedownPrompt();
+        // Sjekk om vi allerede har varsler
+        OneSignal.isPushNotificationsEnabled(enabled => {
+          if (!enabled) {
+            // Prøv først browser-native prompt (krever at bruker aldri har svart)
+            OneSignal.showNativePrompt?.() 
+              || OneSignal.showSlidedownPrompt();
+          } else {
+            alert("Du er allerede abonnert på varsler.");
+          }
+        });
+      });
+    } 
+    // Safari / eldre nettlesere fallback:
+    else if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+          alert("Nå har du aktivert varsler i din nettleser.");
+        }
       });
     } else {
-      alert("Varslingstjenesten er ikke klar ennå. Prøv om noen sekunder.");
+      alert("Push-varsler støttes ikke i denne nettleseren.");
     }
   }
   
