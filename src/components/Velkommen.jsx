@@ -30,7 +30,7 @@ export default function Velkommen() {
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
 
-  // Initialize OneSignal and detect support
+  // Initialize OneSignal
   useEffect(() => {
     window.OneSignal = window.OneSignal || [];
     OneSignal.push(() => {
@@ -39,22 +39,28 @@ export default function Velkommen() {
         allowLocalhostAsSecureOrigin: true,
         notifyButton: { enable: true, position: "bottom-left" },
       });
-      OneSignal.isPushNotificationsSupported(supported => {
-        setPushSupported(supported);
-      });
     });
   }, []);
 
-  // Prompt subscription behavior
+  // Abonner-knappens logikk
   function subscribePush() {
-    if (!pushSupported) return;
+    if (!window.OneSignal) {
+      alert("Varslingstjenesten er ikke klar enda. Prøv om et øyeblikk.");
+      return;
+    }
     OneSignal.push(() => {
-      OneSignal.isPushNotificationsEnabled(enabled => {
-        if (!enabled) {
-          OneSignal.showSlidedownPrompt({ force: true });
-        } else {
-          alert("Du er allerede abonnert på varsler.");
+      OneSignal.isPushNotificationsSupported(supported => {
+        if (!supported) {
+          alert("Push-varsler støttes ikke i denne nettleseren.");
+          return;
         }
+        OneSignal.isPushNotificationsEnabled(enabled => {
+          if (!enabled) {
+            OneSignal.showSlidedownPrompt({ force: true });
+          } else {
+            alert("Du er allerede abonnert på varsler.");
+          }
+        });
       });
     });
   }
@@ -134,18 +140,16 @@ export default function Velkommen() {
         </div>
       )}
 
-      {/* Siste nytt med enkel abonner-knapp */}
+      {/* Siste nytt med abonner-knapp */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">🛎️ Siste nytt</h2>
-          {pushSupported && (
-            <button
-              onClick={subscribePush}
-              className="text-blue-600 hover:underline text-sm"
-            >
-              Abonner på varsler
-            </button>
-          )}
+          <button
+            onClick={subscribePush}
+            className="text-blue-600 hover:underline text-sm"
+          >
+            Abonner på varsler
+          </button>
         </div>
         {notifications.length > 0 ? (
           <ul className="space-y-4">
@@ -153,7 +157,7 @@ export default function Velkommen() {
               <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
                 <h3 className="font-bold text-lg">{n.title}</h3>
                 <p className="text-gray-700 mt-1">{n.body}</p>
-                <small className="text-gray-500">{new Date(n.time).toLocaleString('nb-NO')}</small>
+                <small className="text-gray-500">{new Date(n.time).toLocaleString("nb-NO")}</small>
               </li>
             ))}
           </ul>
