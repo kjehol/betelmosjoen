@@ -30,7 +30,7 @@ export default function Velkommen() {
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
 
-  // Initialize OneSignal with the notify button (bell icon) for subscription management
+  // Initialize OneSignal (notifyButton for bell icon)
   useEffect(() => {
     window.OneSignal = window.OneSignal || [];
     OneSignal.push(() => {
@@ -38,16 +38,20 @@ export default function Velkommen() {
         appId: "91a37b72-ff1d-466b-a530-067784114675",
         allowLocalhostAsSecureOrigin: true,
         notifyButton: { enable: true, position: "bottom-left" },
-        promptOptions: {
-          slidedown: { /* valgfritt: gi tid før automatisk prompt */ 
-            enabled: true,
-            timeDelay: 3,
-            pageViews: 1
-          }
-        },
       });
     });
   }, []);
+
+  // Subscribe prompt function
+  function subscribePush() {
+    if (window.OneSignal && OneSignal.push) {
+      OneSignal.push(() => {
+        OneSignal.showSlidedownPrompt();
+      });
+    } else {
+      alert("Varslingstjenesten er ikke klar ennå. Prøv om noen sekunder.");
+    }
+  }
   
 
   // Velg tilfeldig bibelvers og hent push-historikk
@@ -113,7 +117,7 @@ export default function Velkommen() {
   
   return (
     <Layout>
-      <h1 className="text-3xl font-bold mb-6 text-center">Betel-appen!</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">Betel-appen</h1>
 
       {/* Dagens bibelvers */}
       {dagensVers && (
@@ -123,23 +127,30 @@ export default function Velkommen() {
         </div>
       )}
 
-      {/* Siste nytt */}
+      {/* Siste nytt med enkel abonner-knapp */}
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">🛎️ Siste nytt</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold">🛎️ Siste nytt</h2>
+          <button
+            onClick={subscribePush}
+            className="text-blue-600 hover:underline text-sm"
+          >
+            Abonner på varsler
+          </button>
+        </div>
         {notifications.length > 0 ? (
           <ul className="space-y-4">
             {notifications.map((n, i) => (
               <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
                 <h3 className="font-bold text-lg">{n.title}</h3>
                 <p className="text-gray-700 mt-1">{n.body}</p>
-                <small className="text-gray-500">{new Date(n.time).toLocaleString("nb-NO")}</small>
+                <small className="text-gray-500">{new Date(n.time).toLocaleString('nb-NO')}</small>
               </li>
             ))}
           </ul>
         ) : (
           <p className="text-gray-500 italic">Ingen nye varsler.</p>
         )}
-        {/* Subscription can be managed via the bell icon in bottom-left */}
       </div>
 
       {/* Kommende uke */}
