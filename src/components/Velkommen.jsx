@@ -90,6 +90,20 @@ export default function Velkommen() {
       .catch(err => console.error("Feil ved henting av shorts:", err));
   }, []);
 
+  // Funksjon for å administrere push-abonnement
+  function handleManageNotifications() {
+    window.OneSignal = window.OneSignal || [];
+    OneSignal.push(() => {
+      OneSignal.isPushNotificationsEnabled(enabled => {
+        if (!enabled) {
+          OneSignal.showSlidedownPrompt();
+        } else {
+          OneSignal.showNativePrompt();
+        }
+      });
+    });
+  }
+
   return (
     <Layout>
       <h1 className="text-3xl font-bold mb-6 text-center">Velkommen til Betel-appen!</h1>
