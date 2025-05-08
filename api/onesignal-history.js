@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   const APP_ID = process.env.ONESIGNAL_APP_ID;
   const API_KEY = process.env.ONESIGNAL_REST_API_KEY;
   console.log('🔹 OneSignal APP_ID:', APP_ID);
-  console.log('🔹 OneSignal API_KEY present:', Boolean(API_KEY));
+  console.log('🔹 OneSignal API_KEY present:', Boolean(process.env.ONESIGNAL_REST_API_KEY));
 
   if (!APP_ID || !API_KEY) {
     return res.status(500).json({ error: 'Missing ONESIGNAL_APP_ID or ONESIGNAL_REST_API_KEY' });
