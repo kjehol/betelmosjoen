@@ -30,14 +30,14 @@ export default function Velkommen() {
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
 
-  // Init OneSignal SDK
+  // Initialize OneSignal with the notify button (bell icon) for subscription management
   useEffect(() => {
     window.OneSignal = window.OneSignal || [];
     OneSignal.push(() => {
       OneSignal.init({
         appId: "91a37b72-ff1d-466b-a530-067784114675",
         allowLocalhostAsSecureOrigin: true,
-        notifyButton: false,
+        notifyButton: { enable: true, position: "bottom-left" },
       });
     });
   }, []);
@@ -102,15 +102,7 @@ export default function Velkommen() {
       .catch(err => console.error("Feil ved henting av shorts:", err));
   }, []);
 
-  // Always show prompt
-  function handleManageNotifications() {
-    if (window.OneSignal) {
-      window.OneSignal.push(() => {
-        window.OneSignal.showSlidedownPrompt();
-      });
-    } else alert("Varslingstjenesten er ikke klar. Prøv igjen om noen sekunder.");
-  }
-
+  
   return (
     <Layout>
       <h1 className="text-3xl font-bold mb-6 text-center">Velkommen til Betel-appen!</h1>
@@ -125,12 +117,7 @@ export default function Velkommen() {
 
       {/* Siste nytt */}
       <div className="mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">🛎️ Siste nytt</h2>
-          <button onClick={handleManageNotifications} className="text-blue-600 hover:underline text-sm">
-            Administrer varsler
-          </button>
-        </div>
+        <h2 className="text-2xl font-semibold mb-4">🛎️ Siste nytt</h2>
         {notifications.length > 0 ? (
           <ul className="space-y-4">
             {notifications.map((n, i) => (
@@ -144,6 +131,7 @@ export default function Velkommen() {
         ) : (
           <p className="text-gray-500 italic">Ingen nye varsler.</p>
         )}
+        {/* Subscription can be managed via the bell icon in bottom-left */}
       </div>
 
       {/* Kommende uke */}
