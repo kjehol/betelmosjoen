@@ -102,10 +102,10 @@ export default function Velkommen() {
         </div>
       )}
 
-      {/* Siste varsler */}
+      {/* Siste meldinger */}
       {notifications.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">🛎️ Siste varsler</h2>
+          <h2 className="text-2xl font-semibold mb-4">🛎️ Siste nytt</h2>
           <ul className="space-y-4">
             {notifications.map((n, i) => (
               <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
