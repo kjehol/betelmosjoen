@@ -90,17 +90,16 @@ export default function Velkommen() {
       .catch(err => console.error("Feil ved henting av shorts:", err));
   }, []);
 
-  // Funksjon for å administrere push-abonnement
+  // Administrer abonnement: sørg for at OneSignal SDK er lastet, sett subscription false for reprompt
   function handleManageNotifications() {
-    window.OneSignal = window.OneSignal || [];
-    OneSignal.push(() => {
-      OneSignal.isPushNotificationsEnabled(enabled => {
-        if (!enabled) {
-          OneSignal.showSlidedownPrompt();
-        } else {
-          OneSignal.showNativePrompt();
-        }
-      });
+    if (!window.OneSignal || !window.OneSignal.push) {
+      alert('Varslingstjenesten er ikke lastet ennå. Prøv igjen om noen sekunder.');
+      return;
+    }
+    window.OneSignal.push(() => {
+      // Avregistrer først for å kunne trigge slide-down prompt
+      window.OneSignal.setSubscription(false);
+      window.OneSignal.showSlidedownPrompt();
     });
   }
 
@@ -117,17 +116,17 @@ export default function Velkommen() {
       )}
 
       {/* Siste nytt */}
-      {notifications.length > 0 && (
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold">🛎️ Siste nytt</h2>
-            <button
-              onClick={handleManageNotifications}
-              className="text-blue-600 hover:underline text-sm"
-            >
-              Administrer varsler
-            </button>
-          </div>
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold">🛎️ Siste nytt</h2>
+          <button
+            onClick={handleManageNotifications}
+            className="text-blue-600 hover:underline text-sm"
+          >
+            Administrer varsler
+          </button>
+        </div>
+        {notifications.length > 0 ? (
           <ul className="space-y-4">
             {notifications.map((n, i) => (
               <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
@@ -137,8 +136,10 @@ export default function Velkommen() {
               </li>
             ))}
           </ul>
-        </div>
-      )}
+        ) : (
+          <p className="text-gray-500 italic">Ingen nye varsler.</p>
+        )}
+      </div>
 
       {/* Kommende uke */}
       <div className="mb-12">
