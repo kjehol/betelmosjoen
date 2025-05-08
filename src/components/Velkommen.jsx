@@ -30,22 +30,6 @@ export default function Velkommen() {
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
 
-  function formatRelativeTime(timestamp) {
-    const now = Date.now();
-    const diff = now - timestamp;
-    const seconds = Math.floor(diff / 1000);
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(diff / 3600000);
-    const days = Math.floor(diff / 86400000);
-  
-    if (seconds < 60) return 'nå nettopp';
-    if (minutes < 60) return `for ${minutes} min siden`;
-    if (hours < 24) return `for ${hours} t siden`;
-    if (days === 1) return 'i går';
-    return `for ${days} dager siden`;
-  }
-  
-
   // Initialize OneSignal
   useEffect(() => {
     window.OneSignal = window.OneSignal || [];
@@ -83,31 +67,20 @@ export default function Velkommen() {
   useEffect(() => {
     const idx = Math.floor(Math.random() * bibelvers.length);
     setDagensVers(bibelvers[idx]);
-  
+
     axios.get('/api/onesignal-history')
       .then(res => {
-        if (Array.isArray(res.data)) {
-          const list = res.data
-            .map(n => ({
-              title: n.headings?.en || '',
+        const list = Array.isArray(res.data)
+          ? res.data.map(n => ({
+              title: n.headings?.en || 'Melding',
               body: n.contents?.en || '',
-              time: new Date(n.created_at).getTime()
+              time: n.created_at ? new Date(n.created_at).getTime() : Date.now()
             }))
-            .filter(n => n.body?.trim().length > 0) // kun meldinger med innhold
-            .sort((a, b) => b.time - a.time) // nyeste først
-            .slice(0, 2); // maks to
-  
-          setNotifications(list);
-        } else {
-          setNotifications([]);
-        }
+          : [];
+        setNotifications(list);
       })
       .catch(err => console.error('Kunne ikke hente varsler:', err));
   }, []);
-  
-
-
-
 
   // Hent kalenderhendelser med robust håndtering
   useEffect(() => {
@@ -178,8 +151,8 @@ export default function Velkommen() {
           <ul className="space-y-4">
             {notifications.map((n, i) => (
               <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
-                <h3 className="font-bold text-lg">{n.title || 'Melding'}</h3>
-                {n.body && <p className="text-gray-700 mt-1">{n.body}</p>}
+                <h3 className="font-bold text-lg">{n.title}</h3>
+                <p className="text-gray-700 mt-1">{n.body}</p>
                 <small className="text-gray-500">{new Date(n.time).toLocaleString("nb-NO")}</small>
               </li>
             ))}
