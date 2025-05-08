@@ -28,12 +28,16 @@ export default function Velkommen() {
   const [podcast, setPodcast] = useState(null);
   const [shortsOpen, setShortsOpen] = useState(false);
   const [shortsList, setShortsList] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
-  // Velg tilfeldig bibelvers
+  // Velg tilfeldig bibelvers og les siste varsler
   useEffect(() => {
     const idx = Math.floor(Math.random() * bibelvers.length);
     setDagensVers(bibelvers[idx]);
+    const hist = JSON.parse(localStorage.getItem("notifHistory") || "[]");
+    setNotifications(hist);
   }, []);
+
 
   // Hent kalenderhendelser med robust håndtering
   useEffect(() => {
@@ -79,6 +83,22 @@ export default function Velkommen() {
   return (
     <Layout>
       <h1 className="text-3xl font-bold mb-6 text-center">Velkommen til Betel-appen!</h1>
+
+      {/* Siste 3 varsler */}
+      {notifications.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">🛎️ Siste varsler</h2>
+          <ul className="space-y-4">
+            {notifications.map((n, i) => (
+              <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
+                <h3 className="font-bold text-lg">{n.title}</h3>
+                <p className="text-gray-700 mt-1">{n.body}</p>
+                <small className="text-gray-500">{new Date(n.time).toLocaleString("nb-NO")}</small>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Dagens bibelvers */}
       {dagensVers && (
