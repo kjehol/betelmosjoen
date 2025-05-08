@@ -38,7 +38,22 @@ export default function Velkommen() {
         appId: "91a37b72-ff1d-466b-a530-067784114675",
         allowLocalhostAsSecureOrigin: true,
         notifyButton: { enable: true, position: "bottom-left" },
+        // Immediate Slide-down prompt configuration
+        promptOptions: {
+          slidedown: {
+            enabled: true,
+            actionMessage: "Vil du motta push-varsler fra Betel Mosjøen?",
+            acceptButtonText: "Abonner",
+            cancelButtonText: "Senere",
+            slidedownDelay: 0,
+            pageViews: 1
+          }
+        }
       });
+      // Show immediately without extra delay
+      OneSignal.showSlidedownPrompt({ force: true });
+    });
+  }, []);
     });
   }, []);
 
