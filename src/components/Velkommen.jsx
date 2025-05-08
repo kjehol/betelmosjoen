@@ -113,7 +113,7 @@ export default function Velkommen() {
   
   return (
     <Layout>
-      <h1 className="text-3xl font-bold mb-6 text-center">Velkommen til Betel-appen!</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">Betel-appen!</h1>
 
       {/* Dagens bibelvers */}
       {dagensVers && (
