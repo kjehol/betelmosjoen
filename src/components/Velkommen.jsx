@@ -94,7 +94,15 @@ export default function Velkommen() {
     <Layout>
       <h1 className="text-3xl font-bold mb-6 text-center">Velkommen til Betel-appen!</h1>
 
-      {/* Siste 3 varsler */}
+      {/* Dagens bibelvers */}
+      {dagensVers && (
+        <div className="bg-blue-50 border-l-4 border-blue-600 p-4 mb-8 shadow-sm rounded">
+          <p className="text-gray-800 text-lg">“{dagensVers.tekst}”</p>
+          <p className="text-sm text-right text-blue-800 font-semibold mt-2">— {dagensVers.vers}</p>
+        </div>
+      )}
+
+      {/* Siste varsler */}
       {notifications.length > 0 && (
         <div className="mb-8">
           <h2 className="text-2xl font-semibold mb-4">🛎️ Siste varsler</h2>
@@ -104,30 +112,6 @@ export default function Velkommen() {
                 <h3 className="font-bold text-lg">{n.title}</h3>
                 <p className="text-gray-700 mt-1">{n.body}</p>
                 <small className="text-gray-500">{new Date(n.time).toLocaleString("nb-NO")}</small>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* Dagens bibelvers */}
-      {dagensVers && (
-        <div className="bg-blue-50 border-l-4 border-blue-600 p-4 mb-8 shadow-sm rounded">
-          <p className="text-gray-800 text-lg">“{dagensVers.tekst}”</p>
-          <p className="text-sm text-right text-blue-800 font-semibold mt-2">— {dagensVers.vers}</p>
-        </div>
-      )}
-
-      {/* Siste meldinger */}
-      {notifications.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">📰 Siste meldinger</h2>
-          <ul className="space-y-4">
-            {notifications.map((n, i) => (
-              <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
-                <h3 className="font-bold text-lg">{n.title}</h3>
-                <p className="text-gray-700 mt-1">{n.body}</p>
-                <small className="text-gray-500">{new Date(n.time).toLocaleString('nb-NO')}</small>
               </li>
             ))}
           </ul>

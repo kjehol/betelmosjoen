@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const url = `https://onesignal.com/api/v1/notifications?app_id=${APP_ID}&limit=3`;
+    const url = `https://onesignal.com/api/v1/notifications?app_id=${APP_ID}&limit=2`;
     // Use built-in fetch in Vercel's Node runtime
     const response = await fetch(url, {
       headers: { Authorization: `Basic ${API_KEY}` }
