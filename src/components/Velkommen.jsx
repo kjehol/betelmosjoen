@@ -30,28 +30,24 @@ export default function Velkommen() {
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
 
-  // Velg tilfeldig bibelvers og les siste varsler
+  // Velg tilfeldig bibelvers og hent push-historikk
   useEffect(() => {
     const idx = Math.floor(Math.random() * bibelvers.length);
     setDagensVers(bibelvers[idx]);
-    const hist = JSON.parse(localStorage.getItem("notifHistory") || "[]");
-    setNotifications(hist);
-  }, []);
 
-  // Hent siste 3 push-varsler fra backenden
-   axios.get("/api/onesignal-history")
-     .then(res => {
-       // res.data er en array av notifications
-       const list = res.data.map(n => ({
-         title: n.headings?.en || "Melding",
-         body: n.contents?.en || "",
-         time: new Date(n.send_after).getTime()
-       }));
-       setNotifications(list);
-     })
-     .catch(err => {
-       console.error("Kunne ikke hente varsler:", err);
-     });
+    axios.get('/api/onesignal-history')
+      .then(res => {
+        const list = Array.isArray(res.data)
+          ? res.data.map(n => ({
+              title: n.headings?.en || 'Melding',
+              body: n.contents?.en || '',
+              time: n.created_at ? new Date(n.created_at).getTime() : Date.now()
+            }))
+          : [];
+        setNotifications(list);
+      })
+      .catch(err => console.error('Kunne ikke hente varsler:', err));
+  }, []);
 
   // Hent kalenderhendelser med robust håndtering
   useEffect(() => {
@@ -119,6 +115,22 @@ export default function Velkommen() {
         <div className="bg-blue-50 border-l-4 border-blue-600 p-4 mb-8 shadow-sm rounded">
           <p className="text-gray-800 text-lg">“{dagensVers.tekst}”</p>
           <p className="text-sm text-right text-blue-800 font-semibold mt-2">— {dagensVers.vers}</p>
+        </div>
+      )}
+
+      {/* Siste meldinger */}
+      {notifications.length > 0 && (
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">📰 Siste meldinger</h2>
+          <ul className="space-y-4">
+            {notifications.map((n, i) => (
+              <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
+                <h3 className="font-bold text-lg">{n.title}</h3>
+                <p className="text-gray-700 mt-1">{n.body}</p>
+                <small className="text-gray-500">{new Date(n.time).toLocaleString('nb-NO')}</small>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
