@@ -102,16 +102,24 @@ export default function Velkommen() {
         </div>
       )}
 
-      {/* Siste meldinger */}
+      {/* Siste nytt */}
       {notifications.length > 0 && (
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">🛎️ Siste nytt</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold">🛎️ Siste nytt</h2>
+            <button
+              onClick={handleManageNotifications}
+              className="text-blue-600 hover:underline text-sm"
+            >
+              Administrer varsler
+            </button>
+          </div>
           <ul className="space-y-4">
             {notifications.map((n, i) => (
               <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
                 <h3 className="font-bold text-lg">{n.title}</h3>
                 <p className="text-gray-700 mt-1">{n.body}</p>
-                <small className="text-gray-500">{new Date(n.time).toLocaleString("nb-NO")}</small>
+                <small className="text-gray-500">{new Date(n.time).toLocaleString('nb-NO')}</small>
               </li>
             ))}
           </ul>
