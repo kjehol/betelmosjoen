@@ -2,20 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Betel Mosjøen</title>
-
+  
     <!-- OneSignal SDK for Web Push -->
-    <script
-      src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
-      async
-      defer
-    ></script>
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
+            async defer></script>
     <script>
-      // Sett opp OneSignal-køen
       window.OneSignal = window.OneSignal || [];
       OneSignal.push(function() {
         OneSignal.init({
@@ -23,49 +16,41 @@
           allowLocalhostAsSecureOrigin: true,
           notifyButton: { enable: true }
         });
-
-        // Når en push vises, lagre den i localStorage
         OneSignal.on("notificationDisplay", function(event) {
-          const entry = {
-            title: event.heading || "Melding",
-            body: event.content || "",
-            time: Date.now()
-          };
-          let history = JSON.parse(localStorage.getItem("notifHistory") || "[]");
-          history.unshift(entry);
-          if (history.length > 3) history = history.slice(0, 3);
-          localStorage.setItem("notifHistory", JSON.stringify(history));
+          const entry = { title: event.heading||"Melding", body: event.content||"", time:Date.now() };
+          let hist = JSON.parse(localStorage.getItem("notifHistory")||"[]");
+          hist.unshift(entry);
+          localStorage.setItem("notifHistory", JSON.stringify(hist.slice(0,3)));
         });
-
-        // Vis OneSignal sin slide-down prompt
         OneSignal.showSlidedownPrompt();
       });
     </script>
-
+  
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/favicon.png" />
-
+  
     <!-- Apple Touch Icon -->
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="/apple-touch-icon.png"
-    />
-
-    <!-- Web Manifest -->
-    <link rel="manifest" href="/manifest.webmanifest" />
-
-    <!-- iOS Web App Meta -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  
+    <!-- iOS full-screen PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Betel" />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="default"
-    />
-
-    <!-- Android Theme Color -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  
+    <!-- Android full-screen PWA -->
+    <meta name="mobile-web-app-capable" content="yes" />
+  
+    <!-- Web manifest -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+  
+    <!-- Theme color for supported browsers -->
     <meta name="theme-color" content="#1e40af" />
+  
+    <!-- (Valgfritt) Splash for iOS HHS -->
+    <!-- <link rel="apple-touch-startup-image" href="/splash-2048x2732.png" 
+          media="(device-width:1024px) and ..."> -->
   </head>
+  
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
