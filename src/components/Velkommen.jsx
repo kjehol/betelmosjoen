@@ -30,7 +30,7 @@ export default function Velkommen() {
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
 
-  // Init OneSignal SDK & subscription state
+  // Initialize OneSignal and subscription state
   useEffect(() => {
     window.OneSignal = window.OneSignal || [];
     OneSignal.push(async () => {
@@ -103,17 +103,17 @@ export default function Velkommen() {
       .catch(err => console.error("Feil ved henting av shorts:", err));
   }, []);
 
-  // Abonner på varsler
+  // Subscribe to push notifications
   function subscribePush() {
     OneSignal.push(() => {
       OneSignal.showSlidedownPrompt();
-      OneSignal.on('subscriptionChange', () => {
+      OneSignal.on("subscriptionChange", () => {
         OneSignal.isPushNotificationsEnabled(enabled => setPushEnabled(enabled));
       });
     });
   }
 
-  // Avslutt abonnement
+  // Unsubscribe from push notifications
   function unsubscribePush() {
     OneSignal.push(() => {
       OneSignal.setSubscription(false);
@@ -139,7 +139,7 @@ export default function Velkommen() {
           <h2 className="text-2xl font-semibold">🛎️ Siste nytt</h2>
           {pushEnabled ? (
             <button onClick={unsubscribePush} className="text-red-600 hover:underline text-sm">
-              Avslutt varsler
+              Avslutt abonnement
             </button>
           ) : (
             <button onClick={subscribePush} className="text-blue-600 hover:underline text-sm">
