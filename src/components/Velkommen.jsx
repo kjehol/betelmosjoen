@@ -38,9 +38,17 @@ export default function Velkommen() {
         appId: "91a37b72-ff1d-466b-a530-067784114675",
         allowLocalhostAsSecureOrigin: true,
         notifyButton: { enable: true, position: "bottom-left" },
+        promptOptions: {
+          slidedown: { /* valgfritt: gi tid før automatisk prompt */ 
+            enabled: true,
+            timeDelay: 3,
+            pageViews: 1
+          }
+        },
       });
     });
   }, []);
+  
 
   // Velg tilfeldig bibelvers og hent push-historikk
   useEffect(() => {
