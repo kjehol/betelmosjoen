@@ -30,6 +30,18 @@ export default function Velkommen() {
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
 
+  // Init OneSignal SDK
+  useEffect(() => {
+    window.OneSignal = window.OneSignal || [];
+    OneSignal.push(async () => {
+      await OneSignal.init({
+        appId: "91a37b72-ff1d-466b-a530-067784114675",
+        allowLocalhostAsSecureOrigin: true,
+        notifyButton: false
+      });
+    });
+  }, []);
+
   // Velg tilfeldig bibelvers og hent push-historikk
   useEffect(() => {
     const idx = Math.floor(Math.random() * bibelvers.length);
@@ -90,16 +102,13 @@ export default function Velkommen() {
       .catch(err => console.error("Feil ved henting av shorts:", err));
   }, []);
 
-  // Administrer abonnement: sørg for at OneSignal SDK er lastet, sett subscription false for reprompt
+  // Administrer abonnement: trigge prompt
   function handleManageNotifications() {
     if (!window.OneSignal || !window.OneSignal.push) {
-      alert('Varslingstjenesten er ikke lastet ennå. Prøv igjen om noen sekunder.');
-      return;
+      return alert("Varslingstjenesten er ikke lastet ennå. Prøv igjen om noen sekunder.");
     }
-    window.OneSignal.push(() => {
-      // Avregistrer først for å kunne trigge slide-down prompt
-      window.OneSignal.setSubscription(false);
-      window.OneSignal.showSlidedownPrompt();
+    OneSignal.push(() => {
+      OneSignal.showSlidedownPrompt();
     });
   }
 
