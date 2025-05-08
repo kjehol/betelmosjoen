@@ -63,24 +63,43 @@ export default function Velkommen() {
     });
   }
   
-  // Velg tilfeldig bibelvers og hent push-historikk
-  useEffect(() => {
-    const idx = Math.floor(Math.random() * bibelvers.length);
-    setDagensVers(bibelvers[idx]);
+  // Velg tilfeldig bibelvers og hent de to siste varslene
+useEffect(() => {
+  // tilfeldig bibelvers
+  const idx = Math.floor(Math.random() * bibelvers.length);
+  setDagensVers(bibelvers[idx]);
 
-    axios.get('/api/onesignal-history')
-      .then(res => {
-        const list = Array.isArray(res.data)
-          ? res.data.map(n => ({
-              title: n.headings?.en || 'Melding',
-              body: n.contents?.en || '',
-              time: n.created_at ? new Date(n.created_at).getTime() : Date.now()
-            }))
-          : [];
-        setNotifications(list);
-      })
-      .catch(err => console.error('Kunne ikke hente varsler:', err));
-  }, []);
+  axios
+    .get("/api/onesignal-history")
+    .then(res => {
+      if (!Array.isArray(res.data)) {
+        setNotifications([]);
+        return;
+      }
+
+      const list = res.data
+        // bytt til dine keys:
+        .map(n => ({
+          title: n.headings?.en || "Melding",
+          body: n.contents?.en || "",
+          time: n.sent_at
+            ? new Date(n.sent_at).getTime()
+            : n.created_at
+            ? new Date(n.created_at).getTime()
+            : Date.now(),
+        }))
+        // sorter etter tid, nyeste først
+        .sort((a, b) => b.time - a.time)
+        // ta kun to
+        .slice(0, 2);
+
+      setNotifications(list);
+    })
+    .catch(err => {
+      console.error("Kunne ikke hente varsler:", err);
+      setNotifications([]);
+    });
+}, []);
 
   // Hent kalenderhendelser med robust håndtering
   useEffect(() => {
@@ -136,31 +155,41 @@ export default function Velkommen() {
         </div>
       )}
 
-      {/* Siste nytt med abonner-knapp */}
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">🛎️ Siste nytt</h2>
-          <button
-            onClick={subscribePush}
-            className="text-blue-600 hover:underline text-sm"
-          >
-            Abonner på varsler
-          </button>
+      {/* Siste nytt med de to siste varslene */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-semibold">🛎️ Siste nytt</h2>
+            <button
+              onClick={subscribePush}
+              className="text-blue-600 hover:underline text-sm"
+            >
+              Abonner på varsler
+            </button>
+          </div>
+
+          {notifications.length > 0 ? (
+            <ul className="space-y-4">
+              {notifications.map((n, i) => (
+                <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
+                  <h3 className="font-bold text-lg">{n.title}</h3>
+                  <p className="text-gray-700 mt-1">{n.body}</p>
+                  <small className="text-gray-500">
+                    {new Date(n.time).toLocaleString("nb-NO", {
+                      day: "numeric",
+                      month: "numeric",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </small>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-500 italic">Ingen nye varsler.</p>
+          )}
         </div>
-        {notifications.length > 0 ? (
-          <ul className="space-y-4">
-            {notifications.map((n, i) => (
-              <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
-                <h3 className="font-bold text-lg">{n.title}</h3>
-                <p className="text-gray-700 mt-1">{n.body}</p>
-                <small className="text-gray-500">{new Date(n.time).toLocaleString("nb-NO")}</small>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500 italic">Ingen nye varsler.</p>
-        )}
-      </div>
+
 
       {/* Kommende uke */}
       <div className="mb-12">

@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const url = `https://onesignal.com/api/v1/notifications?app_id=${APP_ID}&limit=10`;
+    const url = `https://onesignal.com/api/v1/notifications?app_id=${APP_ID}&limit=2`;
     const response = await fetch(url, {
       headers: { Authorization: `Basic ${API_KEY}` },
     });
