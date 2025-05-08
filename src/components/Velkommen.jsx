@@ -38,6 +38,20 @@ export default function Velkommen() {
     setNotifications(hist);
   }, []);
 
+  // Hent siste 3 push-varsler fra backenden
+   axios.get("/api/onesignal-history")
+     .then(res => {
+       // res.data er en array av notifications
+       const list = res.data.map(n => ({
+         title: n.headings?.en || "Melding",
+         body: n.contents?.en || "",
+         time: new Date(n.send_after).getTime()
+       }));
+       setNotifications(list);
+     })
+     .catch(err => {
+       console.error("Kunne ikke hente varsler:", err);
+     });
 
   // Hent kalenderhendelser med robust håndtering
   useEffect(() => {
