@@ -2,8 +2,9 @@
 export default async function handler(req, res) {
   const APP_ID = process.env.ONESIGNAL_APP_ID;
   const API_KEY = process.env.ONESIGNAL_REST_API_KEY;
+
   if (!APP_ID || !API_KEY) {
-    return res.status(500).json({ error: 'Missing ONE_SIGNAL_APP_ID or ONE_SIGNAL_REST_API_KEY' });
+    return res.status(500).json({ error: 'Missing ONESIGNAL_APP_ID or ONESIGNAL_REST_API_KEY' });
   }
 
   try {
@@ -18,36 +19,26 @@ export default async function handler(req, res) {
       return res.status(response.status).json({ error: data });
     }
 
-    const out = (data.notifications || []).map(n => {
-      // hent tidspunkt: fullført, planlagt eller opprettet
-      const val = n.completed_at ?? n.send_after ?? n.created_at;
-      let timestamp;
+    // data.notifications er originalen fra OneSignal
+    const notifications = Array.isArray(data.notifications) ? data.notifications : [];
 
-      if (!val) {
-        // fallback til nå
-        timestamp = Date.now();
-      } else if (typeof val === 'number') {
-        // OneSignal gir UNIX-tid i sekunder: gang med 1000
-        timestamp = val * 1000;
-      } else if (!isNaN(Date.parse(val))) {
-        // gyldig ISO-streng
-        timestamp = new Date(val).getTime();
-      } else {
-        // ukjent format, fallback
-        timestamp = Date.now();
-      }
+    // Flatten og hent kun det vi trenger
+    const result = notifications
+      .map(n => ({
+        title: n.headings?.en    || 'Melding',
+        body:  n.contents?.en    || '',
+        // Bruk completed_at, send_after eller created_at
+        time:  new Date(
+                 n.completed_at ||
+                 n.send_after  ||
+                 n.created_at  ||
+                 Date.now()
+               ).getTime()
+      }))
+      // Sorter så nyeste først (om det ikke allerede er sortert)
+      .sort((a, b) => b.time - a.time);
 
-      return {
-        title: n.headings?.en || 'Melding',
-        body:  n.contents?.en  || '',
-        time:  timestamp
-      };
-    });
-
-    // sorter nyeste først
-    out.sort((a, b) => b.time - a.time);
-
-    return res.status(200).json(out);
+    return res.status(200).json(result);
   } catch (err) {
     console.error('Server error in onesignal-history:', err);
     return res.status(500).json({ error: err.message });
