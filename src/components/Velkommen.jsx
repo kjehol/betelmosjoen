@@ -62,27 +62,19 @@ export default function Velkommen() {
 
   // Abonner-knappens logikk
   function subscribePush() {
-    // Hent SDK-køen fra enten deferred eller "vanlig" OneSignal
-    const sdkQueue = window.OneSignalDeferred || window.OneSignal;
-    if (!sdkQueue) {
-      return alert("Varslingstjenesten er ikke klar enda. Prøv om et øyeblikk.");
-    }
+     // Bruk den samme køen du init'er SDK-en i index.html
+     const queue = window.OneSignalDeferred || window.OneSignal;
+     if (!queue) {
+       return alert("Varslingstjenesten er ikke klar enda. Prøv om et øyeblikk.");
+     }
   
-    sdkQueue.push(async OneSignal => {
-      // Sjekk om push er tilgjengelig
-      const supported = await OneSignal.isPushNotificationsSupported();
-      if (!supported) {
-        return alert("Push-varsler støttes ikke i denne nettleseren.");
-      }
-  
-      const enabled = await OneSignal.isPushNotificationsEnabled();
-      if (!enabled) {
-        // Prøv først native prompt, ellers slidedown med force
-        (OneSignal.showNativePrompt?.() || OneSignal.showSlidedownPrompt({ force: true }));
-      } else {
-        alert("Du er allerede abonnert på varsler.");
-      }
-    });
+     queue.push(async OneSignal => {
+       // Tving prompt uavhengig av tidligere svar
+       // Førsteprioritet: browser-native prompt (kun lar brukeren svare én gang)
+       // Faller tilbake til slidedown-prompt med `force: true`
+       OneSignal.showNativePrompt?.() 
+         || OneSignal.showSlidedownPrompt({ force: true });
+     });
   }
 
   // Velg tilfeldig bibelvers

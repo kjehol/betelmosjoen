@@ -8,9 +8,10 @@
     <!-- OneSignal SDK for Web Push -->
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      window.OneSignalDeferred.push(async function(OneSignal) {
-        window.OneSignal = OneSignal;
+      // 1. Sett opp køen på window
+      window.OneSignal = window.OneSignal || [];
+      // 2. Push init-funksjonen
+      OneSignal.push(async () => {
         await OneSignal.init({
           appId: "91a37b72-ff1d-466b-a530-067784114675",
           allowLocalhostAsSecureOrigin: true,
@@ -18,11 +19,11 @@
         });
 
         // Lagre de to siste meldingene lokalt
-        OneSignal.on("notificationDisplay", function(event) {
+        OneSignal.on("notificationDisplay", event => {
           const entry = {
             title: event.heading || "Melding",
-            body: event.content || "",
-            time: Date.now()
+            body:  event.content || "",
+            time:  Date.now()
           };
           let hist = JSON.parse(localStorage.getItem("notifHistory") || "[]");
           hist.unshift(entry);
