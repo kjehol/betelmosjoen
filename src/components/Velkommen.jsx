@@ -37,11 +37,16 @@ export default function Velkommen() {
       .then(res => {
         if (Array.isArray(res.data)) {
           setNotifications(res.data);
+          setNotificationError(false);
         } else {
           setNotifications([]);
+          setNotificationError(true);
         }
       })
-      .catch(err => console.error('Kunne ikke hente varsler:', err));
+      .catch(err => {
+        console.error('Kunne ikke hente varsler:', err);
+        setNotificationError(true);
+      });
   }, []);
 
   // Initialize OneSignal
@@ -166,7 +171,6 @@ export default function Velkommen() {
                    year: 'numeric',
                    hour: '2-digit',
                    minute: '2-digit',
-                   second: "2-digit",
                 })}
               </small>
             </li>
