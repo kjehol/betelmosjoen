@@ -64,8 +64,6 @@ export default function Velkommen() {
       });
     });
   }
-  
-  
 
   // Velg tilfeldig bibelvers og hent push-historikk
   useEffect(() => {
