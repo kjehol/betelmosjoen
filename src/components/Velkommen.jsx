@@ -1,6 +1,6 @@
 // src/components/Velkommen.jsx
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 import ShortsModal from "./ShortsModal";
@@ -29,6 +29,24 @@ export default function Velkommen() {
   const [shortsOpen, setShortsOpen] = useState(false);
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
+
+  // --- 1 Funksjon for å hente varsler fra API-et ---
+  const loadNotifications = useCallback(() => {
+      axios.get("/api/onesignal-history")
+        .then(res => {
+          const list = Array.isArray(res.data)
+            ? res.data.map(n => ({
+                title: n.headings?.en  || "Melding",
+                body:  n.contents?.en  || "",
+                time:  n.created_at 
+                         ? new Date(n.created_at).getTime() 
+                         : Date.now()
+              }))
+            : [];
+          setNotifications(list);
+        })
+        .catch(err => console.error("Kunne ikke hente varsler:", err));
+    }, []);
 
   // Initialize OneSignal
   useEffect(() => {
@@ -65,24 +83,16 @@ export default function Velkommen() {
     });
   }
 
-  // Velg tilfeldig bibelvers og hent push-historikk
+  // Velg tilfeldig bibelvers
   useEffect(() => {
-    const idx = Math.floor(Math.random() * bibelvers.length);
-    setDagensVers(bibelvers[idx]);
-
-    axios.get('/api/onesignal-history')
-      .then(res => {
-        const list = Array.isArray(res.data)
-          ? res.data.map(n => ({
-              title: n.headings?.en || 'Melding',
-              body: n.contents?.en || '',
-              time: n.created_at ? new Date(n.created_at).getTime() : Date.now()
-            }))
-          : [];
-        setNotifications(list);
-      })
-      .catch(err => console.error('Kunne ikke hente varsler:', err));
-  }, []);
+      const idx = Math.floor(Math.random() * bibelvers.length);
+      setDagensVers(bibelvers[idx]);
+    }, []);
+  
+  // 2 Initial henting av varsler
+  useEffect(() => {
+    loadNotifications();
+  }, [loadNotifications]);
 
   // Hent kalenderhendelser med robust håndtering
   useEffect(() => {
@@ -125,6 +135,18 @@ export default function Velkommen() {
       .catch(err => console.error("Feil ved henting av shorts:", err));
   }, []);
 
+  // 3️⃣ Når appen (fanen) blir synlig igjen => refetch varsler
+  useEffect(() => {
+    function onVisibilityChange() {
+      if (document.visibilityState === "visible") {
+        loadNotifications();
+      }
+    }
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [loadNotifications]);
   
   return (
     <Layout>
