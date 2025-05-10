@@ -33,21 +33,24 @@ export default function Velkommen() {
   
   // --- 1 Funksjon for å hente varsler fra API-et ---
   const loadNotifications = useCallback(() => {
-      axios.get("/api/onesignal-history")
-        .then(res => {
-          const list = Array.isArray(res.data)
-            ? res.data.map(n => ({
-                title: n.headings?.en  || "Melding",
-                body:  n.contents?.en  || "",
-                time:  n.created_at 
-                         ? new Date(n.created_at).getTime() 
-                         : Date.now()
-              }))
-            : [];
-          setNotifications(list);
-        })
-        .catch(err => console.error("Kunne ikke hente varsler:", err));
-    }, []);
+    axios.get("/api/onesignal-history")
+      .then(res => {
+        if (!Array.isArray(res.data)) {
+          setNotifications([]);
+          return;
+        }
+        const list = res.data.map(n => ({
+          title: n.title  || "Melding",
+          body:  n.body   || "",
+          time:   typeof n.time === "number"
+                    ? n.time
+                    : new Date(n.time).getTime()
+        }));
+        setNotifications(list);
+      })
+      .catch(err => console.error("Kunne ikke hente varsler:", err));
+  }, []);
+
 
   // Initialize OneSignal
   useEffect(() => {
