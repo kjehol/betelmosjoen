@@ -33,21 +33,24 @@ export default function Velkommen() {
   
   // --- 1 Funksjon for å hente varsler fra API-et ---
   const loadNotifications = useCallback(() => {
-    axios.get('/api/onesignal-history')
+    axios.get("/api/onesignal-history")
       .then(res => {
-        if (Array.isArray(res.data)) {
-          setNotifications(res.data);
-          setNotificationError(false);
-        } else {
+        if (!Array.isArray(res.data)) {
           setNotifications([]);
-          setNotificationError(true);
+          return;
         }
+        const list = res.data.map(n => ({
+          title: n.title  || "Melding",
+          body:  n.body   || "",
+          time:   typeof n.time === "number"
+                    ? n.time
+                    : new Date(n.time).getTime()
+        }));
+        setNotifications(list);
       })
-      .catch(err => {
-        console.error('Kunne ikke hente varsler:', err);
-        setNotificationError(true);
-      });
+      .catch(err => console.error("Kunne ikke hente varsler:", err));
   }, []);
+
 
   // Initialize OneSignal
   useEffect(() => {
@@ -160,22 +163,14 @@ export default function Velkommen() {
         </div>
         {notifications.length > 0 ? (
           <ul className="space-y-4">
-          {notifications.map((n, i) => (
-            <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
-              <h3 className="font-bold text-lg">{n.title}</h3>
-              <p className="text-gray-700 mt-1">{n.body}</p>
-              <small className="text-gray-500">
-                {new Date(n.time).toLocaleString('nb-NO', {
-                   day: 'numeric',
-                   month: 'long',
-                   year: 'numeric',
-                   hour: '2-digit',
-                   minute: '2-digit',
-                })}
-              </small>
-            </li>
-          ))}
-        </ul>
+            {notifications.map((n, i) => (
+              <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
+                <h3 className="font-bold text-lg">{n.title}</h3>
+                <p className="text-gray-700 mt-1">{n.body}</p>
+                <small className="text-gray-500">{new Date(n.time).toLocaleString("nb-NO")}</small>
+              </li>
+            ))}
+          </ul>
         ) : (
           <p className="text-gray-500 italic">Ingen nye varsler.</p>
         )}
