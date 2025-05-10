@@ -74,7 +74,8 @@ export default function Velkommen() {
         }
         OneSignal.isPushNotificationsEnabled(enabled => {
           if (!enabled) {
-            OneSignal.showSlidedownPrompt({ force: true });
+            // prøv først native prompt (om tilgjengelig), ellers slidedown på nytt
++           (OneSignal.showNativePrompt?.() || OneSignal.showSlidedownPrompt({ force: true }));
           } else {
             alert("Du er allerede abonnert på varsler.");
           }
@@ -164,10 +165,7 @@ export default function Velkommen() {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">🛎️ Siste nytt</h2>
-          <button
-            onClick={subscribePush}
-            className="text-blue-600 hover:underline text-sm"
-          >
+          <button onClick={subscribePush} className="text-blue-600 hover:underline text-sm">
             Abonner på varsler
           </button>
         </div>
