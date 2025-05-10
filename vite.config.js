@@ -33,8 +33,9 @@ export default defineConfig({
         ]
       },
       workbox: {
-        skipWaiting: false,
-        clientsClaim: false,
+        skipWaiting: true,
+        clientsClaim: true,
+        navigateFallback: '/',
         runtimeCaching: [
           // cache OneSignal-skriptet
           {
