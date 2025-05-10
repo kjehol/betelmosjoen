@@ -167,7 +167,6 @@ export default function Velkommen() {
               <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
                 <h3 className="font-bold text-lg">{n.title}</h3>
                 <p className="text-gray-700 mt-1">{n.body}</p>
-                <small className="text-gray-500">{new Date(n.time).toLocaleString("nb-NO")}</small>
               </li>
             ))}
           </ul>
