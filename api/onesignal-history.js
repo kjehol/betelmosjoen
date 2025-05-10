@@ -24,17 +24,26 @@ export default async function handler(req, res) {
 
     // Flatten og hent kun det vi trenger
     const result = notifications
-      .map(n => ({
-        title: n.headings?.en    || 'Melding',
-        body:  n.contents?.en    || '',
-        // Bruk completed_at, send_after eller created_at
-        time:  new Date(
-                 n.completed_at ||
-                 n.send_after  ||
-                 n.created_at  ||
-                 Date.now()
-               ).getTime()
-      }))
+      .map(n => {
+        // hent tidspunkt: fullført, planlagt eller opprettet
+        const val = n.completed_at ?? n.send_after ?? n.created_at;
+        let timestamp;
+        if (typeof val === 'number') {
+          // OneSignal numeric timestamp may be in seconds
+          timestamp = val < 1e12 ? val * 1000 : val;
+        } else if (typeof val === 'string' && !isNaN(Date.parse(val))) {
+          // ISO date string
+          timestamp = Date.parse(val);
+        } else {
+          // fallback til nå
+          timestamp = Date.now();
+        }
+        return {
+          title: n.headings?.en    || 'Melding',
+          body:  n.contents?.en    || '',
+          time:  timestamp
+        };
+      })
       // Sorter så nyeste først (om det ikke allerede er sortert)
       .sort((a, b) => b.time - a.time);
 

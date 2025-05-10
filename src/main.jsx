@@ -17,14 +17,16 @@ root.render(
   </React.StrictMode>
 );
 
-// Registrer service worker umiddelbart og lytt på oppdateringshendelser
-registerSW({
-  immediate: true,
-  onOfflineReady() {
-    console.log('🔌 Appen er klar for offline bruk');
-  },
-  onNeedRefresh() {
-    console.log('🔄 Ny versjon tilgjengelig – last inn på nytt for å oppdatere');
-    // Du kan her vise en knapp som kaller location.reload()
-  }
-});
+// Registrer service worker kun i produksjon
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  registerSW({
+    immediate: true,
+    onOfflineReady() {
+      console.log('🔌 Appen er klar for offline bruk');
+    },
+    onNeedRefresh() {
+      console.log('🔄 Ny versjon tilgjengelig – last inn på nytt for å oppdatere');
+      // Du kan her vise en knapp som kaller location.reload()
+    }
+  });
+}
