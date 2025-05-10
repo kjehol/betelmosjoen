@@ -33,6 +33,8 @@ export default defineConfig({
         ]
       },
       workbox: {
+        skipWaiting: false,
+        clientsClaim: false,
         runtimeCaching: [
           // cache OneSignal-skriptet
           {
