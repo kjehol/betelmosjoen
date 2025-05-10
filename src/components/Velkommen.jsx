@@ -1,11 +1,11 @@
 // src/components/Velkommen.jsx
-
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 import ShortsModal from "./ShortsModal";
 import { Link } from "react-router-dom";
 import Layout from "./Layout";
+import SubscribeInstructionsModal from "./SubscribeInstructionsModal";
 
 const bibelvers = [
   { vers: "Salme 46:2", tekst: "Gud er vår tilflukt og styrke, en hjelp i nød og alltid nær" },
@@ -29,7 +29,8 @@ export default function Velkommen() {
   const [shortsOpen, setShortsOpen] = useState(false);
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
-
+  const [showInstr, setShowInstr] = useState(false);
+  
   // --- 1 Funksjon for å hente varsler fra API-et ---
   const loadNotifications = useCallback(() => {
       axios.get("/api/onesignal-history")
@@ -60,21 +61,9 @@ export default function Velkommen() {
     });
   }, []);
 
-  // Abonner-knappens logikk
+  // Når man trykker på Abonner-knappen: vis instruksjons-modal
   function subscribePush() {
-     // Bruk den samme køen du init'er SDK-en i index.html
-     const queue = window.OneSignalDeferred || window.OneSignal;
-     if (!queue) {
-       return alert("Varslingstjenesten er ikke klar enda. Prøv om et øyeblikk.");
-     }
-  
-     queue.push(async OneSignal => {
-       // Tving prompt uavhengig av tidligere svar
-       // Førsteprioritet: browser-native prompt (kun lar brukeren svare én gang)
-       // Faller tilbake til slidedown-prompt med `force: true`
-       OneSignal.showNativePrompt?.() 
-         || OneSignal.showSlidedownPrompt({ force: true });
-     });
+      setShowInstr(true);
   }
 
   // Velg tilfeldig bibelvers
@@ -129,7 +118,7 @@ export default function Velkommen() {
       .catch(err => console.error("Feil ved henting av shorts:", err));
   }, []);
 
-  // 3️⃣ Når appen (fanen) blir synlig igjen => refetch varsler
+  // 3 Når appen (fanen) blir synlig igjen => refetch varsler
   useEffect(() => {
     function onVisibilityChange() {
       if (document.visibilityState === "visible") {
@@ -144,6 +133,13 @@ export default function Velkommen() {
   
   return (
     <Layout>
+      {/* Modal for instruksjoner */}
+      <SubscribeInstructionsModal
+        show={showInstr}
+        onClose={() => setShowInstr(false)}
+      />
+
+      {/* Topptekst */}
       <h1 className="text-3xl font-bold mb-6 text-center">Betel-appen</h1>
 
       {/* Dagens bibelvers */}
