@@ -19,19 +19,24 @@ export default async function handler(req, res) {
       return res.status(response.status).json({ error: data });
     }
 
-    const result = (data.notifications || [])
-      .map(n => {
-        const raw = n.completed_at || n.send_after || n.created_at || Date.now();
-        const timestamp = typeof raw === 'number' ? raw * 1000 : new Date(raw).getTime();
-        return {
-          title: n.headings?.en || Object.values(n.headings || {})[0] || 'Melding',
-          body: n.contents?.en || Object.values(n.contents || {})[0] || '',
-          time: timestamp
-        };
-      })
-      .sort((a, b) => b.time - a.time);
+    const result = (data.notifications || []).map(n => {
+      const raw = n.completed_at || n.send_after || n.created_at || Date.now();
+      const timestamp = typeof raw === 'number' ? raw * 1000 : new Date(raw).getTime();
+      const body =
+        (n.contents?.en || "") ||
+        (n.contents?.no || "") ||
+        Object.values(n.contents || {})[0] ||
+        "";
+      const title =
+        (n.headings?.en || "") ||
+        (n.headings?.no || "") ||
+        Object.values(n.headings || {})[0] ||
+        "Melding";
 
-    return res.status(200).json(result);
+      return { title, body, time: timestamp };
+    });
+
+    return res.status(200).json(result.sort((a, b) => b.time - a.time));
   } catch (err) {
     console.error('Server error in onesignal-history:', err);
     return res.status(500).json({ error: err.message });
