@@ -1,4 +1,3 @@
-// api/onesignal-history.js
 export default async function handler(req, res) {
   const APP_ID = process.env.ONESIGNAL_APP_ID;
   const API_KEY = process.env.ONESIGNAL_REST_API_KEY;
@@ -12,6 +11,7 @@ export default async function handler(req, res) {
     const response = await fetch(url, {
       headers: { Authorization: `Basic ${API_KEY}` }
     });
+
     const data = await response.json();
 
     if (!response.ok) {
@@ -19,23 +19,16 @@ export default async function handler(req, res) {
       return res.status(response.status).json({ error: data });
     }
 
-    // data.notifications er originalen fra OneSignal
-    const notifications = Array.isArray(data.notifications) ? data.notifications : [];
-
-    // Flatten og hent kun det vi trenger
-    const result = notifications
-      .map(n => ({
-        title: n.headings?.en    || 'Melding',
-        body:  n.contents?.en    || '',
-        // Bruk completed_at, send_after eller created_at
-        time:  new Date(
-                 n.completed_at ||
-                 n.send_after  ||
-                 n.created_at  ||
-                 Date.now()
-               ).getTime()
-      }))
-      // Sorter så nyeste først (om det ikke allerede er sortert)
+    const result = (data.notifications || [])
+      .map(n => {
+        const raw = n.completed_at || n.send_after || n.created_at || Date.now();
+        const timestamp = typeof raw === 'number' ? raw * 1000 : new Date(raw).getTime();
+        return {
+          title: n.headings?.en || 'Melding',
+          body: n.contents?.en || '',
+          time: timestamp
+        };
+      })
       .sort((a, b) => b.time - a.time);
 
     return res.status(200).json(result);
