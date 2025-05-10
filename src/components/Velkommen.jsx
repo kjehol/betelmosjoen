@@ -62,25 +62,26 @@ export default function Velkommen() {
 
   // Abonner-knappens logikk
   function subscribePush() {
-    if (!window.OneSignal) {
-      alert("Varslingstjenesten er ikke klar enda. Prøv om et øyeblikk.");
-      return;
+    // Hent SDK-køen fra enten deferred eller "vanlig" OneSignal
+    const sdkQueue = window.OneSignalDeferred || window.OneSignal;
+    if (!sdkQueue) {
+      return alert("Varslingstjenesten er ikke klar enda. Prøv om et øyeblikk.");
     }
-    OneSignal.push(() => {
-      OneSignal.isPushNotificationsSupported(supported => {
-        if (!supported) {
-          alert("Push-varsler støttes ikke i denne nettleseren.");
-          return;
-        }
-        OneSignal.isPushNotificationsEnabled(enabled => {
-          if (!enabled) {
-            // prøv først native prompt (om tilgjengelig), ellers slidedown på nytt
-+           (OneSignal.showNativePrompt?.() || OneSignal.showSlidedownPrompt({ force: true }));
-          } else {
-            alert("Du er allerede abonnert på varsler.");
-          }
-        });
-      });
+  
+    sdkQueue.push(async OneSignal => {
+      // Sjekk om push er tilgjengelig
+      const supported = await OneSignal.isPushNotificationsSupported();
+      if (!supported) {
+        return alert("Push-varsler støttes ikke i denne nettleseren.");
+      }
+  
+      const enabled = await OneSignal.isPushNotificationsEnabled();
+      if (!enabled) {
+        // Prøv først native prompt, ellers slidedown med force
+        (OneSignal.showNativePrompt?.() || OneSignal.showSlidedownPrompt({ force: true }));
+      } else {
+        alert("Du er allerede abonnert på varsler.");
+      }
     });
   }
 
