@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: "autoUpdate",
+      registerType: "prompt",
       filename: "service-worker.js",  // Sørger for at SW-filen heter akkurat service-worker.js
       devOptions: {
         enabled: false
@@ -33,9 +33,6 @@ export default defineConfig({
         ]
       },
       workbox: {
-        skipWaiting: true,
-        clientsClaim: true,
-        navigateFallback: '/',
         runtimeCaching: [
           // cache OneSignal-skriptet
           {
