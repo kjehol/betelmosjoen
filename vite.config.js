@@ -8,6 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
+      filename: "service-worker.js",  // Sørger for at SW-filen heter akkurat service-worker.js
       devOptions: {
         enabled: true,         // gjør at SW også registreres i dev-mode
         navigateFallback: "/", // fallback til root
