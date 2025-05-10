@@ -32,17 +32,15 @@ export default function Velkommen() {
   const [showInstr, setShowInstr] = useState(false);
   
   // --- 1 Funksjon for å hente varsler fra API-et ---
-  const loadNotifications = useCallback(() => {
-    axios.get('/api/onesignal-history')
-      .then(res => {
-        if (Array.isArray(res.data)) {
-          setNotifications(res.data);
-        } else {
-          setNotifications([]);
-        }
-      })
-      .catch(err => console.error('Kunne ikke hente varsler:', err));
-  }, []);
+  const result = (data.notifications || []).map(n => {
+    const raw = n.completed_at || n.send_after || n.created_at || Date.now();
+    const timestamp = typeof raw === 'number' ? raw * 1000 : new Date(raw).getTime();
+    return {
+      title: n.headings?.en || Object.values(n.headings || {})[0] || 'Melding',
+      body:  n.contents?.en || Object.values(n.contents || {})[0] || '',
+      time:  timestamp
+    };
+  });  
 
   // Initialize OneSignal
   useEffect(() => {
