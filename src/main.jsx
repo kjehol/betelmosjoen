@@ -17,16 +17,17 @@ root.render(
   </React.StrictMode>
 );
 
-// Registrer service worker kun i produksjon
+// Registrer service worker kun i produksjon med prompt-registering
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-  registerSW({
-    immediate: true,
+  const updateSW = registerSW({
+    registerType: 'prompt',
     onOfflineReady() {
       console.log('🔌 Appen er klar for offline bruk');
     },
     onNeedRefresh() {
-      console.log('🔄 Ny versjon tilgjengelig – last inn på nytt for å oppdatere');
-      // Du kan her vise en knapp som kaller location.reload()
+      if (confirm('🔄 Ny versjon tilgjengelig! Vil du oppdatere nå?')) {
+        updateSW().then(() => window.location.reload());
+      }
     }
   });
 }

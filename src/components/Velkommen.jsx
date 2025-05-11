@@ -133,6 +133,23 @@ export default function Velkommen() {
       document.removeEventListener("visibilitychange", onVisibilityChange);
     };
   }, [loadNotifications]);
+
+  // Lytt til meldinger fra service worker for å oppdatere varsler ved innkommende push
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', event => {
+        if (event.data?.type === 'NEW_PUSH') {
+          loadNotifications();
+        }
+      });
+    }
+    // Cleanup listener on unmount
+    return () => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.removeEventListener('message', () => {});
+      }
+    };
+  }, [loadNotifications]);
   
   return (
     <Layout>

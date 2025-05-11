@@ -7,8 +7,12 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      injectManifest: {
+        // Point to your custom service worker source in src/
+        swSrc: "src/custom-sw.js",
+        swDest: "service-worker.js"
+      },
       registerType: "prompt",
-      filename: "service-worker.js",  // Sørger for at SW-filen heter akkurat service-worker.js
       devOptions: {
         enabled: false
       },
@@ -30,22 +34,6 @@ export default defineConfig({
         icons: [
           { src: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
           { src: "/icon-512x512.png", sizes: "512x512", type: "image/png" }
-        ]
-      },
-      workbox: {
-        runtimeCaching: [
-          // cache OneSignal-skriptet
-          {
-            urlPattern: /^https:\/\/cdn\.onesignal\.com\/sdks\/web\/v16\/OneSignalSDK\.page\.js$/,
-            handler: "NetworkFirst",
-            options: { cacheName: "onesignal-sdk" }
-          },
-          // cache dine API-endepunkter
-          {
-            urlPattern: /^\/api\/.+$/,
-            handler: "NetworkFirst",
-            options: { cacheName: "api-calls" }
-          }
         ]
       }
     })
