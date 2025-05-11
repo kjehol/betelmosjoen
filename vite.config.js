@@ -12,7 +12,7 @@ export default defineConfig({
         swSrc: "src/custom-sw.js",
         swDest: "service-worker.js"
       },
-      registerType: "prompt",
+      registerType: "autoUpdate",
       devOptions: {
         enabled: false
       },

@@ -17,22 +17,11 @@ root.render(
   </React.StrictMode>
 );
 
-// Registrer service worker kun i produksjon med prompt-registering
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-  // Auto-update service worker without user prompt
-  const updateSW = registerSW({
+  registerSW({
     registerType: 'autoUpdate',
     onOfflineReady() {
       console.log('🔌 Appen er klar for offline bruk');
-    }
-  });
-
-  // Reload page once when new service worker takes control
-  let hasReloaded = false;
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (!hasReloaded) {
-      hasReloaded = true;
-      window.location.reload();
     }
   });
 }
