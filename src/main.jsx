@@ -7,6 +7,9 @@ import App from './App.jsx';
 // PWA-registration fra vite-plugin-pwa
 import { registerSW } from 'virtual:pwa-register';
 
+// Prevent multiple update prompts per session
+let hasPromptedForUpdate = false;
+
 // Opprett React-roten
 const root = createRoot(document.getElementById('root'));
 
@@ -25,8 +28,11 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
       console.log('🔌 Appen er klar for offline bruk');
     },
     onNeedRefresh() {
-      if (confirm('🔄 Ny versjon tilgjengelig! Vil du oppdatere nå?')) {
-        updateSW().then(() => window.location.reload());
+      if (!hasPromptedForUpdate) {
+        hasPromptedForUpdate = true;
+        if (confirm('🔄 Ny versjon tilgjengelig! Vil du oppdatere nå?')) {
+          updateSW().then(() => window.location.reload());
+        }
       }
     }
   });
