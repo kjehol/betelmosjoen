@@ -26,6 +26,17 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
     registerType: 'autoUpdate',
     onOfflineReady() {
       console.log('🔌 Appen er klar for offline bruk');
+    },
+    onNeedRefresh() {
+      setTimeout(() => {
+        updateSW(true);
+      }, 3000);
     }
+  });
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (refreshing) return;
+    refreshing = true;
+    window.location.reload();
   });
 }
