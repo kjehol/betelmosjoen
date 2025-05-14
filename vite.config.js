@@ -7,6 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      strategies: "injectManifest",
       injectManifest: {
         // Point to your custom service worker source in src/
         swSrc: "src/custom-sw.js",

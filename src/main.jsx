@@ -22,10 +22,10 @@ root.render(
 
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   const updateSW = registerSW({
+    swURL: '/service-worker.js',
     registerType: 'autoUpdate',
     onOfflineReady() {
       console.log('🔌 Appen er klar for offline bruk');
     }
   });
-  updateSW();
 }
