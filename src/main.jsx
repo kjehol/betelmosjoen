@@ -22,14 +22,9 @@ root.render(
 
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   const updateSW = registerSW({
-    registerType: 'prompt',
+    registerType: 'autoUpdate',
     onOfflineReady() {
       console.log('🔌 Appen er klar for offline bruk');
-    },
-    onNeedRefresh() {
-      setTimeout(() => {
-        updateSW(true);
-      }, 3000);
     }
   });
   let refreshing = false;

@@ -9,7 +9,7 @@ export default defineConfig({
     VitePWA({
       strategies: "generateSW",
       filename: "service-worker.js",
-      registerType: "prompt",
+      registerType: "autoUpdate",
       devOptions: {
         enabled: false
       },
@@ -25,6 +25,8 @@ export default defineConfig({
         name: "Betel Mosjøen",
         short_name: "Betel",
         start_url: "/",
+        scope: "/",
+        description: "App for Betel Mosjøen med kalender, podcast og artikler m.m.",
         display: "standalone",
         background_color: "#ffffff",
         theme_color: "#1e40af",
