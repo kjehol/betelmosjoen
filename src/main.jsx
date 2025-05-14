@@ -18,14 +18,10 @@ root.render(
 );
 
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-  const updateSW = registerSW({
-    registerType: 'prompt',
+  registerSW({
+    registerType: 'autoUpdate',
     onOfflineReady() {
       console.log('🔌 Appen er klar for offline bruk');
-    },
-    onNeedRefresh() {
-      // Ny versjon tilgjengelig: oppdater umiddelbart
-      updateSW().then(() => window.location.reload());
     }
   });
 }
