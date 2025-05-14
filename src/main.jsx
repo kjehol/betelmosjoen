@@ -31,6 +31,8 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (refreshing) return;
     refreshing = true;
-    window.location.reload();
-  });
+    setTimeout(() => {
+      window.location.reload();
+    }, 5000);
+  }, { once: true });
 }
