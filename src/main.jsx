@@ -21,20 +21,11 @@ root.render(
 );
 
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-  let hasUpdated = false;
   const updateSW = registerSW({
-    registerType: isIosPwa ? 'prompt' : 'autoUpdate',
+    registerType: 'autoUpdate',
     onOfflineReady() {
       console.log('🔌 Appen er klar for offline bruk');
-    },
-    onNeedRefresh() {
-      if (!hasUpdated) {
-        hasUpdated = true;
-        // Skips waiting and activates new service worker without reload
-        updateSW().then(() => {
-          console.log('App oppdatert til ny versjon i bakgrunnen');
-        });
-      }
     }
   });
+  updateSW();
 }
