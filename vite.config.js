@@ -13,6 +13,10 @@ export default defineConfig({
         swDest: "service-worker.js"
       },
       registerType: "autoUpdate",
+      workbox: {
+        skipWaiting: true, // Aktiverer at ny SW går rett til 'activated'
+        clientsClaim: true, // SW overtar kontrollerte sider umiddelbart
+      },
       devOptions: {
         enabled: false
       },
