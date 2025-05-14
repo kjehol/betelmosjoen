@@ -25,6 +25,9 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
     registerType: 'autoUpdate',
     onOfflineReady() {
       console.log('🔌 Appen er klar for offline bruk');
+    },
+    onNeedRefresh() {
+      updateSW(); // Aktiver service worker stille for push-støtte uten reload
     }
   });
   let refreshing = false;
