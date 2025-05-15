@@ -30,7 +30,6 @@ export default function Velkommen() {
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [showInstr, setShowInstr] = useState(false);
-  const [facebookPost, setFacebookPost] = useState(null);
   
   // --- 1 Funksjon for å hente varsler fra API-et ---
   const loadNotifications = useCallback(() => {
@@ -140,25 +139,6 @@ export default function Velkommen() {
   }, [loadNotifications]);
 
   useEffect(() => {
-    const fetchFacebookPost = async () => {
-      try {
-        const response = await axios.get('/api/facebook');
-        const data = response.data;
-        if (data && data.length > 0) {
-          setFacebookPost(data[0]);
-          console.log('Facebook post data:', data[0]); // <-- legg til denne
-        } else {
-          console.warn('No Facebook posts found');
-        }
-      } catch (error) {
-        console.error('Failed to fetch Facebook post:', error);
-      }
-    };
-
-    fetchFacebookPost();
-  }, []);
-
-  useEffect(() => {
     console.log('Velkommen: Velkommen.jsx is mounted');
   }, []);
   
@@ -172,20 +152,6 @@ export default function Velkommen() {
 
       {/* Topptekst */}
       <h1 className="text-3xl font-bold mb-6 text-center">Betel-appen</h1>
-
-      {/* Facebook Post */}
-      {facebookPost && (
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold">Siste Facebook-innlegg</h2>
-          <p className="text-gray-700 mt-2">{facebookPost.message}</p>
-          {facebookPost.full_picture && (
-            <img src={facebookPost.full_picture} alt="Facebook Post" className="mt-2" />
-          )}
-          <a href={facebookPost.permalink_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-            Se på Facebook
-          </a>
-        </div>
-      )}
 
       {/* Dagens bibelvers */}
       {dagensVers && (
