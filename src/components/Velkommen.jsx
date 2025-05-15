@@ -51,19 +51,6 @@ export default function Velkommen() {
       .catch(err => console.error("Kunne ikke hente varsler:", err));
   }, []);
 
-
-  // Initialize OneSignal
-  useEffect(() => {
-    window.OneSignal = window.OneSignal || [];
-    OneSignal.push(() => {
-      OneSignal.init({
-        appId: "91a37b72-ff1d-466b-a530-067784114675",
-        allowLocalhostAsSecureOrigin: true,
-        notifyButton: { enable: true, position: "bottom-left" },
-      });
-    });
-  }, []);
-
   // Når man trykker på Abonner-knappen: vis instruksjons-modal
   function subscribePush() {
       setShowInstr(true);

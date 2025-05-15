@@ -48,27 +48,31 @@
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         window.OneSignalDeferred.push(async function(OneSignal) {
           window.OneSignal = OneSignal;
-          await OneSignal.init({
-            appId: "91a37b72-ff1d-466b-a530-067784114675",
-            allowLocalhostAsSecureOrigin: true,
-            notifyButton: { enable: true }
-          });
+          try {
+            await OneSignal.init({
+              appId: "91a37b72-ff1d-466b-a530-067784114675",
+              allowLocalhostAsSecureOrigin: true,
+              notifyButton: { enable: true }
+            });
 
-          // Lagre de to siste meldingene lokalt
-          OneSignal.on("notificationDisplay", function(event) {
-            const entry = {
-              title: event.heading || "Melding",
-              body: event.content || "",
-              time: Date.now()
-            };
-            let hist = JSON.parse(localStorage.getItem("notifHistory") || "[]");
-            hist.unshift(entry);
-            if (hist.length > 2) hist = hist.slice(0, 2);
-            localStorage.setItem("notifHistory", JSON.stringify(hist));
-          });
+            // Lagre de to siste meldingene lokalt
+            OneSignal.on("notificationDisplay", function(event) {
+              const entry = {
+                title: event.heading || "Melding",
+                body: event.content || "",
+                time: Date.now()
+              };
+              let hist = JSON.parse(localStorage.getItem("notifHistory") || "[]");
+              hist.unshift(entry);
+              if (hist.length > 2) hist = hist.slice(0, 2);
+              localStorage.setItem("notifHistory", JSON.stringify(hist));
+            });
 
-          // Vis slidedown-prompt første gang
-          OneSignal.showSlidedownPrompt();
+            // Vis slidedown-prompt første gang
+            OneSignal.showSlidedownPrompt();
+          } catch (error) {
+            console.error("OneSignal initialisering feilet:", error);
+          }
         });
       });
     </script>

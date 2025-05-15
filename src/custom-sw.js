@@ -17,12 +17,3 @@ self.addEventListener('push', event => {
       });
   }
 });
-
-self.addEventListener('message', event => {
-  if (event.data.type === 'GET_DATA') {
-    // Håndter forespørsler fra klienten
-    event.ports[0].postMessage({
-      msg: 'Hello from the service worker!'
-    });
-  }
-});
