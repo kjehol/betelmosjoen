@@ -27,7 +27,7 @@ export default defineConfig({
         name: "Betel Mosjøen",
         short_name: "Betel",
         start_url: "/",
-        scope: "/",
+        scope: "/", // <-- Sjekk at dette er riktig
         description: "App for Betel Mosjøen med kalender, podcast og artikler m.m.",
         display: "standalone",
         background_color: "#ffffff",
