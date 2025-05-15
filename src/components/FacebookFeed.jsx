@@ -17,17 +17,18 @@ export default function FacebookFeed() {
   }, []);
 
   return (
-    <div className="w-full flex justify-center my-8">
+    <div className="w-full flex justify-center">
       <div
-        className="fb-page"
+        className="fb-page w-full"
         data-href="https://www.facebook.com/pinsekirken"
         data-tabs="timeline"
-        data-width=""
+        data-width="100%"
         data-height=""
         data-small-header="true"
         data-adapt-container-width="true"
         data-hide-cover="false"
         data-show-facepile="false"
+        style={{ minWidth: 320, maxWidth: 1200 }}
       >
         <blockquote
           cite="https://www.facebook.com/pinsekirken"
