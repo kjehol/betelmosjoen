@@ -152,7 +152,7 @@ export default function Velkommen() {
       />
 
       {/* Topptekst */}
-      <div className="w-full overflow-hidden">
+      <div className="w-full overflow-hidden mb-2">
         <img
           src="/images/logo.png" // Bilde-fil
           alt="Betel-appen"
