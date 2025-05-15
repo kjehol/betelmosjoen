@@ -22,13 +22,12 @@ export default function FacebookFeed() {
         className="fb-page"
         data-href="https://www.facebook.com/pinsekirken"
         data-tabs="timeline"
-        data-width="100%"
+        data-width=""
         data-height=""
         data-small-header="true"
         data-adapt-container-width="true"
         data-hide-cover="false"
         data-show-facepile="false"
-        style={{ minWidth: 280, maxWidth: 600 }}
       >
         <blockquote
           cite="https://www.facebook.com/pinsekirken"
