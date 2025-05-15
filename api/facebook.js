@@ -14,6 +14,7 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       console.error('Facebook API error:', data);
+      console.error('Facebook API error details:', data.error);
       return res.status(response.status).json({ error: data });
     }
 
