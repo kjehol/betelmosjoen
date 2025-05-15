@@ -154,7 +154,7 @@ export default function Velkommen() {
       {/* Topptekst */}
       <div className="w-full h-32 sm:h-40 md:h-48 max-h-48 overflow-hidden mb-6">
         <img
-          src="/images/betel-app-header-2.png" // Bilde-fil
+          src="./images/betel-app-header-2.png" // Bilde-fil
           alt="Betel-appen"
           className="w-full h-full object-cover"
         />
