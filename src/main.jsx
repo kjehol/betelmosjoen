@@ -29,8 +29,6 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
     },
     onNeedRefresh() {
       // Ikke kall updateSW() direkte her, vis evt. en prompt til bruker
-      // updateSW(); // <-- fjern denne for å unngå loop
-      // Evt. vis en knapp til bruker for å oppdatere
       console.log('Ny versjon tilgjengelig, last inn på nytt for å oppdatere.');
     }
   });
@@ -39,7 +37,9 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (refreshing) return;
     refreshing = true;
-    // Reload kun hvis det faktisk er en ny SW
-    window.location.reload();
-  });
+    // Sjekk at det faktisk finnes en aktiv service worker før reload
+    if (navigator.serviceWorker.controller) {
+      window.location.reload();
+    }
+  }, { once: true }); // <-- legg til { once: true } for å sikre kun én reload
 }
