@@ -33,13 +33,20 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
     }
   });
 
-  // Lytt kun én gang på controllerchange
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (refreshing) return;
-    refreshing = true;
-    // Sjekk at det faktisk finnes en aktiv service worker før reload
-    if (navigator.serviceWorker.controller) {
-      window.location.reload();
+    // Ikke reload hvis det ikke finnes en aktiv SW
+    if (!navigator.serviceWorker.controller) {
+      console.log('Ingen aktiv service worker, hopper over reload');
+      return;
     }
-  }, { once: true }); // <-- legg til { once: true } for å sikre kun én reload
+    refreshing = true;
+    // Sjekk at vi ikke allerede har reloaded
+    if (window.__swReloaded) {
+      console.log('Allerede reloadet, stopper loop');
+      return;
+    }
+    window.__swReloaded = true;
+    window.location.reload();
+  }, { once: true });
 }
