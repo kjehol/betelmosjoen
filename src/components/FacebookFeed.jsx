@@ -19,7 +19,7 @@ export default function FacebookFeed() {
   return (
     <div className="w-full flex justify-center">
       <div
-        className="fb-page w-full"
+        className="fb-page"
         data-href="https://www.facebook.com/pinsekirken"
         data-tabs="timeline"
         data-width="100%"
@@ -28,7 +28,6 @@ export default function FacebookFeed() {
         data-adapt-container-width="true"
         data-hide-cover="false"
         data-show-facepile="false"
-        style={{ minWidth: 320, maxWidth: 1200 }}
       >
         <blockquote
           cite="https://www.facebook.com/pinsekirken"
