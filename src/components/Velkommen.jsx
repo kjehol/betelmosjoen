@@ -150,6 +150,10 @@ export default function Velkommen() {
       }
     };
   }, [loadNotifications]);
+
+  useEffect(() => {
+    console.log('Velkommen: Velkommen.jsx is mounted');
+  }, []);
   
   return (
     <Layout>

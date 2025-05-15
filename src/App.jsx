@@ -19,16 +19,7 @@ function App() {
   }, [hasNewSW]);
 
   useEffect(() => {
-    if (
-      import.meta.env.PROD &&
-      'serviceWorker' in navigator &&
-      navigator.serviceWorker.controller
-    ) {
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        console.log('App: controllerchange event trigget');
-        setHasNewSW(true);
-      });
-    }
+    console.log('App: App.jsx is mounted');
   }, []);
 
   useEffect(() => {
