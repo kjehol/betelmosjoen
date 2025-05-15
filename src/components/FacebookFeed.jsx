@@ -27,10 +27,9 @@ export default function FacebookFeed() {
   }, []);
 
   return (
-    <div className="w-full flex justify-center" style={{ width: "100%" }}>
+    <div className="w-full flex justify-center" style={{ margin: "0 auto", width: "100%", maxWidth: 1200 }}>
       <div
         className="fb-page"
-        style={{ margin: "0 auto", width: "100%", maxWidth: 1200 }}
         data-href="https://www.facebook.com/pinsekirken"
         data-tabs="timeline"
         data-width="1200"
