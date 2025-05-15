@@ -152,7 +152,13 @@ export default function Velkommen() {
       />
 
       {/* Topptekst */}
-      <h1 className="text-3xl font-bold mb-6 text-center">Betel-appen</h1>
+      <div className="mb-6 w-full h-32 sm:h-40 md:h-48 max-h-48 overflow-hidden">
+        <img
+          src="images/betel-app-header-2.png" // Bilde-fil
+          alt="Betel-appen"
+          className="w-full h-full object-cover"
+        />
+      </div>
 
       {/* Dagens bibelvers */}
       {dagensVers && (
@@ -305,7 +311,7 @@ export default function Velkommen() {
       <FacebookFeed />
 
       {/* Nettside */}
-      <div className="mb-10 text-center">
+      <div className="mb-10 mt-12 p-6 bg-gray-50 rounded shadow-sm text-center">
         <p className="mb-4 text-gray-700">Nettsiden vår har mye mer info og ressurser</p>
         <a
           href="https://www.betelmosjoen.no"
