@@ -9,6 +9,27 @@ import Kalender from './components/Kalender';
 function App() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showIosInstall, setShowIosInstall] = useState(false);
+  const [hasNewSW, setHasNewSW] = useState(false);
+
+  useEffect(() => {
+    if (hasNewSW) {
+      console.log('App: Reloader siden pga. ny service worker');
+      window.location.reload();
+    }
+  }, [hasNewSW]);
+
+  useEffect(() => {
+    if (
+      import.meta.env.PROD &&
+      'serviceWorker' in navigator &&
+      navigator.serviceWorker.controller
+    ) {
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        console.log('App: controllerchange event trigget');
+        setHasNewSW(true);
+      });
+    }
+  }, []);
 
   useEffect(() => {
     // Capture Chrome/Android install prompt

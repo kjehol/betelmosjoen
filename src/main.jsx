@@ -21,7 +21,6 @@ root.render(
 );
 
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-  let refreshing = false;
   const updateSW = registerSW({
     registerType: 'autoUpdate',
     onOfflineReady() {
@@ -33,20 +32,6 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
     }
   });
 
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (refreshing) return;
-    // Ikke reload hvis det ikke finnes en aktiv SW
-    if (!navigator.serviceWorker.controller) {
-      console.log('Ingen aktiv service worker, hopper over reload');
-      return;
-    }
-    refreshing = true;
-    // Sjekk at vi ikke allerede har reloaded
-    if (window.__swReloaded) {
-      console.log('Allerede reloadet, stopper loop');
-      return;
-    }
-    window.__swReloaded = true;
-    window.location.reload();
-  }, { once: true });
+  // Fjern controllerchange-lytteren helt
+  // navigator.serviceWorker.addEventListener('controllerchange', () => { ... });
 }
