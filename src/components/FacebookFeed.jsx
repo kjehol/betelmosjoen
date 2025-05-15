@@ -3,26 +3,36 @@ import { useEffect } from "react";
 export default function FacebookFeed() {
   useEffect(() => {
     // Last inn Facebook SDK hvis det ikke allerede er der
+    function parseFB() {
+      if (window.FB && window.FB.XFBML) {
+        window.FB.XFBML.parse();
+      }
+    }
     if (!window.FB) {
       const script = document.createElement("script");
-      script.src = "https://connect.facebook.net/no_NB/sdk.js#xfbml=1&version=v22.0";
+      script.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v22.0";
       script.async = true;
       script.defer = true;
       script.crossOrigin = "anonymous";
+      script.onload = () => parseFB();
       document.body.appendChild(script);
     } else {
-      // Allerede lastet, parse elementer igjen
-      window.FB.XFBML.parse();
+      parseFB();
     }
+    // Rerender plugin ved resize
+    window.addEventListener("resize", parseFB);
+    return () => {
+      window.removeEventListener("resize", parseFB);
+    };
   }, []);
 
   return (
-    <div className="w-full flex justify-center">
+    <div className="w-full flex justify-center" style={{maxWidth: 1200, width: "100%"}}>
       <div
-        className="fb-page"
+        className="fb-page w-full"
         data-href="https://www.facebook.com/pinsekirken"
         data-tabs="timeline"
-        data-width="100%"
+        data-width="1200"
         data-height=""
         data-small-header="true"
         data-adapt-container-width="true"
