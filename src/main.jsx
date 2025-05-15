@@ -13,6 +13,3 @@ root.render(
     <App />
   </React.StrictMode>
 );
-
-// Fjern service worker-registrering fra main.jsx
-// if (import.meta.env.PROD && 'serviceWorker' in navigator) { ... }
