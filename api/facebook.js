@@ -3,6 +3,7 @@ export default async function handler(req, res) {
   const pageId = process.env.FACEBOOK_PAGE_ID;
 
   if (!accessToken || !pageId) {
+    console.error(`Missing FACEBOOK_ACCESS_TOKEN or FACEBOOK_PAGE_ID (Page ID: ${pageId})`);
     return res.status(500).json({ error: 'Missing FACEBOOK_ACCESS_TOKEN or FACEBOOK_PAGE_ID' });
   }
 

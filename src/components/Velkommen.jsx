@@ -146,6 +146,9 @@ export default function Velkommen() {
         const data = response.data;
         if (data && data.length > 0) {
           setFacebookPost(data[0]);
+          console.log('Facebook post data:', data[0]); // <-- legg til denne
+        } else {
+          console.warn('No Facebook posts found');
         }
       } catch (error) {
         console.error('Failed to fetch Facebook post:', error);
