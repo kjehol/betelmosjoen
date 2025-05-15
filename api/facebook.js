@@ -8,13 +8,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    const url = `https://graph.facebook.com/v18.0/${pageId}/posts?access_token=${accessToken}&fields=message,created_time,permalink_url,full_picture&limit=1`;
+    const url = `https://graph.facebook.com/v22.0/${pageId}/posts?access_token=${accessToken}&fields=message,created_time,permalink_url,full_picture&limit=1`;
     const response = await fetch(url);
     const data = await response.json();
 
     if (!response.ok) {
       console.error('Facebook API error:', data);
-      console.error('Facebook API error details:', data.error);
+      console.error('Facebook API error details:', JSON.stringify(data.error));
+      console.error('Facebook API status:', response.status);
+      console.error('Facebook API headers:', response.headers);
       return res.status(response.status).json({ error: data });
     }
 
@@ -28,6 +30,7 @@ export default async function handler(req, res) {
     return res.status(200).json(posts);
   } catch (error) {
     console.error('Error fetching Facebook posts:', error);
+    console.error('Error details:', error);
     return res.status(500).json({ error: 'Failed to fetch Facebook posts' });
   }
 }
