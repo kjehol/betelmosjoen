@@ -156,7 +156,7 @@ export default function Velkommen() {
         <img
           src="/images/logo.png" // Bilde-fil
           alt="Betel-appen"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
         />
       </div>
 
