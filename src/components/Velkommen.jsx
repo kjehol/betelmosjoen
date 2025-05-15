@@ -6,6 +6,7 @@ import ShortsModal from "./ShortsModal";
 import { Link } from "react-router-dom";
 import Layout from "./Layout";
 import SubscribeInstructionsModal from "./SubscribeInstructionsModal";
+import FacebookFeed from "./FacebookFeed";
 
 const bibelvers = [
   { vers: "Salme 46:2", tekst: "Gud er vår tilflukt og styrke, en hjelp i nød og alltid nær" },
@@ -300,6 +301,8 @@ export default function Velkommen() {
         </div>
       )}
 
+      {/* Facebook-feed */}
+      <FacebookFeed />
 
       {/* Nettside */}
       <div className="mb-10 text-center">
