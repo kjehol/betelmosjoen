@@ -21,21 +21,25 @@ root.render(
 );
 
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  let refreshing = false;
   const updateSW = registerSW({
     registerType: 'autoUpdate',
     onOfflineReady() {
       console.log('🔌 Appen er klar for offline bruk');
     },
     onNeedRefresh() {
-      updateSW(); // Aktiver service worker stille for push-støtte uten reload
+      // Ikke kall updateSW() direkte her, vis evt. en prompt til bruker
+      // updateSW(); // <-- fjern denne for å unngå loop
+      // Evt. vis en knapp til bruker for å oppdatere
+      console.log('Ny versjon tilgjengelig, last inn på nytt for å oppdatere.');
     }
   });
-  let refreshing = false;
+
+  // Lytt kun én gang på controllerchange
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (refreshing) return;
     refreshing = true;
-    setTimeout(() => {
-      window.location.reload();
-    }, 5000);
-  }, { once: true });
+    // Reload kun hvis det faktisk er en ny SW
+    window.location.reload();
+  });
 }

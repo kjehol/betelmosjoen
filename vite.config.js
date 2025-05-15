@@ -7,11 +7,10 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      strategies: "injectManifest",
-      injectManifest : {
-        swSrc: "src/custom-sw.js",
-        swDest: "service-worker.js",
-      },
+      strategies: "generateSW",
+      injectRegister: null, // main.jsx håndterer registrering
+      filename: "service-worker.js", // <-- Tving riktig filnavn for iOS
+      workbox: undefined, // <-- Legg til denne linjen for å unngå sw.js build
       registerType: "autoUpdate",
       devOptions: {
         enabled: false
