@@ -113,8 +113,15 @@ export default function Podcast() {
 
             {/* Beskrivelse */}
             <blockquote className="border-l-4 border-blue-500 pl-4 italic text-sm text-gray-700 mt-2">
-              {ep.description.replace(/(<([^>]+)>)/gi, "").length > 200 ? ep.description.replace(/(<([^>]+)>)/gi, "").substring(0, 200) + "..." : ep.description.replace(/(<([^>]+)>)/gi, "")}
+              {ep.description.replace(/(<([^>]+)>)/gi, "").length > 200
+                ? ep.description.replace(/(<([^>]+)>)/gi, "").substring(0, 200) + "..."
+                : ep.description.replace(/(<([^>]+)>)/gi, "")}
             </blockquote>
+
+            {/* Debug: Vis link */}
+            <div className="text-xs text-gray-400 break-all mb-2">
+              {ep.episodeLink ? `Link: ${ep.episodeLink}` : "Ingen link funnet"}
+            </div>
 
             {/* Avspiller */}
             <audio controls className="w-full mt-2">
@@ -131,11 +138,16 @@ export default function Podcast() {
             </button>
             <button
               onClick={() => {
-                navigator.share({
-                  title: ep.title,
-                  text: ep.episodeLink ? `${ep.title} - ${ep.episodeLink}` : ep.title,
-                  url: ep.episodeLink,
-                });
+                console.log("Deling:", ep.episodeLink);
+                if (ep.episodeLink && ep.episodeLink.startsWith("http")) {
+                  navigator.share({
+                    title: ep.title,
+                    text: `${ep.title} - ${ep.episodeLink}`,
+                    url: ep.episodeLink,
+                  });
+                } else {
+                  alert("Ingen gyldig episode-link funnet for deling.");
+                }
               }}
               className="mt-3 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm"
             >

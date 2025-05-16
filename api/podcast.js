@@ -44,13 +44,21 @@ export default async function handler(req, res) {
       description = item.description["#cdata-section"];
     }
 
+    // Håndter at item.link kan være array eller streng
+    let episodeLink = "";
+    if (Array.isArray(item.link)) {
+      episodeLink = item.link.find(l => typeof l === "string" && l.startsWith("http")) || "";
+    } else if (typeof item.link === "string") {
+      episodeLink = item.link;
+    }
+
     const episode = {
       title: item.title || "",
       pubDate: item.pubDate || "",
       audioUrl: item.enclosure?.["@_url"] || "",
       description: description,
       duration,
-      episodeLink: item?.link || "",
+      episodeLink,
     };
 
     // 5) Cache som JSON-streng i 1 time
