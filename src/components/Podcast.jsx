@@ -138,7 +138,7 @@ export default function Podcast() {
             </button>
             <button
               onClick={() => {
-                console.log("Deling:", ep.episodeLink);
+                console.log("EPISODE-OBJ:", ep);
                 if (ep.episodeLink && ep.episodeLink.startsWith("http")) {
                   navigator.share({
                     title: ep.title,
