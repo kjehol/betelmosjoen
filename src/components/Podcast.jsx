@@ -133,8 +133,8 @@ export default function Podcast() {
               onClick={() => {
                 navigator.share({
                   title: ep.title,
-                  text: `${ep.title} - ${ep.episodeLink}`,
-                  url: ep.episodeLink,
+                  text: episodeLink ? `${ep.title} - ${episodeLink}` : ep.title,
+                  url: episodeLink,
                 });
               }}
               className="mt-3 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm"
