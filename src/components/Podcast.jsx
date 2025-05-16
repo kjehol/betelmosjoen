@@ -118,11 +118,6 @@ export default function Podcast() {
                 : ep.description.replace(/(<([^>]+)>)/gi, "")}
             </blockquote>
 
-            {/* Debug: Vis link */}
-            <div className="text-xs text-gray-400 break-all mb-2">
-              {ep.episodeLink ? `Link: ${ep.episodeLink}` : "Ingen link funnet"}
-            </div>
-
             {/* Avspiller */}
             <audio controls className="w-full mt-2">
               <source src={ep.audioUrl} type="audio/mpeg" />

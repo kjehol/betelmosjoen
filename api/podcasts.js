@@ -11,8 +11,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Tøm cache for å tvinge ny henting
-    await redis.del("podcasts-all");
     // 1) Prøv cache
     const cached = await redis.get("podcasts-all");
     if (cached) {
