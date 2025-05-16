@@ -8,10 +8,12 @@ export default function PodcastModal({ episode, onClose }) {
   }, [episode]);
 
   const handleShare = () => {
-    const url = episode.link; // Use the episode link directly from Podbean
-    const shareText = episode.title; // Use the episode title as the share text
+    const url = episode?.link; // Use the episode link directly from Podbean
+    const shareText = episode?.title; // Use the episode title as the share text
 
     if (navigator.share) {
+      console.log("Sharing URL:", url);
+      console.log("Sharing text:", shareText);
       navigator
         .share({
           title: shareText, // Set the title to the episode title
