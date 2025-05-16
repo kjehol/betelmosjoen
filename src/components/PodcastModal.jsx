@@ -32,7 +32,7 @@ export default function PodcastModal({ episode, onClose }) {
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
-        <div className="bg-white p-6 rounded-lg max-w-xl w-full shadow-lg relative">
+        <div className="bg-white p-6 rounded-lg max-w-xl w-full shadow-lg relative max-h-[90vh] overflow-y-auto">
           {/* Lukkeknapp */}
           <button
             onClick={onClose}
