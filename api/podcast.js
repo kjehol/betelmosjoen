@@ -43,7 +43,6 @@ export default async function handler(req, res) {
     if (item.description && item.description["#cdata-section"]) {
       description = item.description["#cdata-section"];
     }
-    description = description.replace(/(<([^>]+)>)/gi, "");
 
     const episode = {
       title: item.title || "",

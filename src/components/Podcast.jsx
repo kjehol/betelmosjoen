@@ -113,7 +113,7 @@ export default function Podcast() {
 
             {/* Beskrivelse */}
             <blockquote className="border-l-4 border-blue-500 pl-4 italic text-sm text-gray-700 mt-2">
-              {ep.description.length > 200 ? ep.description.substring(0, 200) + "..." : ep.description}
+              {ep.description.replace(/(<([^>]+)>)/gi, "").length > 200 ? ep.description.replace(/(<([^>]+)>)/gi, "").substring(0, 200) + "..." : ep.description.replace(/(<([^>]+)>)/gi, "")}
             </blockquote>
 
             {/* Avspiller */}
