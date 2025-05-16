@@ -42,13 +42,13 @@ export default function Podcast() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-2">Pinsekirken Betel Podcast</h1>
-      <p className="text-sm text-gray-600 mb-6">
+      <h1 className="text-3xl font-bold mb-6 text-center">Pinsekirken Betel Podcast</h1>
+      <p className="text-m text-gray-600 mb-6 text-center">
         Her kan du høre forkynnelse og undervisning fra Gudstjenester & Samlinger.
       </p>
 
       {/* Lenker til tjenester */}
-      <div className="flex flex-wrap gap-1 mb-4">
+      <div className="flex flex-wrap gap-1 mb-4 justify-center">
         <a
           href="https://podcasts.apple.com/no/podcast/pinsekirken-betel-podcast/id1741524525?l=nb"
           target="_blank"

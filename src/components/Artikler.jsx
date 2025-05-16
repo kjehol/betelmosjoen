@@ -90,8 +90,8 @@ export default function Artikler() {
 
   return (
     <Layout>
-      <h1 className="text-2xl font-bold mb-2">Nyeste artikler</h1>
-      <p className="text-sm text-gray-600 mb-4">
+      <h1 className="text-3xl font-bold mb-2 text-center">Nyeste artikler</h1>
+      <p className="text-m text-gray-600 mb-4 text-center">
         Artikler, andakter og undervisning.
       </p>
 

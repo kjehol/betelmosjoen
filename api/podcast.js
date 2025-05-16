@@ -43,7 +43,7 @@ export default async function handler(req, res) {
       title: item.title || "",
       pubDate: item.pubDate || "",
       audioUrl: item.enclosure?.["@_url"] || "",
-      description: (item.description || "").replace(/(<([^>]+)>)/gi, ""),
+      description: item.description || "",
       duration,
     };
 
