@@ -48,7 +48,7 @@ export default function Podcast() {
       </p>
 
       {/* Lenker til tjenester */}
-      <div className="flex flex-wrap gap-1 mb-4 justify-center">
+      <div className="flex flex-wrap gap-1 mb-6 justify-center border-b pb-2">
         <a
           href="https://podcasts.apple.com/no/podcast/pinsekirken-betel-podcast/id1741524525?l=nb"
           target="_blank"
@@ -113,7 +113,7 @@ export default function Podcast() {
 
             {/* Beskrivelse */}
             <blockquote className="border-l-4 border-blue-500 pl-4 italic text-sm text-gray-700 mt-2">
-              {ep.description.substring(0, 200)}...
+              {ep.description.length > 200 ? ep.description.substring(0, 200) + "..." : ep.description}
             </blockquote>
 
             {/* Avspiller */}

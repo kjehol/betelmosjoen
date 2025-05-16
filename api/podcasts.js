@@ -43,11 +43,17 @@ export default async function handler(req, res) {
           durParts[0] * 60 + durParts[1] + durParts[2] / 60
         )} min`;
 
+      let description = item.description;
+      if (item.description && item.description["#cdata-section"]) {
+        description = item.description["#cdata-section"];
+      }
+      description = description.replace(/(<([^>]+)>)/gi, "");
+
       return {
         title: item.title || "",
         pubDate: item.pubDate || "",
         audioUrl: item.enclosure?.["@_url"] || "",
-        description: item.description || "",
+        description: description,
         duration,
       };
     });

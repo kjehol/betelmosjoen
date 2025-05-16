@@ -39,11 +39,17 @@ export default async function handler(req, res) {
     else if (parts.length === 2) duration = `${Math.round(parts[0] + parts[1] / 60)} min`;
     else duration = `${Math.round(parts[0] * 60 + parts[1] + parts[2] / 60)} min`;
 
+    let description = item.description;
+    if (item.description && item.description["#cdata-section"]) {
+      description = item.description["#cdata-section"];
+    }
+    description = description.replace(/(<([^>]+)>)/gi, "");
+
     const episode = {
       title: item.title || "",
       pubDate: item.pubDate || "",
       audioUrl: item.enclosure?.["@_url"] || "",
-      description: item.description || "",
+      description: description,
       duration,
     };
 
