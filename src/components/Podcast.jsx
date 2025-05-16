@@ -125,9 +125,20 @@ export default function Podcast() {
             {/* Full visning */}
             <button
               onClick={() => setSelected(ep)}
-              className="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm"
+              className="mt-3 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm mr-2"
             >
-              Vis mer info
+              Mer info
+            </button>
+            <button
+              onClick={() => {
+                navigator.share({
+                  title: ep.title,
+                  url: ep.episodeLink,
+                });
+              }}
+              className="mt-3 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm"
+            >
+              Del
             </button>
           </div>
         ))

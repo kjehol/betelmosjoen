@@ -51,6 +51,7 @@ export default async function handler(req, res) {
       audioUrl: item.enclosure?.["@_url"] || "",
       description: description,
       duration,
+      episodeLink: item.link || "",
     };
 
     // 5) Cache som JSON-streng i 1 time
