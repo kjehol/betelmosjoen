@@ -4,13 +4,14 @@ export default function PodcastModal({ episode, onClose }) {
   const [copied, setCopied] = useState(false);
 
   const handleShare = () => {
-    const url = episode.link;
+    const url = episode.link; // Use the episode link directly from Podbean
+    const shareText = episode.title; // Use the episode title as the share text
 
     if (navigator.share) {
       navigator
         .share({
-          title: episode.title,
-          text: "Hør denne episoden fra Betel Mosjøen:",
+          title: shareText, // Set the title to the episode title
+          text: `Hør denne episoden fra Betel Mosjøen: ${shareText}`, // Set the text to the episode title
           url,
         })
         .catch((err) => console.error("Deling avbrutt eller feilet:", err));
@@ -25,7 +26,7 @@ export default function PodcastModal({ episode, onClose }) {
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
-        <div className="bg-white p-6 rounded-lg max-w-xl w-full shadow-lg relative max-h-[90vh] overflow-y-auto">
+        <div className="bg-white p-6 rounded-lg max-w-xl w-full shadow-lg relative">
           {/* Lukkeknapp */}
           <button
             onClick={onClose}
@@ -54,7 +55,7 @@ export default function PodcastModal({ episode, onClose }) {
           {/* Lenker og deling */}
           <div className="flex flex-wrap gap-2 mb-4">
             <a
-              href={episode.link}
+              href={episode.link.startsWith("https://") ? episode.link : `https://${episode.link}`}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm"
