@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function PodcastModal({ episode, onClose }) {
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    console.log("Episode data:", episode);
+  }, [episode]);
 
   const handleShare = () => {
     const url = episode.link; // Use the episode link directly from Podbean
