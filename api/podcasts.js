@@ -48,8 +48,7 @@ export default async function handler(req, res) {
         pubDate: item.pubDate || "",
         audioUrl: item.enclosure?.["@_url"] || "",
         description: (item.description || "")
-          .replace(/(<([^>]+)>)/gi, "")
-          .substring(0, 150),
+          .replace(/(<([^>]+)>)/gi, ""),
         duration,
       };
     });

@@ -42,11 +42,46 @@ export default function Podcast() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-2">Podcast</h1>
+      <h1 className="text-2xl font-bold mb-2">Pinsekirken Betel Podcast</h1>
       <p className="text-sm text-gray-600 mb-6">
-        Her kan du høre forkynnelse og undervisning fra Gudstjenester & Samlinger i
-        Pinsekirken Betel, Mosjøen.
+        Her kan du høre forkynnelse og undervisning fra Gudstjenester & Samlinger.
       </p>
+
+      {/* Lenker til tjenester */}
+      <div className="flex flex-wrap gap-1 mb-4">
+        <a
+          href="https://podcasts.apple.com/no/podcast/pinsekirken-betel-podcast/id1741524525?l=nb"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="h-8 w-16"
+        >
+          <img src="/images/logos/apple-podcast.png" alt="Apple Podcasts" className="object-contain h-full w-full" />
+        </a>
+        <a
+          href="https://youtube.com/playlist?list=PLVK1cH92NjJM9CRryVNuwcHwtoAuAwz8p&si=qDUcbhN2IstUjiIC"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="h-8 w-16"
+        >
+          <img src="/images/logos/youtube_logo.png" alt="YouTube" className="object-contain h-full w-full" />
+        </a>
+        <a
+          href="https://pinsekirkenbetel.podbean.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="h-8 w-16"
+        >
+          <img src="/images/logos/podbean-app.png" alt="Podbean" className="object-contain h-full w-full" />
+        </a>
+        <a
+          href="https://open.spotify.com/show/5nqOPnybWSz8btZJfsaure"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="h-8 w-16"
+        >
+          <img src="/images/logos/spotify.png" alt="Spotify" className="object-contain h-full w-full" />
+        </a>
+      </div>
 
       {loading ? (
         <p className="text-gray-500">Laster podcast…</p>
@@ -78,7 +113,7 @@ export default function Podcast() {
 
             {/* Beskrivelse */}
             <blockquote className="border-l-4 border-blue-500 pl-4 italic text-sm text-gray-700 mt-2">
-              {ep.description}...
+              {ep.description.substring(0, 200)}...
             </blockquote>
 
             {/* Avspiller */}

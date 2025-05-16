@@ -57,32 +57,6 @@ export default function PodcastModal({ episode, onClose }) {
             className="mb-4 text-sm prose max-w-none"
             dangerouslySetInnerHTML={{ __html: episode.description }}
           />
-
-          {/* Lenker og deling */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            <a
-              href={episode?.link?.startsWith("https://") ? episode.link : `https://${episode?.link}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm"
-            >
-              Åpne i Podbean
-            </a>
-            <a
-              href="https://podcasts.apple.com/no/podcast/pinsekirken-betel-podcast/id1741524525?l=nb"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-xl text-sm"
-            >
-              Åpne i Apple Podcasts
-            </a>
-            <button
-              onClick={handleShare}
-              className="bg-blue-100 hover:bg-blue-200 text-blue-800 px-4 py-2 rounded-xl text-sm"
-            >
-              {navigator.share ? "Del episode" : copied ? "Lenke kopiert ✅" : "Kopier lenke"}
-            </button>
-          </div>
         </div>
       </div>
 
