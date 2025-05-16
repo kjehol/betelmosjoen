@@ -59,7 +59,7 @@ export default function PodcastModal({ episode, onClose }) {
           {/* Lenker og deling */}
           <div className="flex flex-wrap gap-2 mb-4">
             <a
-              href={episode.link.startsWith("https://") ? episode.link : `https://${episode.link}`}
+              href={episode?.link?.startsWith("https://") ? episode.link : `https://${episode?.link}`}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm"
