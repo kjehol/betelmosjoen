@@ -255,7 +255,12 @@ export default function Velkommen() {
             )}
           </p>
           <blockquote className="border-l-4 border-blue-500 pl-4 italic text-sm text-gray-700 mb-3">
-            {podcast.description}
+            {
+              (() => {
+                const plain = podcast.description.replace(/(<([^>]+)>)/gi, "");
+                return plain.length > 200 ? plain.substring(0, 200) + "..." : plain;
+              })()
+            }
           </blockquote>
           <audio controls className="w-full">
             <source src={podcast.audioUrl} type="audio/mpeg" />
