@@ -152,11 +152,11 @@ export default function Velkommen() {
       />
 
       {/* Topptekst */}
-      <div className="w-full overflow-hidden mb-4">
+      <div className="w-full flex justify-center mb-4 px-4">
         <img
-          src="/images/logo.png" // Bilde-fil
+          src="/images/logo.png"
           alt="Betel-appen"
-          className="w-full h-full object-contain"
+          className="w-[80%] max-w-lg h-full object-contain"
         />
       </div>
 
@@ -256,10 +256,12 @@ export default function Velkommen() {
           </p>
           <blockquote className="border-l-4 border-blue-500 pl-4 italic text-sm text-gray-700 mb-3">
             {
-              (() => {
-                const plain = podcast.description.replace(/(<([^>]+)>)/gi, "");
-                return plain.length > 200 ? plain.substring(0, 200) + "..." : plain;
-              })()
+              podcast.description
+                ? (() => {
+                    const plain = podcast.description.replace(/(<([^>]+)>)/gi, "");
+                    return plain.length > 200 ? plain.substring(0, 200) + "..." : plain;
+                  })()
+                : ""
             }
           </blockquote>
           <audio controls className="w-full">
