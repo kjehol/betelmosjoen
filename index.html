@@ -55,11 +55,11 @@
               notifyButton: { enable: true }
             });
 
-            // Lagre de to siste meldingene lokalt
-            OneSignal.on("notificationDisplay", function(event) {
+            // Sett opp notifications event handler
+            await OneSignal.User.PushSubscription.addEventListener("change", (subscription) => {
               const entry = {
-                title: event.heading || "Melding",
-                body: event.content || "",
+                title: subscription?.notification?.title || "Melding",
+                body: subscription?.notification?.body || "",
                 time: Date.now()
               };
               let hist = JSON.parse(localStorage.getItem("notifHistory") || "[]");
@@ -69,7 +69,7 @@
             });
 
             // Vis slidedown-prompt første gang
-            OneSignal.showSlidedownPrompt();
+            await OneSignal.Slidedown.promptPush();
           } catch (error) {
             console.error("OneSignal initialisering feilet:", error);
           }
