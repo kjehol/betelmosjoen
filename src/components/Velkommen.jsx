@@ -5,7 +5,6 @@ import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 import ShortsModal from "./ShortsModal";
 import { Link } from "react-router-dom";
 import Layout from "./Layout";
-import SubscribeInstructionsModal from "./SubscribeInstructionsModal";
 import SubscriptionSettings from "./SubscriptionSettings";
 import FacebookFeed from "./FacebookFeed";
 
