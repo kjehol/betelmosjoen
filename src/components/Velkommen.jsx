@@ -31,6 +31,7 @@ export default function Velkommen() {
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [showInstr, setShowInstr] = useState(false);
+  const [showSubscriptionSettings, setShowSubscriptionSettings] = useState(false);
   
   // --- 1 Funksjon for å hente varsler fra API-et ---
   const loadNotifications = useCallback(() => {
@@ -151,6 +152,10 @@ export default function Velkommen() {
         onClose={() => setShowInstr(false)}
       />
 
+      {showSubscriptionSettings && (
+        <SubscriptionSettings onClose={() => setShowSubscriptionSettings(false)} />
+      )}
+
       {/* Topptekst */}
       <div className="w-full flex justify-center mb-4 px-4">
         <img
@@ -176,6 +181,9 @@ export default function Velkommen() {
             Abonner på varsler
           </button>
         </div>
+        <button onClick={() => setShowSubscriptionSettings(true)} className="text-blue-600 hover:underline text-sm">
+          Administrer abonnement
+        </button>
         {notifications.length > 0 ? (
           <ul className="space-y-4">
             {notifications.map((n, i) => (
