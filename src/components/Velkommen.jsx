@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 import Layout from "./Layout";
 import SubscribeInstructionsModal from "./SubscribeInstructionsModal";
 import FacebookFeed from "./FacebookFeed";
-import SubscriptionSettings from "./SubscriptionSettings";
 
 const bibelvers = [
   { vers: "Salme 46:2", tekst: "Gud er vår tilflukt og styrke, en hjelp i nød og alltid nær" },
@@ -32,8 +31,6 @@ export default function Velkommen() {
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [showInstr, setShowInstr] = useState(false);
-  const [showSubscriptionSettings, setShowSubscriptionSettings] = useState(false);
-  const [isIos, setIsIos] = useState(false);
   
   // --- 1 Funksjon for å hente varsler fra API-et ---
   const loadNotifications = useCallback(() => {
@@ -145,27 +142,14 @@ export default function Velkommen() {
   useEffect(() => {
     console.log('Velkommen: Velkommen.jsx is mounted');
   }, []);
-
-  useEffect(() => {
-    const ua = window.navigator.userAgent.toLowerCase();
-    const iOS = /iphone|ipad|ipod/.test(ua);
-    setIsIos(iOS);
-  }, []);
   
   return (
     <Layout>
-      {/* Modal for instruksjoner (iOS) */}
-      {isIos && (
-        <SubscribeInstructionsModal
-          show={showInstr}
-          onClose={() => setShowInstr(false)}
-        />
-      )}
-
-      {/* Abonnementsinnstillinger (Andre enheter) */}
-      {!isIos && showSubscriptionSettings && (
-        <SubscriptionSettings onClose={() => setShowSubscriptionSettings(false)} />
-      )}
+      {/* Modal for instruksjoner */}
+      <SubscribeInstructionsModal
+        show={showInstr}
+        onClose={() => setShowInstr(false)}
+      />
 
       {/* Topptekst */}
       <div className="w-full flex justify-center mb-4 px-4">
@@ -192,14 +176,6 @@ export default function Velkommen() {
             Abonner på varsler
           </button>
         </div>
-        {!isIos && (
-          <button
-            onClick={() => setShowSubscriptionSettings(true)}
-            className="text-blue-600 hover:underline text-sm"
-          >
-            Administrer abonnement
-          </button>
-        )}
         {notifications.length > 0 ? (
           <ul className="space-y-4">
             {notifications.map((n, i) => (
