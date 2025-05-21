@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import Layout from "./Layout";
 import SubscribeInstructionsModal from "./SubscribeInstructionsModal";
 import FacebookFeed from "./FacebookFeed";
+import SubscriptionSettings from "./SubscriptionSettings";
 
 const bibelvers = [
   { vers: "Salme 46:2", tekst: "Gud er vår tilflukt og styrke, en hjelp i nød og alltid nær" },
@@ -147,10 +148,10 @@ export default function Velkommen() {
   return (
     <Layout>
       {/* Modal for instruksjoner */}
-      <SubscribeInstructionsModal
+      {/* <SubscribeInstructionsModal
         show={showInstr}
         onClose={() => setShowInstr(false)}
-      />
+      /> */}
 
       {showSubscriptionSettings && (
         <SubscriptionSettings onClose={() => setShowSubscriptionSettings(false)} />
