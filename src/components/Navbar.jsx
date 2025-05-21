@@ -9,6 +9,7 @@ export default function Navbar() {
     { to: "/artikler", label: "Artikler", icon: "📖" },
     { to: "/podcast", label: "Podcast", icon: "🎧" },
     { to: "/kalender", label: "Kalender", icon: "📅" },
+    { to: "/gi", label: "Gi", icon: "💒" },
   ];
 
   return (

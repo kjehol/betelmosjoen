@@ -5,6 +5,7 @@ import Velkommen from './components/Velkommen';
 import Artikler from './components/Artikler';
 import Podcast from './components/Podcast';
 import Kalender from './components/Kalender';
+import Gi from './components/Gi';
 
 function App() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -85,6 +86,7 @@ function App() {
             <Route path="/artikler" element={<Artikler />} />
             <Route path="/podcast" element={<Podcast />} />
             <Route path="/kalender" element={<Kalender />} />
+            <Route path="/gi" element={<Gi />} />
           </Routes>
         </div>
       </BrowserRouter>

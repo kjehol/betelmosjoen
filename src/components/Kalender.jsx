@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Layout from "./Layout";
 
 export default function Kalender() {
-  const [visning, setVisning] = useState("month");
+  const [visning, setVisning] = useState("list");
   const [laster, setLaster] = useState(true);
 
   useEffect(() => {
