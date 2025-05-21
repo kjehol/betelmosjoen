@@ -19,12 +19,6 @@ function App() {
   }, [hasNewSW]);
 
   useEffect(() => {
-    // Initialize OneSignal
-    if (window.OneSignal) {
-      window.OneSignal.initialize("91a37b72-ff1d-466b-a530-067784114675");
-    } else {
-      console.warn("OneSignal SDK not found.");
-    }
     console.log('App: App.jsx is mounted');
   }, []);
 
