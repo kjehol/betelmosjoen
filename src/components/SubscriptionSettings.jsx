@@ -7,10 +7,17 @@ const SubscriptionSettings = ({ onClose }) => {
   useEffect(() => {
     // Sjekk om OneSignal er initialisert
     if (window.OneSignal) {
-      window.OneSignal.isPushNotificationsEnabled(isEnabled => {
-        setSubscribed(isEnabled);
-        setLoading(false);
-      });
+      const checkSubscription = async () => {
+        try {
+          const isPushEnabled = await window.OneSignal.User.PushSubscription.optedIn;
+          setSubscribed(isPushEnabled);
+        } catch (error) {
+          console.warn("Kunne ikke sjekke push-status:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      checkSubscription();
     } else {
       console.warn("OneSignal SDK ikke initialisert.");
       setLoading(false);
@@ -19,18 +26,22 @@ const SubscriptionSettings = ({ onClose }) => {
 
   const handleSubscriptionChange = async () => {
     if (window.OneSignal) {
-      setLoading(true);
-      if (subscribed) {
-        // Si opp abonnementet
-        window.OneSignal.setSubscription(false);
-        setSubscribed(false);
-      } else {
-        // Abonner
-        window.OneSignal.registerForPushNotifications();
-        window.OneSignal.setSubscription(true);
-        setSubscribed(true);
+      try {
+        setLoading(true);
+        if (subscribed) {
+          // Si opp abonnementet
+          await window.OneSignal.User.PushSubscription.optOut();
+          setSubscribed(false);
+        } else {
+          // Abonner
+          await window.OneSignal.User.PushSubscription.optIn();
+          setSubscribed(true);
+        }
+      } catch (error) {
+        console.error("Kunne ikke endre push-status:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
   };
 

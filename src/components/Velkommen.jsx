@@ -6,6 +6,7 @@ import ShortsModal from "./ShortsModal";
 import { Link } from "react-router-dom";
 import Layout from "./Layout";
 import SubscribeInstructionsModal from "./SubscribeInstructionsModal";
+import SubscriptionSettings from "./SubscriptionSettings";
 import FacebookFeed from "./FacebookFeed";
 
 const bibelvers = [
@@ -52,9 +53,11 @@ export default function Velkommen() {
       .catch(err => console.error("Kunne ikke hente varsler:", err));
   }, []);
 
-  // Når man trykker på Abonner-knappen: vis instruksjons-modal
+  // Når man trykker på Abonner-knappen: vis innstillinger-modal
+  const [showSettings, setShowSettings] = useState(false);
+  
   function subscribePush() {
-      setShowInstr(true);
+      setShowSettings(true);
   }
 
   // Velg tilfeldig bibelvers
@@ -145,11 +148,10 @@ export default function Velkommen() {
   
   return (
     <Layout>
-      {/* Modal for instruksjoner */}
-      <SubscribeInstructionsModal
-        show={showInstr}
-        onClose={() => setShowInstr(false)}
-      />
+      {/* Modal for varselinnstillinger */}
+      {showSettings && (
+        <SubscriptionSettings onClose={() => setShowSettings(false)} />
+      )}
 
       {/* Topptekst */}
       <div className="w-full flex justify-center mb-4 px-4">
