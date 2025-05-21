@@ -55,18 +55,20 @@
               notifyButton: { enable: true }
             });
 
-            // Lagre de to siste meldingene lokalt
-            OneSignal.on("notificationDisplay", function(event) {
-              const entry = {
-                title: event.heading || "Melding",
-                body: event.content || "",
-                time: Date.now()
-              };
-              let hist = JSON.parse(localStorage.getItem("notifHistory") || "[]");
-              hist.unshift(entry);
-              if (hist.length > 2) hist = hist.slice(0, 2);
-              localStorage.setItem("notifHistory", JSON.stringify(hist));
-            });
+            // Lagre de to siste meldingene lokalt (OneSignal v5+)
+            if (OneSignal.Notifications && OneSignal.Notifications.addEventListener) {
+              OneSignal.Notifications.addEventListener("displayed", function(event) {
+                const entry = {
+                  title: event.heading || "Melding",
+                  body: event.content || "",
+                  time: Date.now()
+                };
+                let hist = JSON.parse(localStorage.getItem("notifHistory") || "[]");
+                hist.unshift(entry);
+                if (hist.length > 2) hist = hist.slice(0, 2);
+                localStorage.setItem("notifHistory", JSON.stringify(hist));
+              });
+            }
 
             // Vis slidedown-prompt første gang
             OneSignal.showSlidedownPrompt();

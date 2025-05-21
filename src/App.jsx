@@ -19,6 +19,12 @@ function App() {
   }, [hasNewSW]);
 
   useEffect(() => {
+    // Initialize OneSignal
+    if (window.OneSignal) {
+      window.OneSignal.initialize("YOUR_ONESIGNAL_APP_ID"); // Replace with your actual OneSignal App ID
+    } else {
+      console.warn("OneSignal SDK not found.");
+    }
     console.log('App: App.jsx is mounted');
   }, []);
 
