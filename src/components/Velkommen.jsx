@@ -175,7 +175,7 @@ export default function Velkommen() {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">🛎️ Siste nytt</h2>
           <button onClick={subscribePush} className="text-blue-600 hover:underline text-sm">
-            Abonner på varsler
+            Administrer varsler
           </button>
         </div>
         {notifications.length > 0 ? (

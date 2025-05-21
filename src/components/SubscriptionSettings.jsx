@@ -47,7 +47,7 @@ const SubscriptionSettings = ({ onClose }) => {
 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
-      <div className="bg-white p-8 rounded shadow-lg">
+      <div className="bg-white p-8 rounded-lg shadow-lg max-w-md mx-4">
         <h2 className="text-2xl font-semibold mb-4">Varselinnstillinger</h2>
         {loading ? (
           <p>Laster inn...</p>
@@ -65,7 +65,7 @@ const SubscriptionSettings = ({ onClose }) => {
             </button>
           </>
         )}
-        <button onClick={onClose} className="mt-4 text-blue-600 hover:underline block">
+        <button onClick={onClose} className="mt-6 text-blue-600 hover:underline block">
           Lukk
         </button>
       </div>
