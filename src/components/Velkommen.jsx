@@ -31,6 +31,7 @@ export default function Velkommen() {
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [showInstr, setShowInstr] = useState(false);
+  const [lastArticle, setLastArticle] = useState(null);
   
   // --- 1 Funksjon for å hente varsler fra API-et ---
   const loadNotifications = useCallback(() => {
@@ -65,9 +66,19 @@ export default function Velkommen() {
       setDagensVers(bibelvers[idx]);
     }, []);
   
-  // 2 Initial henting av varsler
+  // 2 Initial henting av varsler og siste artikkel
   useEffect(() => {
     loadNotifications();
+    
+    // Hent siste artikkel
+    axios.get("/api/articles")
+      .then(res => {
+        const articles = Array.isArray(res.data) ? res.data : [];
+        if (articles.length > 0) {
+          setLastArticle(articles[0]);
+        }
+      })
+      .catch(err => console.error("Kunne ikke hente siste artikkel:", err));
   }, [loadNotifications]);
 
   // Hent kalenderhendelser med robust håndtering
@@ -177,18 +188,47 @@ export default function Velkommen() {
             Administrer varsler
           </button>
         </div>
-        {notifications.length > 0 ? (
-          <ul className="space-y-4">
-            {notifications.map((n, i) => (
-              <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
-                <h3 className="font-bold text-lg">{n.title}</h3>
-                <p className="text-gray-700 mt-1">{n.body}</p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500 italic">Ingen nye varsler.</p>
-        )}
+        <div className="space-y-4">
+          {notifications.length > 0 && (
+            <ul className="space-y-4">
+              {notifications.map((n, i) => (
+                <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
+                  <h3 className="font-bold text-lg">{n.title}</h3>
+                  <p className="text-gray-700 mt-1">{n.body}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+          
+          {lastArticle && (
+            <Link to="/artikler" className="block p-4 bg-gray-50 rounded shadow-sm hover:bg-gray-100 transition-colors">
+              <div className="flex items-start gap-4">
+                {lastArticle.image && (
+                  <img
+                    src={lastArticle.image}
+                    alt=""
+                    className="w-20 h-20 object-cover rounded"
+                  />
+                )}
+                <div>
+                  <h3 className="font-bold text-lg">{lastArticle.title}</h3>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {new Date(lastArticle.pubDate).toLocaleDateString("nb-NO", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric"
+                    })}
+                  </p>
+                  <p className="text-gray-700 mt-1 line-clamp-2">{lastArticle.contentSnippet}</p>
+                </div>
+              </div>
+            </Link>
+          )}
+          
+          {!notifications.length && !lastArticle && (
+            <p className="text-gray-500 italic">Ingen nye oppdateringer.</p>
+          )}
+        </div>
       </div>
 
       {/* Kommende uke */}
