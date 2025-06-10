@@ -41,7 +41,8 @@ export default async function handler(req, res) {
         return {
           title: n.headings?.en    || 'Melding',
           body:  n.contents?.en    || '',
-          time:  timestamp
+          time:  timestamp,
+          tags: n.tags || []  // Tags i responsen
         };
       })
       // Sorter så nyeste først (om det ikke allerede er sortert)
