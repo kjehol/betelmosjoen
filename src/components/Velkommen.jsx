@@ -42,13 +42,13 @@ export default function Velkommen() {
           return;
         }
         const list = res.data
-          .filter(n => n.tags && n.tags.includes('Info')) // Filter på Info tag
-          .sort((a, b) => {  // Sorter på tid, nyeste først
+          .filter(n => n.labels && n.labels.includes('Info')) // Filter på Info label
+          .sort((a, b) => {
             const timeA = typeof a.time === "number" ? a.time : new Date(a.time).getTime();
             const timeB = typeof b.time === "number" ? b.time : new Date(b.time).getTime();
             return timeB - timeA;
           })
-          .slice(0, 2)  // Begrens til 2 meldinger
+          .slice(0, 2)
           .map(n => ({
             title: n.title || "Melding",
             body: n.body || "",
