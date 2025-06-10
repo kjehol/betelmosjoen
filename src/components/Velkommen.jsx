@@ -41,13 +41,21 @@ export default function Velkommen() {
           setNotifications([]);
           return;
         }
-        const list = res.data.map(n => ({
-          title: n.title  || "Melding",
-          body:  n.body   || "",
-          time:   typeof n.time === "number"
-                    ? n.time
-                    : new Date(n.time).getTime()
-        }));
+        const list = res.data
+          .filter(n => n.tags && n.tags.includes('Info')) // Filter på Info tag
+          .sort((a, b) => {  // Sorter på tid, nyeste først
+            const timeA = typeof a.time === "number" ? a.time : new Date(a.time).getTime();
+            const timeB = typeof b.time === "number" ? b.time : new Date(b.time).getTime();
+            return timeB - timeA;
+          })
+          .slice(0, 2)  // Begrens til 2 meldinger
+          .map(n => ({
+            title: n.title || "Melding",
+            body: n.body || "",
+            time: typeof n.time === "number"
+              ? n.time
+              : new Date(n.time).getTime()
+          }));
         setNotifications(list);
       })
       .catch(err => console.error("Kunne ikke hente varsler:", err));
