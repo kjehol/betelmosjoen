@@ -190,7 +190,7 @@ export default function Velkommen() {
         </div>
         <div className="space-y-4">
           {notifications.length > 0 && (
-            <ul className="space-y-4">
+            <ul className="space-y-4 mb-4">
               {notifications.map((n, i) => (
                 <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
                   <h3 className="font-bold text-lg">{n.title}</h3>
@@ -200,6 +200,10 @@ export default function Velkommen() {
             </ul>
           )}
           
+          {notifications.length > 0 && lastArticle && (
+            <div className="border-t border-gray-200 w-1/3 mx-auto mb-4" />
+          )}
+
           {lastArticle && (
             <Link to="/artikler" className="block p-4 bg-gray-50 rounded shadow-sm hover:bg-gray-100 transition-colors">
               <div className="flex items-start gap-4">
