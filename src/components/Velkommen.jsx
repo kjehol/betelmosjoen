@@ -42,7 +42,7 @@ export default function Velkommen() {
           return;
         }
         const list = res.data
-          .slice(0, 2)
+          .slice(0, 1)
           .map(n => ({
             title: n.title || "Melding",
             body: n.body || "",
