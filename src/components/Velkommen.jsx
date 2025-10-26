@@ -195,19 +195,29 @@ export default function Velkommen() {
         <div className="space-y-4">
           {notifications.length > 0 && (
             <ul className="space-y-4 mb-4">
-              {notifications.map((n, i) => (
-                <li key={i} className="p-4 bg-gray-50 rounded shadow-sm">
-                  <h3 className="font-bold text-lg">{n.title}</h3>
-                  <p className="text-gray-700 mt-1">{n.body}</p>
-                </li>
-              ))}
+              <li className="p-4 bg-gray-50 rounded shadow-sm">
+                <h3 className="font-bold text-lg">{notifications[0].title}</h3>
+                <p className="text-gray-700 mt-1">{notifications[0].body}</p>
+                <p className="text-xs text-gray-500 mt-2">
+                  {new Date(notifications[0].time).toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "2-digit" })}
+                  {" kl "}
+                  {new Date(notifications[0].time).toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}
+                </p>
+                {notifications.length > 1 && (
+                  <button
+                    className="mt-2 text-blue-600 hover:underline text-xs"
+                    onClick={() => setPushModalOpen(true)}
+                  >
+                    Se flere meldinger
+                  </button>
+                )}
+              </li>
             </ul>
           )}
-          
+          <PushModal open={pushModalOpen} onClose={() => setPushModalOpen(false)} meldinger={notifications} />
           {notifications.length > 0 && lastArticle && (
             <div className="border-t border-gray-200 w-1/3 mx-auto mb-4" />
           )}
-
           {lastArticle && (
             <Link to="/artikler" className="block p-4 bg-gray-50 rounded shadow-sm hover:bg-gray-100 transition-colors">
               <div className="flex items-start gap-4">
@@ -232,7 +242,6 @@ export default function Velkommen() {
               </div>
             </Link>
           )}
-          
           {!notifications.length && !lastArticle && (
             <p className="text-gray-500 italic">Ingen nye oppdateringer.</p>
           )}
