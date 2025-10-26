@@ -37,6 +37,7 @@ export default async function handler(req, res) {
     const parser = new XMLParser({ ignoreAttributes: false });
     const parsed = parser.parse(xml);
     let items = parsed?.rss?.channel?.item || [];
+    console.log("RSS items:", items); // Debug: logg ut items
 
     // Sørg for at items er en array
     if (!Array.isArray(items)) items = [items];
