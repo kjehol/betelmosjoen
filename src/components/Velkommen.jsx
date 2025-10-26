@@ -119,7 +119,7 @@ export default function Velkommen() {
       .catch(err => console.error("Feil ved henting av podcast:", err));
   }, []);
 
-  // Hent
+  // Hent YouTube-shorts
   useEffect(() => {
     axios.get("/api/shorts")
       .then(res => setShortsList(res.data))
