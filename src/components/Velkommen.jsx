@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import Layout from "./Layout";
 import SubscriptionSettings from "./SubscriptionSettings";
 import FacebookFeed from "./FacebookFeed";
+import PushModal from "./PushModal";
 
 const bibelvers = [
   { vers: "Salme 46:2", tekst: "Gud er vår tilflukt og styrke, en hjelp i nød og alltid nær" },
@@ -30,6 +31,7 @@ export default function Velkommen() {
   const [shortsOpen, setShortsOpen] = useState(false);
   const [shortsList, setShortsList] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const [pushModalOpen, setPushModalOpen] = useState(false);
   const [showInstr, setShowInstr] = useState(false);
   const [lastArticle, setLastArticle] = useState(null);
   
@@ -42,7 +44,7 @@ export default function Velkommen() {
           return;
         }
         const list = res.data
-          .slice(0, 1)
+          .slice(0, 5)
           .map(n => ({
             title: n.title || "Melding",
             body: n.body || "",
