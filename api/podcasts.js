@@ -14,9 +14,17 @@ export default async function handler(req, res) {
     // 1) Prøv cache
     const cached = await redis.get("podcasts-all");
     if (cached) {
-      // Sjekk om cached er string eller array
-      const episodes = typeof cached === "string" ? JSON.parse(cached) : cached;
-      return res.status(200).json(episodes);
+      let episodes;
+      try {
+        episodes = typeof cached === "string" ? JSON.parse(cached) : cached;
+      } catch (err) {
+        console.error("Feil ved parsing av cached podcasts-all:", err);
+        episodes = [];
+      }
+      if (Array.isArray(episodes) && episodes.length > 0) {
+        return res.status(200).json(episodes);
+      }
+      // Hvis cache er tom eller feil, fortsett til å hente fra RSS
     }
 
     // 2) Hent RSS-feed direkte fra Podbean, med 5s timeout
