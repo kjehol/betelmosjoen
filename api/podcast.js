@@ -33,7 +33,7 @@ export default async function handler(req, res) {
     }
 
     // 4) Bygg episode-objekt
-    const parts = (item["itunes:duration"] || "").split(":").map(Number);
+    const parts = (item["itunes:duration"] || "").toString().split(":").map(Number);
     let duration = "";
     if (parts.length === 1) duration = `${Math.round(parts[0] / 60)} min`;
     else if (parts.length === 2) duration = `${Math.round(parts[0] + parts[1] / 60)} min`;

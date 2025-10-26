@@ -5,6 +5,21 @@ import { XMLParser } from "fast-xml-parser";
 
 const redis = Redis.fromEnv();
 
+// Hjelpefunksjon for å hente ut tekst fra RSS-felt
+function getText(val) {
+  if (!val) return "";
+  if (typeof val === "string") return val;
+  if (typeof val === "object") {
+    if (val["#text"]) return val["#text"];
+    if (val["#cdata-section"]) return val["#cdata-section"];
+    // Hvis det er et objekt med én nøkkel, returner verdien
+    const keys = Object.keys(val);
+    if (keys.length === 1) return getText(val[keys[0]]);
+    return JSON.stringify(val);
+  }
+  return String(val);
+}
+
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).end();
@@ -44,7 +59,7 @@ export default async function handler(req, res) {
 
     // 4) Transformer hver item til et enklere JS-objekt
     const episodes = items.map((item) => {
-      const durParts = (item["itunes:duration"] || "").split(":").map(Number);
+      const durParts = (item["itunes:duration"] || "").toString().split(":").map(Number);
       let duration = "";
       if (durParts.length === 1) duration = `${Math.round(durParts[0] / 60)} min`;
       else if (durParts.length === 2)
@@ -54,27 +69,63 @@ export default async function handler(req, res) {
           durParts[0] * 60 + durParts[1] + durParts[2] / 60
         )} min`;
 
-      let description = item.description;
-      if (item.description && item.description["#cdata-section"]) {
-        description = item.description["#cdata-section"];
+      // Robust beskrivelse
+      const description = getText(item.description);
+
+      // Robust guid
+      let guid = getText(item.guid);
+      if (!guid || guid === "{}" || guid === "[object Object]" || guid.trim() === "") {
+        // Fallback til episodeLink eller title
+        let fallback = "";
+        if (Array.isArray(item.link)) {
+          fallback = item.link.find(l => typeof l === "string" && l.startsWith("http")) || "";
+        } else if (typeof item.link === "string") {
+          fallback = item.link;
+        } else if (typeof item.link === "object") {
+          fallback = getText(item.link);
+        } else {
+          fallback = getText(item.title) || "";
+        }
+        guid = fallback;
+      }
+      if (typeof guid !== "string") {
+        guid = getText(guid) || JSON.stringify(guid);
+      }
+      guid = guid.trim();
+      if (!guid) {
+        guid = getText(item.title) || "";
       }
 
-      // Håndter at item.link kan være array eller streng
+      // Robust title
+      const title = getText(item.title);
+
+      // Robust pubDate
+      const pubDate = getText(item.pubDate);
+
+      // Robust episodeLink
       let episodeLink = "";
       if (Array.isArray(item.link)) {
-        // Finn første som ser ut som en gyldig http(s)-lenke
         episodeLink = item.link.find(l => typeof l === "string" && l.startsWith("http")) || "";
       } else if (typeof item.link === "string") {
         episodeLink = item.link;
+      } else if (typeof item.link === "object") {
+        episodeLink = getText(item.link);
+      }
+
+      // Robust håndtering av enclosure og url
+      let audioUrl = "";
+      if (item.enclosure && (item.enclosure["@_url"] || item.enclosure.url)) {
+        audioUrl = item.enclosure["@_url"] || item.enclosure.url;
       }
 
       return {
-        title: item.title || "",
-        pubDate: item.pubDate || "",
-        audioUrl: item.enclosure?.["@_url"] || "",
-        description: description,
+        title,
+        pubDate,
+        audioUrl,
+        description,
         duration,
         episodeLink,
+        guid,
       };
     });
 
@@ -82,7 +133,7 @@ export default async function handler(req, res) {
     await redis.set("podcasts-all", JSON.stringify(episodes), { ex: 3600 });
     return res.status(200).json(episodes);
   } catch (err) {
-    console.error("Podcasts-all API feilet:", err.message);
-    return res.status(500).json({ error: err.message });
+    console.error("Podcasts-all API feilet:", err); // Logg hele error-objektet
+    return res.status(500).json({ error: err.message || String(err) });
   }
 }
