@@ -14,7 +14,9 @@ export default async function handler(req, res) {
     // 1) Prøv cache
     const cached = await redis.get("podcasts-all");
     if (cached) {
-      return res.status(200).json(cached);
+      // Sjekk om cached er string eller array
+      const episodes = typeof cached === "string" ? JSON.parse(cached) : cached;
+      return res.status(200).json(episodes);
     }
 
     // 2) Hent RSS-feed direkte fra Podbean, med 5s timeout
@@ -68,7 +70,7 @@ export default async function handler(req, res) {
     });
 
     // 5) Cache i 1 time
-    await redis.set("podcasts-all", episodes, { ex: 3600 });
+    await redis.set("podcasts-all", JSON.stringify(episodes), { ex: 3600 });
     return res.status(200).json(episodes);
   } catch (err) {
     console.error("Podcasts-all API feilet:", err.message);
