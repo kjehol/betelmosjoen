@@ -119,7 +119,7 @@ export default function Velkommen() {
       .catch(err => console.error("Feil ved henting av podcast:", err));
   }, []);
 
-  // Hent YouTube-shorts
+  // Hent
   useEffect(() => {
     axios.get("/api/shorts")
       .then(res => setShortsList(res.data))
@@ -194,25 +194,29 @@ export default function Velkommen() {
         </div>
         <div className="space-y-4">
           {notifications.length > 0 && (
-            <ul className="space-y-4 mb-4">
-              <li className="p-4 bg-gray-50 rounded shadow-sm">
-                <h3 className="font-bold text-lg">{notifications[0].title}</h3>
+            <div className="mb-4">
+              <div className="p-4 bg-gray-50 rounded shadow-sm">
+                <div className="flex justify-between items-center">
+                  <h3 className="font-bold text-lg">{notifications[0].title}</h3>
+                  <span className="text-xs text-gray-500 ml-2 whitespace-nowrap">
+                    {new Date(notifications[0].time).toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "2-digit" })}
+                    {" kl "}
+                    {new Date(notifications[0].time).toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                </div>
                 <p className="text-gray-700 mt-1">{notifications[0].body}</p>
-                <p className="text-xs text-gray-500 mt-2">
-                  {new Date(notifications[0].time).toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "2-digit" })}
-                  {" kl "}
-                  {new Date(notifications[0].time).toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}
-                </p>
-                {notifications.length > 1 && (
+              </div>
+              {notifications.length > 1 && (
+                <div className="flex justify-center mt-2">
                   <button
-                    className="mt-2 text-blue-600 hover:underline text-xs"
+                    className="text-blue-600 hover:underline text-xs px-2 py-1"
                     onClick={() => setPushModalOpen(true)}
                   >
                     Se flere meldinger
                   </button>
-                )}
-              </li>
-            </ul>
+                </div>
+              )}
+            </div>
           )}
           <PushModal open={pushModalOpen} onClose={() => setPushModalOpen(false)} meldinger={notifications} />
           {notifications.length > 0 && lastArticle && (
