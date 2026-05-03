@@ -246,15 +246,17 @@ export default function Velkommen() {
               </div>
             </Link>
           )}
-          <Link
-            to="/arsmote"
+          <a
+            href="/arsmote/Arsmote_2026.html"
+            target="_blank"
+            rel="noopener noreferrer"
             className="block p-4 bg-blue-50 border border-blue-200 rounded shadow-sm hover:bg-blue-100 transition-colors"
           >
-            <h3 className="font-bold text-lg">📊 Årsrapport 2026</h3>
+            <h3 className="font-bold text-lg">📊 Økonomi-rapport til Årsmøtet 4. Mai 2026</h3>
             <p className="text-gray-700 mt-1 text-sm">
-              Økonomirapport fremlagt på årsmøtet 4. mai 2026
+              Trykk for å åpne rapporten
             </p>
-          </Link>
+          </a>
           {!notifications.length && !lastArticle && (
             <p className="text-gray-500 italic">Ingen nye oppdateringer.</p>
           )}
