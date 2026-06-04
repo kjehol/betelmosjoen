@@ -246,16 +246,7 @@ export default function Velkommen() {
               </div>
             </Link>
           )}
-          <Link
-            to="/arsmote"
-            className="block p-4 bg-blue-50 border border-blue-200 rounded shadow-sm hover:bg-blue-100 transition-colors"
-          >
-            <h3 className="font-bold text-lg">📊 Økonomi-rapport til Årsmøtet 5. Mai 2026</h3>
-            <p className="text-gray-700 mt-1 text-sm">
-              Trykk for å åpne rapporten
-            </p>
-          </Link>
-          {!notifications.length && !lastArticle && (
+{!notifications.length && !lastArticle && (
             <p className="text-gray-500 italic">Ingen nye oppdateringer.</p>
           )}
         </div>

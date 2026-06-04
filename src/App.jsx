@@ -6,7 +6,7 @@ import Artikler from './components/Artikler';
 import Podcast from './components/Podcast';
 import Kalender from './components/Kalender';
 import Gi from './components/Gi';
-import Arsmote from './components/Arsmote';
+import Okonomi from './components/Okonomi';
 
 function App() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -88,7 +88,7 @@ function App() {
             <Route path="/podcast" element={<Podcast />} />
             <Route path="/kalender" element={<Kalender />} />
             <Route path="/gi" element={<Gi />} />
-            <Route path="/arsmote" element={<Arsmote />} />
+            <Route path="/okonomi" element={<Okonomi />} />
           </Routes>
         </div>
       </BrowserRouter>

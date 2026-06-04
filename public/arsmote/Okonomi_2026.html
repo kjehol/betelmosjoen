@@ -6,6 +6,53 @@
 <title>Regnskapsdashboard – Pinsekirken Betel 2026</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js">
 
+
+// ── PAGE: REGNSKAP 2026 ──────────────────────────────────────────────────────────────────────────
+new Chart(document.getElementById('ch_reg_res'), {
+  type: 'bar',
+  data: {
+    labels: ['Jan','Feb','Mar','Apr','Mai'],
+    datasets: [{
+      label: 'Årsresultat',
+      data: [-101547,-56443,-37137,-51350,136045],
+      backgroundColor: [-101547,-56443,-37137,-51350,136045].map(v => v >= 0 ? '#1D9E75' : '#E24B4A'),
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: {display:false},
+      tooltip: {callbacks:{label:c=>'Resultat: '+(c.parsed.y<0?'\u2212':'')+fmt(c.parsed.y)+' kr'}}
+    },
+    scales: {
+      y: {ticks:{callback:v=>(v<0?'\u2212':'')+Math.round(Math.abs(v)/1000)+'k',font:{size:tickSz}}, grid:{color:'rgba(0,0,0,0.05)'}},
+      x: {ticks:{font:{size:tickSz}}}
+    }
+  }
+});
+
+new Chart(document.getElementById('ch_reg_inkost'), {
+  type: 'bar',
+  data: {
+    labels: ['Jan','Feb','Mar','Apr','Mai'],
+    datasets: [
+      {label:'Inntekter', data:[143458,119961,169906,126889,166212], backgroundColor:'#378ADD', borderRadius:4},
+      {label:'Kostnader', data:[245005,176404,207042,178238,30168], backgroundColor:'#E24B4A', borderRadius:4}
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: {display:false},
+      tooltip: {callbacks:{label:c=>c.dataset.label+': '+fmt(c.parsed.y)+' kr'}}
+    },
+    scales: {
+      y: {ticks:{callback:v=>Math.round(v/1000)+'k',font:{size:tickSz}}, grid:{color:'rgba(0,0,0,0.05)'}},
+      x: {ticks:{font:{size:tickSz}}}
+    }
+  }
+});
 </script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -141,17 +188,18 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
 <div class="topbar">
   <div>
     <h1>Pinsekirken Betel – Regnskapsoversikt</h1>
-    <div class="meta">Til bruk på årsmøtet 5. mai 2026 &nbsp;·&nbsp; Tall fra Tripletex per 30. april 2026</div>
+    <div class="meta">Regnskap t.o.m. 31. mai 2026 &nbsp;·&nbsp; Tall fra Tripletex</div>
   </div>
   <div style="font-size:14px;color:#AED3EA;text-align:right;">Org.nr. 971 491 345</div>
 </div>
 
 <div class="tabs">
   <div class="tab active" onclick="showPage('oversikt',this)">Oversikt</div>
-  <div class="tab" onclick="showPage('drift',this)">Drift &amp; Investering</div>
+  <div class="tab" onclick="showPage('regnskap2026',this)">Regnskap 2026</div>
   <div class="tab" onclick="showPage('givertjeneste',this)">Givertjeneste</div>
   <div class="tab" onclick="showPage('lonn',this)">Lønn</div>
   <div class="tab" onclick="showPage('budsjett',this)">Budsjett 2026</div>
+  <div class="tab" onclick="showPage('drift',this)">Drift &amp; Investering</div>
 </div>
 
 <!-- ══════════════════ PAGE 1: OVERSIKT ══════════════════ -->
@@ -174,20 +222,15 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
     <div class="kpi-sub gray">inkl. engangsavskrivning</div>
   </div>
   <div class="kpi">
-    <div class="kpi-label">Inntekter jan–apr 2026 *</div>
-    <div class="kpi-value red">600 805 kr</div>
-    <div class="kpi-sub red">▼ 17,9 % vs 2025 (jan–apr)</div>
+    <div class="kpi-label">Inntekter jan–mai 2026</div>
+    <div class="kpi-value red">726 426 kr</div>
+    <div class="kpi-sub red">▼ 16,0 % vs 2025 (jan–mai)</div>
   </div>
 </div>
 
-<div class="box box-warn">
-  <div class="bh">Hva skjedde i 2025?</div>
-  <div class="bt">Det offisielle underskuddet på −935 718 kr skyldes i stor grad ett engangsbeløp: 692 500 kr ble bokført som «konstatert tap på fordringer» – penger som sto som fordring mot Sandvik FHS etter gjeldssletteaksjonen. Uten denne posten ville underskuddet vært ca. −243 000 kr. Hoveddriften gikk tilnærmet i null før rentekostnader.</div>
-</div>
 <div class="box box-danger" style="margin-bottom:20px;">
   <div class="bh">Viktig</div>
-  <div class="bt">Inntektene i jan–apr 2026 er 130 698 kr lavere enn samme periode i 2025 (600 805 kr vs 731 503 kr) – en nedgang på 17,9 %. Kollekten alene er ned 19,4 %. Kurs- og arrangementsinntekter er ned 44 % (87 222 kr vs 155 634 kr). Kostnadene er derimot kun ned 2,3 %. Om trendene fortsetter vil årsresultatet havne vesentlig under budsjett.
-  <br><span style="font-size:13px;font-style:italic;margin-top:4px;display:block;">* To kurs 28.–29. april (40 592 kr) fakturert i mai er inkludert i 2026-tallene her siden kursene ble avholdt i april.</span></div>
+  <div class="bt">Inntektene i jan–mai 2026 er 138 678 kr lavere enn samme periode i 2025 (726 426 kr vs 865 104 kr) – en nedgang på 16,0 %. Kollekten alene er ned 17,4 % (475 568 vs 576 021 kr). Kurs- og arrangementsinntekter er ned 44 % (87 222 kr vs 155 634 kr). Lønnskostnadene er 154 111 kr lavere enn i fjor grunnet 249 117 kr i sykepengerefusjoner. Merk: 100 815 kr av refusjonen i mai gjelder sept–des 2025 og kom inn som ett engangsbeløp. Justert for dette er driftsresultatet ca. −132 000 kr (ikke −31 000 kr). Om inntektstrenden fortsetter vil årsresultatet havne vesentlig under budsjett.</div>
 </div>
 
 <div class="grid2">
@@ -227,76 +270,101 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
     <div class="ch-wrap" style="position:relative;width:100%;height:290px;"><canvas id="ch5"></canvas></div>
   </div>
 </div>
-<div class="foot">Kilde: Tripletex · 2026-tall per 30. april · Normalisert = ekskl. 692 500 kr konstatert tap på fordringer i 2025</div>
+<div class="foot">Kilde: Tripletex · 2026-tall per 31. mai · Normalisert = ekskl. 692 500 kr konstatert tap på fordringer i 2025</div>
 </div>
 </div>
 
-<!-- ══════════════════ PAGE 4: DRIFT & INVESTERING ══════════════════ -->
-<div id="drift" class="page">
+
+<!-- ══════════════════ PAGE: REGNSKAP 2026 ══════════════════ -->
+<div id="regnskap2026" class="page">
 <div class="wrap">
-<div class="kpi-row" style="grid-template-columns:repeat(2,1fr);">
+<div class="kpi-row">
   <div class="kpi">
-    <div class="kpi-label">Totale investeringer 2025</div>
-    <div class="kpi-value">655 984 kr</div>
-    <div class="kpi-sub gray">Balanseførte tiltak på bygg og utstyr</div>
+    <div class="kpi-label">Driftsinntekter jan–mai</div>
+    <div class="kpi-value red">726 426 kr</div>
+    <div class="kpi-sub red">▼ 16,0 % vs. 2025 (865 104 kr)</div>
   </div>
   <div class="kpi">
-    <div class="kpi-label">Fasaderehabilitering</div>
-    <div class="kpi-value">582 509 kr</div>
-    <div class="kpi-sub gray">88 % av totale investeringer</div>
+    <div class="kpi-label">Driftsresultat jan–mai</div>
+    <div class="kpi-value red">−31 114 kr</div>
+    <div class="kpi-sub amber">justert: −131 929 kr *</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Snitt resultat per måned</div>
+    <div class="kpi-value red">−22 086 kr</div>
+    <div class="kpi-sub amber">ekskl. mai: −61 619 kr/mnd *</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Prognose årsresultat</div>
+    <div class="kpi-value red">ca. −265 000 kr</div>
+    <div class="kpi-sub amber">justert ekskl. mai: ~−740 000 kr</div>
   </div>
 </div>
 
-<div class="box box-info">
-  <div class="bh">Investeringer 2025 – balanseføringer</div>
-  <div class="bt">I 2025 ble det gjennomført betydelige investeringer i bygg og teknisk utstyr som er balanseført (ikke ført som løpende driftskostnad). Den største posten er utvendig fasaderehabilitering på 582 509 kr. Disse investeringene bidrar til å vedlikeholde og øke verdien av eiendommen, og er en viktig del av bildet for 2025.</div>
+<div class="box box-warn">
+  <div class="bh">* Retroaktiv sykepengerefusjon – to bilder av resultatet</div>
+  <div class="bt">Mai-månedens lønnskostnad er negativ (−21 929 kr) fordi 100 815 kr i sykepengerefusjon for sept–des 2025 ble utbetalt samlet i mai 2026. Rapportert snitt og prognose (−22 086 kr/mnd, ~−265 000 kr helår) inkluderer dette engangsbeløpet. Ekskluderes mai, er snittet −61 619 kr/mnd, tilsvarende ~−740 000 kr på helår. Sannheten ligger et sted imellom, avhengig av om sykepengerefusjonen fortsetter gjennom 2026.</div>
 </div>
 
 <div class="card" style="margin-bottom:16px;">
-  <h3>Investeringsoversikt 2025</h3>
-  <div class="sub">Aktiverte kostnader (ikke ført i resultatregnskapet)</div>
-  <div class="tbl-scroll"><table class="inv-table">
-    <thead><tr><th>Tiltak</th><th>Beløp</th></tr></thead>
-    <tbody>
-      <tr><td>Utvendig reparasjon fasade</td><td>582 509 kr</td></tr>
-      <tr><td>Elektro – utbedring leilighet 1</td><td>24 975 kr</td></tr>
-      <tr><td>Tech-booth oppgradering</td><td>19 170 kr</td></tr>
-      <tr><td>Teknisk Kafé</td><td>16 282 kr</td></tr>
-      <tr><td>Studio-utstyr</td><td>13 048 kr</td></tr>
-      <tr class="total"><td>Sum investeringer 2025</td><td>655 984 kr</td></tr>
-    </tbody>
-  </table></div>
-</div>
-
-
-<div class="card" style="margin-bottom:16px;">
-  <h3>Driftskostnader 2024 vs 2025 – per kategori</h3>
-  <div class="sub">Samme inndeling som budsjettfanen. Kurs-utgifter ned 45 % i 2025 (pga. lavere kursaktivitet).</div>
-  <div class="tbl-scroll"><table class="btable" style="margin-top:14px;">
+  <h3>Resultatregnskap jan–mai 2026</h3>
+  <div class="sub">Alle tall i NOK. Kontogrupper tilsvarer budsjettinndelingen.</div>
+  <div class="tbl-scroll"><table class="btable">
     <thead><tr>
-      <th>Kategori</th>
-      <th style="text-align:right">2024</th>
-      <th style="text-align:right">2025</th>
-      <th style="text-align:right">Endring</th>
+      <th>Post</th>
+      <th style="text-align:right">Jan</th>
+      <th style="text-align:right">Feb</th>
+      <th style="text-align:right">Mar</th>
+      <th style="text-align:right">Apr</th>
+      <th style="text-align:right">Mai</th>
+      <th class="bud-col" style="text-align:right">Total</th>
     </tr></thead>
     <tbody>
-      <tr><td>Misjon</td><td style="text-align:right">250 770</td><td style="text-align:right">231 904</td><td style="text-align:right;color:#1a6e3a">−7,5 %</td></tr>
-      <tr><td>Lønnskostnader</td><td style="text-align:right">1 125 564</td><td style="text-align:right">1 144 126</td><td style="text-align:right;color:#A32D2D">+1,6 %</td></tr>
-      <tr><td>Avskrivninger</td><td style="text-align:right">219 675</td><td style="text-align:right">231 731</td><td style="text-align:right;color:#A32D2D">+5,5 %</td></tr>
-      <tr><td>Drift *</td><td style="text-align:right">636 976</td><td style="text-align:right">592 506</td><td style="text-align:right;color:#1a6e3a">−7,0 %</td></tr>
-      <tr><td>Revisor</td><td style="text-align:right">29 687</td><td style="text-align:right">35 344</td><td style="text-align:right;color:#A32D2D">+19,1 %</td></tr>
-      <tr><td>Kurs-utgifter</td><td style="text-align:right">229 001</td><td style="text-align:right">126 179</td><td style="text-align:right;color:#1a6e3a">−44,9 %</td></tr>
-      <tr><td>Forsikring</td><td style="text-align:right">66 219</td><td style="text-align:right">74 123</td><td style="text-align:right;color:#A32D2D">+11,9 %</td></tr>
-      <tr><td>Bank og rentekostnader</td><td style="text-align:right">229 852</td><td style="text-align:right">226 857</td><td style="text-align:right;color:#1a6e3a">−1,3 %</td></tr>
-      <tr class="total"><td>Sum kostnader (normalisert)</td><td style="text-align:right">2 787 744</td><td style="text-align:right">2 662 770</td><td style="text-align:right;color:#1a6e3a">−4,5 %</td></tr>
+      <tr class="section"><td colspan="7">INNTEKTER</td></tr>
+      <tr><td>Leieinntekter</td><td style="text-align:right">26 370</td><td style="text-align:right">32 140</td><td style="text-align:right">20 600</td><td style="text-align:right">32 140</td><td style="text-align:right">26 370</td><td class="bud-col" style="text-align:right">137 620</td></tr>
+      <tr><td>Utleie, kurs og arrangement</td><td style="text-align:right">—</td><td style="text-align:right">540</td><td style="text-align:right">46 630</td><td style="text-align:right">246</td><td style="text-align:right">41 833</td><td class="bud-col" style="text-align:right">89 249</td></tr>
+      <tr><td>Kollekt og gaver</td><td style="text-align:right">93 600</td><td style="text-align:right">87 281</td><td style="text-align:right">102 676</td><td style="text-align:right">94 503</td><td style="text-align:right">97 509</td><td class="bud-col" style="text-align:right">475 568</td></tr>
+      <tr><td>MVA-kompensasjon og øremerket gave</td><td style="text-align:right">23 488</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">500</td><td class="bud-col" style="text-align:right">23 988</td></tr>
+      <tr class="total"><td>Sum driftsinntekter</td><td style="text-align:right">143 458</td><td style="text-align:right">119 961</td><td style="text-align:right">169 906</td><td style="text-align:right">126 889</td><td style="text-align:right">166 212</td><td class="bud-col" style="text-align:right">726 426</td></tr>
+
+      <tr class="section"><td colspan="7">KOSTNADER</td></tr>
+      <tr><td>Misjon og aktiviteter</td><td style="text-align:right">60 105</td><td style="text-align:right">—</td><td style="text-align:right">9 779</td><td style="text-align:right">8 316</td><td style="text-align:right">—</td><td class="bud-col" style="text-align:right">78 200</td></tr>
+      <tr class="info"><td>Lønnskostnader *</td><td style="text-align:right">120 399</td><td style="text-align:right">74 345</td><td style="text-align:right">101 952</td><td style="text-align:right">92 364</td><td style="text-align:right;color:#7A5000">−21 929</td><td class="bud-col" style="text-align:right">367 131</td></tr>
+      <tr><td>Øvrige driftskostnader</td><td style="text-align:right">48 504</td><td style="text-align:right">85 630</td><td style="text-align:right">80 517</td><td style="text-align:right">61 206</td><td style="text-align:right">36 352</td><td class="bud-col" style="text-align:right">312 209</td></tr>
+      <tr class="total"><td>Sum driftskostnader</td><td style="text-align:right">229 008</td><td style="text-align:right">159 975</td><td style="text-align:right">192 248</td><td style="text-align:right">161 886</td><td style="text-align:right">14 423</td><td class="bud-col" style="text-align:right">757 539</td></tr>
+
+      <tr class="warn"><td><strong>Driftsresultat</strong></td><td style="text-align:right"><strong>−85 550</strong></td><td style="text-align:right"><strong>−40 014</strong></td><td style="text-align:right"><strong>−22 343</strong></td><td style="text-align:right"><strong>−34 997</strong></td><td style="text-align:right;color:#1a6e3a"><strong>+151 790</strong></td><td class="bud-col" style="text-align:right"><strong>−31 114</strong></td></tr>
+      <tr><td>Finanskostnader (renter)</td><td style="text-align:right">15 997</td><td style="text-align:right">16 429</td><td style="text-align:right">14 794</td><td style="text-align:right">16 352</td><td style="text-align:right">15 745</td><td class="bud-col" style="text-align:right">79 318</td></tr>
+      <tr class="warn"><td><strong>Årsresultat</strong></td><td style="text-align:right"><strong>−101 547</strong></td><td style="text-align:right"><strong>−56 443</strong></td><td style="text-align:right"><strong>−37 137</strong></td><td style="text-align:right"><strong>−51 350</strong></td><td style="text-align:right;color:#1a6e3a"><strong>+136 045</strong></td><td class="bud-col" style="text-align:right"><strong>−110 432</strong></td></tr>
     </tbody>
   </table></div>
-  <p style="font-size:12px;color:#666;margin-top:8px;">* Drift inkluderer: Kafé/innkjøp, Renovasjon/VA/Strøm/Renhold/Snørydding, Lyd og media, Bygg og eiendom, Kontordrift/IT/kommunikasjon, Reise, Blomster/gaver, Kontingent og øvrige driftsposter.</p>
+  <p style="font-size:12px;color:#666;margin-top:8px;">Øvrige driftskostnader inkluderer: kafédrift, bygg/eiendom, renhold, strøm og VA, lyd og media, IT/programvare, kommunikasjon, revisor/regnskap, kurs-utgifter, reise, blomster, kontingenter og bankgebyrer.</p>
 </div>
 
-<div class="foot">Kilde: Tripletex regnskap 2024 og 2025 · Investeringsoversikt basert på balanseføringer 2025</div>
+<div class="grid2">
+  <div class="card">
+    <h3>Resultat per måned</h3>
+    <div class="sub">Mai er preget av retroaktiv sykepengerefusjon på 100 815 kr</div>
+    <div class="legend">
+      <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#1D9E75;"></span>Positivt</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#E24B4A;"></span>Negativt</span>
+    </div>
+    <div class="ch-wrap" style="position:relative;width:100%;height:300px;"><canvas id="ch_reg_res"></canvas></div>
+  </div>
+  <div class="card">
+    <h3>Inntekter og kostnader per måned</h3>
+    <div class="sub">Månedlig utvikling jan–mai 2026 (kostnader inkl. finanskostnader)</div>
+    <div class="legend">
+      <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#378ADD;"></span>Inntekter</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#E24B4A;"></span>Kostnader</span>
+    </div>
+    <div class="ch-wrap" style="position:relative;width:100%;height:300px;"><canvas id="ch_reg_inkost"></canvas></div>
+  </div>
+</div>
+<div class="foot">Kilde: Tripletex · Regnskap per 31. mai 2026</div>
 </div>
 </div>
+
 
 <!-- ══════════════════ PAGE 2: GIVERTJENESTE ══════════════════ -->
 <div id="givertjeneste" class="page">
@@ -313,25 +381,25 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
     <div class="kpi-sub green">▲ 1,8 % vs 2024 – stabil vekst</div>
   </div>
   <div class="kpi">
-    <div class="kpi-label">Kollekt jan–apr 2026</div>
-    <div class="kpi-value red">378 059 kr</div>
-    <div class="kpi-sub red">▼ 19,4 % vs 2025 (468 796 kr)</div>
+    <div class="kpi-label">Kollekt jan–mai 2026</div>
+    <div class="kpi-value red">475 568 kr</div>
+    <div class="kpi-sub red">▼ 17,4 % vs 2025 (576 021 kr)</div>
   </div>
   <div class="kpi">
     <div class="kpi-label">Prognose helår 2026</div>
-    <div class="kpi-value amber">~1 134 000 kr</div>
-    <div class="kpi-sub red">▼ ~216 000 kr under budsjett</div>
+    <div class="kpi-value amber">~1 141 000 kr</div>
+    <div class="kpi-sub red">▼ ~209 000 kr under budsjett</div>
   </div>
 </div>
 
 <div class="box box-danger">
   <div class="bh">Kollekttrenden 2026</div>
-  <div class="bt">Samlet kollekt jan–apr 2026 er 90 737 kr lavere enn samme periode i 2025 (378 059 vs 468 796 kr) og 65 131 kr lavere enn 2024 (443 190 kr). Basert på nåværende snitt (94 515 kr/mnd) kan det være ambisiøst å nå budsjettet på 1 350 000 kr for helåret.</div>
+  <div class="bt">Samlet kollekt jan–mai 2026 er 100 453 kr lavere enn samme periode i 2025 (475 568 vs 576 021 kr) og 54 278 kr lavere enn 2024 (529 846 kr). Basert på nåværende snitt (95 114 kr/mnd) kan det være ambisiøst å nå budsjettet på 1 350 000 kr for helåret.</div>
 </div>
 
 <div class="card" style="margin-bottom:16px;">
   <h3>Kollekt og gaver – månedlig</h3>
-  <div class="sub">2024, 2025 og 2026 (jan–apr). Stiplet linje = budsjett 2026 (1 350 000 kr / 12 = 112 500 kr/mnd)</div>
+  <div class="sub">2024, 2025 og 2026 (jan–mai). Stiplet linje = budsjett 2026 (1 350 000 kr / 12 = 112 500 kr/mnd)</div>
   <div class="legend">
     <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#B5D4F4;"></span>2024</span>
     <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#185FA5;"></span>2025</span>
@@ -351,7 +419,7 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
   </div>
   <div class="ch-wrap" style="position:relative;width:100%;height:280px;"><canvas id="ch_kum"></canvas></div>
 </div>
-<div class="foot">Kilde: Tripletex · 2026-tall per 30. april · Budsjett 2026: 1 350 000 kr</div>
+<div class="foot">Kilde: Tripletex · 2026-tall per 31. mai · Budsjett 2026: 1 350 000 kr</div>
 </div>
 </div>
 
@@ -378,7 +446,7 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
 
 <div class="box box-warn">
   <div class="bh">Lønnskostnader</div>
-  <div class="bt">Budsjettet for 2026 forutsetter 320 000 kr i sykepengerefusjon – en midlertidig inntektskilde knyttet til pågående permisjon/sykefravær.</div>
+  <div class="bt">Budsjettet for 2026 forutsetter 320 000 kr i sykepengerefusjon – en midlertidig inntektskilde knyttet til pågående permisjon/sykefravær. Merk at 100 815 kr av refusjonen utbetalt i mai 2026 gjaldt perioden sept–des 2025 og kom inn som ett engangsbeløp. Dette påvirker ikke budsjettet for 2026, men forklarer den uvanlig lave lønnskostnaden i mai.</div>
 </div>
 
 <div class="grid2">
@@ -401,7 +469,7 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
   <div class="bh">Anbefaling til menigheten</div>
   <div class="bt">Analysen viser at menigheten ved dagens inntektsnivå kan bære en samlet stillingsgrad på om lag 120 %. Dersom begge stillinger normaliseres til 100 % uten at inntektene øker vesentlig, vil det strukturelle underskuddet ligge på ca. 600 000 kr/år. Menigheten bør ta stilling til hva som er realistisk og bærekraftig stillingsgrad fremover – og om planen forutsetter inntektsvekst som ennå ikke er realisert. Dersom inntektsutviklingen snur og kurs/arrangementsaktivitet gjenoppbygges mot 2024-nivå, vil grunnlaget for høyere stillingsgrad styrkes.</div>
 </div>
-<div class="foot">Kilde: Tripletex · 2026-tall per 30. april · Scenarioer basert på lønnsnivåer fra 1. mai 2026 og 2025-inntekter</div>
+<div class="foot">Kilde: Tripletex · 2026-tall per 31. mai · Scenarioer basert på lønnsnivåer fra 1. mai 2026 og 2025-inntekter</div>
 </div>
 </div>
 <!-- ══════════════════ PAGE 3: BUDSJETT ══════════════════ -->
@@ -488,6 +556,73 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
 </div>
 
 
+<!-- ══════════════════ PAGE 4: DRIFT & INVESTERING ══════════════════ -->
+<div id="drift" class="page">
+<div class="wrap">
+<div class="kpi-row" style="grid-template-columns:repeat(2,1fr);">
+  <div class="kpi">
+    <div class="kpi-label">Totale investeringer 2025</div>
+    <div class="kpi-value">655 984 kr</div>
+    <div class="kpi-sub gray">Balanseførte tiltak på bygg og utstyr</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Fasaderehabilitering</div>
+    <div class="kpi-value">582 509 kr</div>
+    <div class="kpi-sub gray">88 % av totale investeringer</div>
+  </div>
+</div>
+
+<div class="box box-info">
+  <div class="bh">Investeringer 2025 – balanseføringer</div>
+  <div class="bt">I 2025 ble det gjennomført betydelige investeringer i bygg og teknisk utstyr som er balanseført (ikke ført som løpende driftskostnad). Den største posten er utvendig fasaderehabilitering på 582 509 kr. Disse investeringene bidrar til å vedlikeholde og øke verdien av eiendommen, og er en viktig del av bildet for 2025.</div>
+</div>
+
+<div class="card" style="margin-bottom:16px;">
+  <h3>Investeringsoversikt 2025</h3>
+  <div class="sub">Aktiverte kostnader (ikke ført i resultatregnskapet)</div>
+  <div class="tbl-scroll"><table class="inv-table">
+    <thead><tr><th>Tiltak</th><th>Beløp</th></tr></thead>
+    <tbody>
+      <tr><td>Utvendig reparasjon fasade</td><td>582 509 kr</td></tr>
+      <tr><td>Elektro – utbedring leilighet 1</td><td>24 975 kr</td></tr>
+      <tr><td>Tech-booth oppgradering</td><td>19 170 kr</td></tr>
+      <tr><td>Teknisk Kafé</td><td>16 282 kr</td></tr>
+      <tr><td>Studio-utstyr</td><td>13 048 kr</td></tr>
+      <tr class="total"><td>Sum investeringer 2025</td><td>655 984 kr</td></tr>
+    </tbody>
+  </table></div>
+</div>
+
+
+<div class="card" style="margin-bottom:16px;">
+  <h3>Driftskostnader 2024 vs 2025 – per kategori</h3>
+  <div class="sub">Samme inndeling som budsjettfanen. Kurs-utgifter ned 45 % i 2025 (pga. lavere kursaktivitet).</div>
+  <div class="tbl-scroll"><table class="btable" style="margin-top:14px;">
+    <thead><tr>
+      <th>Kategori</th>
+      <th style="text-align:right">2024</th>
+      <th style="text-align:right">2025</th>
+      <th style="text-align:right">Endring</th>
+    </tr></thead>
+    <tbody>
+      <tr><td>Misjon</td><td style="text-align:right">250 770</td><td style="text-align:right">231 904</td><td style="text-align:right;color:#1a6e3a">−7,5 %</td></tr>
+      <tr><td>Lønnskostnader</td><td style="text-align:right">1 125 564</td><td style="text-align:right">1 144 126</td><td style="text-align:right;color:#A32D2D">+1,6 %</td></tr>
+      <tr><td>Avskrivninger</td><td style="text-align:right">219 675</td><td style="text-align:right">231 731</td><td style="text-align:right;color:#A32D2D">+5,5 %</td></tr>
+      <tr><td>Drift *</td><td style="text-align:right">636 976</td><td style="text-align:right">592 506</td><td style="text-align:right;color:#1a6e3a">−7,0 %</td></tr>
+      <tr><td>Revisor</td><td style="text-align:right">29 687</td><td style="text-align:right">35 344</td><td style="text-align:right;color:#A32D2D">+19,1 %</td></tr>
+      <tr><td>Kurs-utgifter</td><td style="text-align:right">229 001</td><td style="text-align:right">126 179</td><td style="text-align:right;color:#1a6e3a">−44,9 %</td></tr>
+      <tr><td>Forsikring</td><td style="text-align:right">66 219</td><td style="text-align:right">74 123</td><td style="text-align:right;color:#A32D2D">+11,9 %</td></tr>
+      <tr><td>Bank og rentekostnader</td><td style="text-align:right">229 852</td><td style="text-align:right">226 857</td><td style="text-align:right;color:#1a6e3a">−1,3 %</td></tr>
+      <tr class="total"><td>Sum kostnader (normalisert)</td><td style="text-align:right">2 787 744</td><td style="text-align:right">2 662 770</td><td style="text-align:right;color:#1a6e3a">−4,5 %</td></tr>
+    </tbody>
+  </table></div>
+  <p style="font-size:12px;color:#666;margin-top:8px;">* Drift inkluderer: Kafé/innkjøp, Renovasjon/VA/Strøm/Renhold/Snørydding, Lyd og media, Bygg og eiendom, Kontordrift/IT/kommunikasjon, Reise, Blomster/gaver, Kontingent og øvrige driftsposter.</p>
+</div>
+
+<div class="foot">Kilde: Tripletex regnskap 2024 og 2025 · Investeringsoversikt basert på balanseføringer 2025</div>
+</div>
+</div>
+
 <script>
 // ── Navigation ─────────────────────────────────────────────────────────────
 function showPage(id, el) {
@@ -529,10 +664,10 @@ new Chart(document.getElementById('ch1'), {
 new Chart(document.getElementById('ch2'), {
   type: 'bar',
   data: {
-    labels: ['2024 (helår)','2025 (normalisert)','2026 (jan–apr)'],
+    labels: ['2024 (helår)','2025 (normalisert)','2026 (jan–mai)'],
     datasets: [
-      {label:'Inntekter', data:[2655864,2389613,600805], backgroundColor:'#378ADD', borderRadius:4},
-      {label:'Kostnader', data:[2597311,2454609,743117], backgroundColor:'#E24B4A', borderRadius:4}
+      {label:'Inntekter', data:[2655864,2389613,726426], backgroundColor:'#378ADD', borderRadius:4},
+      {label:'Kostnader', data:[2597311,2454609,757539], backgroundColor:'#E24B4A', borderRadius:4}
     ]
   },
   options: {
@@ -593,7 +728,7 @@ new Chart(document.getElementById('ch5'), {
 // ── PAGE 2: GIVERTJENESTE ─────────────────────────────────────────────────
 const k24 = [104469,123850,90930,123941,86656,112340,94404,90463,107458,125398,80894,115316];
 const k25 = [155549,105136,102482,105629,107224,96481,92003,90814,103865,107426,82888,128756];
-const k26 = [93600,87281,102676,88538,null,null,null,null,null,null,null,null];
+const k26 = [93600,87281,102676,94503,97509,null,null,null,null,null,null,null];
 const months = ['Jan','Feb','Mar','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Des'];
 
 new Chart(document.getElementById('ch3'), {
@@ -740,6 +875,53 @@ new Chart(document.getElementById('ch_scenario'), {
         ticks: {callback:v=>(v<0?'−':'')+Math.round(Math.abs(v)/1000)+'k', font:{size:tickSz}},
         grid: {color:'rgba(0,0,0,0.05)'}
       },
+      x: {ticks:{font:{size:tickSz}}}
+    }
+  }
+});
+
+// ── PAGE: REGNSKAP 2026 ──────────────────────────────────────────────────────────────────────────
+new Chart(document.getElementById('ch_reg_res'), {
+  type: 'bar',
+  data: {
+    labels: ['Jan','Feb','Mar','Apr','Mai'],
+    datasets: [{
+      label: 'Årsresultat',
+      data: [-101547,-56443,-37137,-51350,136045],
+      backgroundColor: [-101547,-56443,-37137,-51350,136045].map(v => v >= 0 ? '#1D9E75' : '#E24B4A'),
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: {display:false},
+      tooltip: {callbacks:{label:c=>'Resultat: '+(c.parsed.y<0?'\u2212':'')+fmt(c.parsed.y)+' kr'}}
+    },
+    scales: {
+      y: {ticks:{callback:v=>(v<0?'\u2212':'')+Math.round(Math.abs(v)/1000)+'k',font:{size:tickSz}}, grid:{color:'rgba(0,0,0,0.05)'}},
+      x: {ticks:{font:{size:tickSz}}}
+    }
+  }
+});
+
+new Chart(document.getElementById('ch_reg_inkost'), {
+  type: 'bar',
+  data: {
+    labels: ['Jan','Feb','Mar','Apr','Mai'],
+    datasets: [
+      {label:'Inntekter', data:[143458,119961,169906,126889,166212], backgroundColor:'#378ADD', borderRadius:4},
+      {label:'Kostnader', data:[245005,176404,207042,178238,30168], backgroundColor:'#E24B4A', borderRadius:4}
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: {display:false},
+      tooltip: {callbacks:{label:c=>c.dataset.label+': '+fmt(c.parsed.y)+' kr'}}
+    },
+    scales: {
+      y: {ticks:{callback:v=>Math.round(v/1000)+'k',font:{size:tickSz}}, grid:{color:'rgba(0,0,0,0.05)'}},
       x: {ticks:{font:{size:tickSz}}}
     }
   }
