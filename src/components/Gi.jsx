@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Layout from './Layout';
 
 export default function Gi() {
@@ -63,6 +64,12 @@ export default function Gi() {
             alt="Givertjeneste"
             className="w-3/5 h-auto"
           />
+        </div>
+
+        <div className="mt-10 text-center">
+          <Link to="/okonomi" className="text-xs text-gray-400 hover:text-gray-600">
+            Regnskapsoversikt
+          </Link>
         </div>
       </div>
     </Layout>
