@@ -5,7 +5,7 @@ export default function Okonomi() {
       style={{ bottom: 'calc(3.5rem + env(safe-area-inset-bottom))' }}
     >
       <iframe
-        src="/arsmote/Okonomi_2026.html"
+        src="/okonomi/Okonomi_2026.html"
         className="w-full h-full border-0"
         title="Økonomi-rapport Årsmøtet 2026"
       />
