@@ -12,18 +12,33 @@ new Chart(document.getElementById('ch_reg_res'), {
   type: 'bar',
   data: {
     labels: ['Jan','Feb','Mar','Apr','Mai'],
-    datasets: [{
-      label: 'Årsresultat',
-      data: [-101547,-56443,-37137,-51350,136045],
-      backgroundColor: [-101547,-56443,-37137,-51350,136045].map(v => v >= 0 ? '#1D9E75' : '#E24B4A'),
-      borderRadius: 4
-    }]
+    datasets: [
+      {
+        label: 'Resultat per m\u00e5ned',
+        data: [-101547,-56443,-37137,-51350,136045],
+        backgroundColor: [-101547,-56443,-37137,-51350,136045].map(v => v >= 0 ? '#1D9E75' : '#E24B4A'),
+        borderRadius: 4,
+        order: 2
+      },
+      {
+        type: 'line',
+        label: 'Akkumulert resultat',
+        data: (()=>{let s=0;return[-101547,-56443,-37137,-51350,136045].map(v=>{s+=v;return s;});})(),
+        borderColor: '#1d4ed8',
+        backgroundColor: 'transparent',
+        borderWidth: 2.5,
+        pointRadius: 4,
+        pointBackgroundColor: '#1d4ed8',
+        tension: 0.3,
+        order: 1
+      }
+    ]
   },
   options: {
     responsive: true, maintainAspectRatio: false,
     plugins: {
-      legend: {display:false},
-      tooltip: {callbacks:{label:c=>'Resultat: '+(c.parsed.y<0?'\u2212':'')+fmt(c.parsed.y)+' kr'}}
+      legend: {display:true, position:'bottom', labels:{font:{size:tickSz},boxWidth:12,padding:12}},
+      tooltip: {callbacks:{label:c=>(c.parsed.y<0?'\u2212':'')+fmt(Math.abs(c.parsed.y))+' kr'}}
     },
     scales: {
       y: {ticks:{callback:v=>(v<0?'\u2212':'')+Math.round(Math.abs(v)/1000)+'k',font:{size:tickSz}}, grid:{color:'rgba(0,0,0,0.05)'}},
@@ -868,18 +883,33 @@ new Chart(document.getElementById('ch_reg_res'), {
   type: 'bar',
   data: {
     labels: ['Jan','Feb','Mar','Apr','Mai'],
-    datasets: [{
-      label: 'Årsresultat',
-      data: [-101547,-56443,-37137,-51350,136045],
-      backgroundColor: [-101547,-56443,-37137,-51350,136045].map(v => v >= 0 ? '#1D9E75' : '#E24B4A'),
-      borderRadius: 4
-    }]
+    datasets: [
+      {
+        label: 'Resultat per m\u00e5ned',
+        data: [-101547,-56443,-37137,-51350,136045],
+        backgroundColor: [-101547,-56443,-37137,-51350,136045].map(v => v >= 0 ? '#1D9E75' : '#E24B4A'),
+        borderRadius: 4,
+        order: 2
+      },
+      {
+        type: 'line',
+        label: 'Akkumulert resultat',
+        data: (()=>{let s=0;return[-101547,-56443,-37137,-51350,136045].map(v=>{s+=v;return s;});})(),
+        borderColor: '#1d4ed8',
+        backgroundColor: 'transparent',
+        borderWidth: 2.5,
+        pointRadius: 4,
+        pointBackgroundColor: '#1d4ed8',
+        tension: 0.3,
+        order: 1
+      }
+    ]
   },
   options: {
     responsive: true, maintainAspectRatio: false,
     plugins: {
-      legend: {display:false},
-      tooltip: {callbacks:{label:c=>'Resultat: '+(c.parsed.y<0?'\u2212':'')+fmt(c.parsed.y)+' kr'}}
+      legend: {display:true, position:'bottom', labels:{font:{size:tickSz},boxWidth:12,padding:12}},
+      tooltip: {callbacks:{label:c=>(c.parsed.y<0?'\u2212':'')+fmt(Math.abs(c.parsed.y))+' kr'}}
     },
     scales: {
       y: {ticks:{callback:v=>(v<0?'\u2212':'')+Math.round(Math.abs(v)/1000)+'k',font:{size:tickSz}}, grid:{color:'rgba(0,0,0,0.05)'}},
