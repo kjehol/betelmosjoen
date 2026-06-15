@@ -6,9 +6,9 @@ const MÅNEDER = [
   'Juli', 'August', 'September', 'Oktober', 'November', 'Desember',
 ];
 
-function parseMånedTid(str) {
+function parseMåned(str) {
   if (!str) return null;
-  const lower = str.toLowerCase();
+  const lower = str.toLowerCase().trim();
   for (let i = 0; i < MÅNEDER.length; i++) {
     if (lower.includes(MÅNEDER[i].toLowerCase())) return i + 1;
   }
@@ -37,19 +37,22 @@ async function fetchSheetData() {
   const ark1Rows = ark1Range.values || [];
   const aktiviteter = ark1Rows
     .slice(1)
-    .filter(row => row && row[4])
-    .map(row => ({
-      månedNr: parseInt(row[0]) || null,
-      måned: row[1] || '',
-      periode: row[2] || '',
-      hvem: row[3] || '',
-      tittel: row[4] || '',
-      ansvarlig: row[5] || '',
-      dato2025: row[6] || '',
-      dato2026: row[7] || '',
-      detaljer: row[8] || '',
-      kilde: 'aktivitet',
-    }));
+    .filter(row => row && (row[4] || row[1]))
+    .map(row => {
+      const månedNr = parseInt(row[0]) || parseMåned(row[1]) || null;
+      return {
+        månedNr,
+        måned: row[1] || '',
+        periode: row[2] || '',
+        hvem: row[3] || '',
+        tittel: row[4] || '',
+        ansvarlig: row[5] || '',
+        dato2025: row[6] || '',
+        dato2026: row[7] || '',
+        detaljer: row[8] || '',
+        kilde: 'aktivitet',
+      };
+    });
 
   // KS-fane: row 0 = header, rows 1+ = data
   const ksRows = ksRange.values || [];
@@ -57,7 +60,7 @@ async function fetchSheetData() {
     .slice(1)
     .filter(row => row && row[1])
     .map(row => {
-      const månedNr = parseMånedTid(row[0]);
+      const månedNr = parseMåned(row[0]);
       return {
         månedNr,
         måned: månedNr ? MÅNEDER[månedNr - 1] : null,
@@ -70,6 +73,14 @@ async function fetchSheetData() {
         kilde: 'ks',
       };
     });
+
+  console.log(`arshjul: ${aktiviteter.length} aktiviteter, ${ksOppgaver.length} KS-oppgaver`);
+  if (aktiviteter.length > 0) {
+    console.log('ark1 første rad (rå):', JSON.stringify(ark1Rows[1]));
+    console.log('første aktivitet:', JSON.stringify(aktiviteter[0]));
+  } else {
+    console.log('ark1 totalt rader:', ark1Rows.length, '– første rå rad:', JSON.stringify(ark1Rows[0]));
+  }
 
   return { aktiviteter, ksOppgaver };
 }

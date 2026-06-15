@@ -66,11 +66,6 @@ export default function Gi() {
           />
         </div>
 
-        <div className="mt-10 text-center">
-          <Link to="/okonomi" className="text-xs text-gray-400 hover:text-gray-600">
-            Regnskapsoversikt
-          </Link>
-        </div>
       </div>
     </Layout>
   );
