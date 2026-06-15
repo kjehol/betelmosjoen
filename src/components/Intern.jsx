@@ -4,7 +4,10 @@ import Arshjul from './Arshjul';
 const TABS = [
   { id: 'arshjul', label: 'Årshjul' },
   { id: 'okonomi', label: 'Økonomi' },
+  { id: 'kvalitetssystem', label: 'Kvalitetssystem' },
 ];
+
+const KS_EMBED_URL = 'https://betelmosjoen-my.sharepoint.com/:f:/g/personal/post_betelmosjoen_no/IgDqRz8RcS7FRL8N1vpnFXSOARzUCzkh9N-Mgn_ChSf4OrM?e=neHMJ9&action=embedview';
 
 export default function Intern() {
   const [status, setStatus] = useState('loading'); // 'loading' | 'auth' | 'unauth'
@@ -39,7 +42,7 @@ export default function Intern() {
   }, [status]);
 
   useEffect(() => {
-    if (activeTab === 'okonomi' && tabBarRef.current) {
+    if ((activeTab === 'okonomi' || activeTab === 'kvalitetssystem') && tabBarRef.current) {
       window.scrollTo(0, 0);
       requestAnimationFrame(() => {
         const rect = tabBarRef.current?.getBoundingClientRect();
@@ -184,6 +187,23 @@ export default function Intern() {
             src="/okonomi/Okonomi_2026.html"
             className="w-full h-full border-0"
             title="Økonomi-rapport"
+          />
+        </div>
+      )}
+
+      {activeTab === 'kvalitetssystem' && (
+        <div
+          className="fixed inset-x-0 z-30"
+          style={{
+            top: tabBottom || 120,
+            bottom: 'calc(3.5rem + env(safe-area-inset-bottom))',
+          }}
+        >
+          <iframe
+            src={KS_EMBED_URL}
+            className="w-full h-full border-0"
+            title="Kvalitetssystem"
+            allow="fullscreen"
           />
         </div>
       )}
