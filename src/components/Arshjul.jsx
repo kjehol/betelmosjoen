@@ -7,9 +7,9 @@ const MÅNEDER = [
 const MND_ABBR = ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Des'];
 
 const FARGER = [
-  '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
-  '#06b6d4', '#f97316', '#ec4899', '#84cc16', '#14b8a6',
-  '#a78bfa', '#fb7185', '#0ea5e9', '#22c55e', '#eab308',
+  '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#0d9488',
+  '#06b6d4', '#f97316', '#ec4899', '#84cc16', '#6366f1',
+  '#f43f5e', '#fb923c', '#22d3ee', '#4ade80', '#eab308',
 ];
 
 const CX = 200, CY = 200, OUTER_R = 168, INNER_R = 80, LABEL_R = 128;
@@ -185,7 +185,7 @@ export default function Arshjul({ data = {} }) {
                     y={lp.y}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    fontSize="11"
+                    fontSize="12"
                     fontWeight={erDenneMnd || erValgt ? '700' : '400'}
                     fill={antall > 0 ? '#111827' : '#9ca3af'}
                   >
@@ -200,7 +200,7 @@ export default function Arshjul({ data = {} }) {
                         y={bp.y}
                         textAnchor="middle"
                         dominantBaseline="middle"
-                        fontSize="9"
+                        fontSize="10"
                         fontWeight="600"
                         fill="#374151"
                       >
@@ -290,34 +290,50 @@ export default function Arshjul({ data = {} }) {
 
             {valgtItems.length === 0 ? (
               <p className="text-sm text-gray-400 italic">Ingen oppgaver denne måneden.</p>
-            ) : (
-              <div className="space-y-2">
-                {valgtItems.map((item, j) => (
-                  <div
-                    key={j}
-                    className="p-3 rounded-lg bg-gray-50 border-l-4"
-                    style={{ borderColor: item.kilde === 'ks' ? '#8b5cf6' : (hvemFarge[item.hvem] || '#3b82f6') }}
-                  >
-                    <div className="flex items-start gap-2">
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm text-gray-900">{item.tittel}</p>
-                        {item.hvem && <p className="text-xs text-gray-500 mt-0.5">Hvem: {item.hvem}</p>}
-                        {item.ansvarlig && <p className="text-xs text-gray-500">Ansvarlig: {item.ansvarlig}</p>}
-                        {item.periode && <p className="text-xs text-gray-400">{item.periode}</p>}
-                        {item.dato2026 && <p className="text-xs text-blue-600 font-medium">Dato 2026: {item.dato2026}</p>}
-                        {item.detaljer && <p className="text-xs text-gray-600 mt-1">{item.detaljer}</p>}
-                        {item.ksRef && <p className="text-xs text-purple-600">KS-ref: {item.ksRef}</p>}
-                        {item.frekvens && <p className="text-xs text-gray-500">Frekvens: {item.frekvens}</p>}
-                        {item.tilMøte && <p className="text-xs text-gray-500">Til møte: {item.tilMøte}</p>}
-                      </div>
-                      <span className={`text-xs px-1.5 py-0.5 rounded flex-shrink-0 font-medium ${item.kilde === 'ks' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
-                        {item.kilde === 'ks' ? 'KS' : 'Akt'}
-                      </span>
+            ) : (() => {
+              const aktItems = valgtItems.filter(i => i.kilde !== 'ks');
+              const ksItems  = valgtItems.filter(i => i.kilde === 'ks');
+              const renderItem = (item, j) => (
+                <div
+                  key={j}
+                  className={`p-3 rounded-lg border-l-4 ${item.kilde === 'ks' ? 'bg-violet-50 border-dashed' : 'bg-gray-50'}`}
+                  style={{ borderColor: item.kilde === 'ks' ? '#7c3aed' : (hvemFarge[item.hvem] || '#3b82f6') }}
+                >
+                  <div className="flex items-start gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm text-gray-900">{item.tittel}</p>
+                      {item.hvem && <p className="text-xs text-gray-500 mt-0.5">Hvem: {item.hvem}</p>}
+                      {item.ansvarlig && <p className="text-xs text-gray-500">Ansvarlig: {item.ansvarlig}</p>}
+                      {item.periode && <p className="text-xs text-gray-400">{item.periode}</p>}
+                      {item.dato2026 && <p className="text-xs text-blue-600 font-medium">Dato 2026: {item.dato2026}</p>}
+                      {item.detaljer && <p className="text-xs text-gray-600 mt-1">{item.detaljer}</p>}
+                      {item.ksRef && <p className="text-xs text-violet-600 font-medium">KS-ref: {item.ksRef}</p>}
+                      {item.frekvens && <p className="text-xs text-gray-500">Frekvens: {item.frekvens}</p>}
+                      {item.tilMøte && <p className="text-xs text-gray-500">Til møte: {item.tilMøte}</p>}
                     </div>
+                    <span className={`text-xs px-1.5 py-0.5 rounded flex-shrink-0 font-medium ${item.kilde === 'ks' ? 'bg-violet-100 text-violet-700' : 'bg-blue-100 text-blue-700'}`}>
+                      {item.kilde === 'ks' ? '📋 KS' : 'Akt'}
+                    </span>
                   </div>
-                ))}
-              </div>
-            )}
+                </div>
+              );
+              return (
+                <div className="space-y-4">
+                  {aktItems.length > 0 && (
+                    <div>
+                      {ksItems.length > 0 && <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Aktiviteter</p>}
+                      <div className="space-y-2">{aktItems.map(renderItem)}</div>
+                    </div>
+                  )}
+                  {ksItems.length > 0 && (
+                    <div>
+                      <p className="text-xs font-semibold text-violet-400 uppercase tracking-wide mb-1.5">KS-oppgaver</p>
+                      <div className="space-y-2">{ksItems.map(renderItem)}</div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         )}
 
@@ -325,16 +341,48 @@ export default function Arshjul({ data = {} }) {
         {!valgtMåned && løpende.length > 0 && (
           <div className="flex-1 min-w-0">
             <h3 className="text-base font-semibold text-gray-700 mb-3">Løpende / hele året</h3>
-            <div className="space-y-2">
-              {løpende.map((item, i) => (
-                <div key={i} className="p-3 rounded-lg bg-gray-50 border-l-4 border-gray-300">
-                  <p className="font-medium text-sm text-gray-900">{item.tittel}</p>
-                  {item.ansvarlig && <p className="text-xs text-gray-500 mt-0.5">Ansvarlig: {item.ansvarlig}</p>}
-                  {item.periode && <p className="text-xs text-gray-400">{item.periode}</p>}
-                  {item.kilde === 'ks' && item.ksRef && <p className="text-xs text-purple-600">KS-ref: {item.ksRef}</p>}
+            {(() => {
+              const lAkt = løpende.filter(i => i.kilde !== 'ks');
+              const lKS  = løpende.filter(i => i.kilde === 'ks');
+              return (
+                <div className="space-y-4">
+                  {lAkt.length > 0 && (
+                    <div>
+                      {lKS.length > 0 && <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1.5">Aktiviteter</p>}
+                      <div className="space-y-2">
+                        {lAkt.map((item, i) => (
+                          <div key={i} className="p-3 rounded-lg bg-gray-50 border-l-4 border-gray-300">
+                            <p className="font-medium text-sm text-gray-900">{item.tittel}</p>
+                            {item.ansvarlig && <p className="text-xs text-gray-500 mt-0.5">Ansvarlig: {item.ansvarlig}</p>}
+                            {item.periode && <p className="text-xs text-gray-400">{item.periode}</p>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {lKS.length > 0 && (
+                    <div>
+                      <p className="text-xs font-semibold text-violet-400 uppercase tracking-wide mb-1.5">KS-oppgaver</p>
+                      <div className="space-y-2">
+                        {lKS.map((item, i) => (
+                          <div key={i} className="p-3 rounded-lg bg-violet-50 border-l-4 border-dashed border-violet-400">
+                            <div className="flex items-start gap-2">
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium text-sm text-gray-900">{item.tittel}</p>
+                                {item.ansvarlig && <p className="text-xs text-gray-500 mt-0.5">Ansvarlig: {item.ansvarlig}</p>}
+                                {item.periode && <p className="text-xs text-gray-400">{item.periode}</p>}
+                                {item.ksRef && <p className="text-xs text-violet-600 font-medium">KS-ref: {item.ksRef}</p>}
+                              </div>
+                              <span className="text-xs px-1.5 py-0.5 rounded flex-shrink-0 font-medium bg-violet-100 text-violet-700">📋 KS</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
+              );
+            })()}
           </div>
         )}
       </div>
