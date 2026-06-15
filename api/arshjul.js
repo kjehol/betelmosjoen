@@ -26,7 +26,7 @@ async function fetchSheetData() {
   const { data } = await sheets.spreadsheets.values.batchGet({
     spreadsheetId: process.env.SHEET_ID_ARSHJUL,
     ranges: [
-      "'Ark 1'!A2:I300",
+      "'Årshjul'!A2:I300",
       "'Oppgaver og Oppfølging av Kvalitetssystemet'!A1:F100",
     ],
   });
