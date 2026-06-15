@@ -45,7 +45,9 @@ function countBadgePos(i) {
   return polarToXY(-90 + i * 30 + 15, OUTER_R - 14);
 }
 
-export default function Arshjul({ data }) {
+export default function Arshjul({ data = {} }) {
+  const { aktiviteter: rawAkt = [], ksOppgaver: rawKS = [] } = data;
+  data = { aktiviteter: rawAkt, ksOppgaver: rawKS };
   const [valgtMåned, setValgtMåned] = useState(null);
   const [visAkt, setVisAkt] = useState(true);
   const [visKS, setVisKS] = useState(true);

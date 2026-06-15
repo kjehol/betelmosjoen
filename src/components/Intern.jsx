@@ -22,7 +22,10 @@ export default function Intern() {
         return res.json();
       })
       .then(data => {
-        if (data) { setArshjulData(data); setStatus('auth'); }
+        if (data) {
+        setArshjulData(data);
+        setStatus('auth');
+      }
       })
       .catch(() => setStatus('unauth'));
   }, []);
@@ -49,8 +52,13 @@ export default function Intern() {
         return;
       }
       const dataRes = await fetch('/api/arshjul');
-      const data = await dataRes.json();
-      setArshjulData(data);
+      if (dataRes.ok) {
+        const data = await dataRes.json();
+        setArshjulData(data);
+      } else {
+        const err = await dataRes.json().catch(() => ({}));
+        setArshjulData({ aktiviteter: [], ksOppgaver: [], feil: err.error || 'Ukjent feil ved henting av årshjul' });
+      }
       setStatus('auth');
     } catch {
       setLoginError('Noe gikk galt. Prøv igjen.');
@@ -141,7 +149,15 @@ export default function Intern() {
 
       {/* Innhold */}
       {activeTab === 'arshjul' && arshjulData && (
-        <Arshjul data={arshjulData} />
+        arshjulData.feil ? (
+          <div className="p-4 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+            <p className="font-semibold mb-1">Feil ved henting av årshjul-data</p>
+            <p className="font-mono text-xs">{arshjulData.feil}</p>
+            <p className="mt-2 text-gray-600 text-xs">Sjekk at service-account har tilgang til regnearket og at miljøvariablene er satt i Vercel.</p>
+          </div>
+        ) : (
+          <Arshjul data={arshjulData} />
+        )
       )}
 
       {activeTab === 'okonomi' && (
