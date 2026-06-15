@@ -407,6 +407,13 @@ export default function Velkommen() {
           </a>
         </div>
       </div>
+
+      {/* Intern-lenke */}
+      <div className="mb-6 text-center">
+        <Link to="/intern" className="text-gray-400 hover:text-gray-600 text-sm">
+          Intern
+        </Link>
+      </div>
     </Layout>
   );
 }

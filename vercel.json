@@ -1,3 +1,11 @@
 {
-  "rewrites": [{ "source": "/((?!okonomi/).*)", "destination": "/index.html" }]
+  "rewrites": [{ "source": "/((?!okonomi/).*)", "destination": "/index.html" }],
+  "headers": [
+    {
+      "source": "/intern(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    }
+  ]
 }
