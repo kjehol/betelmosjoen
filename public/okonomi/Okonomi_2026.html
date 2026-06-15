@@ -23,7 +23,7 @@ new Chart(document.getElementById('ch_reg_res'), {
       {
         type: 'line',
         label: 'Akkumulert resultat',
-        data: (()=>{let s=0;return[-101547,-56443,-37137,-51350,134289].map(v=>{s+=v;return s;});})(),
+        data: [-101547,-157990,-195127,-246477,-112187],
         borderColor: '#1d4ed8',
         backgroundColor: 'transparent',
         borderWidth: 2.5,
@@ -288,16 +288,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="kpi-sub amber">justert: −133 684 kr *</div>
   </div>
   <div class="kpi">
-    <div class="kpi-label">Snitt resultat per måned</div>
-    <div class="kpi-value red">−22 437 kr</div>
-    <div class="kpi-sub amber">ekskl. mai: −61 619 kr/mnd *</div>
-    <div class="kpi-sub green">m/tilskudd (28 595/mnd): +6 158 kr</div>
+    <div class="kpi-label">Snitt jan–apr (mai utelatt *)</div>
+    <div class="kpi-value red">−61 619 kr</div>
+    <div class="kpi-sub green">m/tilskudd (28 595/mnd): −33 024 kr</div>
   </div>
   <div class="kpi">
     <div class="kpi-label">Prognose årsresultat</div>
-    <div class="kpi-value red">ca. −269 000 kr</div>
-    <div class="kpi-sub amber">justert ekskl. mai: ~−740 000 kr</div>
-    <div class="kpi-sub green">inkl. tilskudd 343 143 kr: ca. +74 000 kr</div>
+    <div class="kpi-value red">ca. −739 000 kr</div>
+    <div class="kpi-sub green">inkl. tilskudd 343 143 kr: ca. −396 000 kr</div>
   </div>
 </div>
 
@@ -892,7 +890,7 @@ new Chart(document.getElementById('ch_reg_res'), {
       {
         type: 'line',
         label: 'Akkumulert resultat',
-        data: (()=>{let s=0;return[-101547,-56443,-37137,-51350,134289].map(v=>{s+=v;return s;});})(),
+        data: [-101547,-157990,-195127,-246477,-112187],
         borderColor: '#1d4ed8',
         backgroundColor: 'transparent',
         borderWidth: 2.5,
