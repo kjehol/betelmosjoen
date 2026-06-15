@@ -57,10 +57,11 @@ new Chart(document.getElementById('ch_reg_inkost'), {
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f9fafb;color:#1a1a1a;font-size:16px;line-height:1.6;}
-.tabs{display:flex;gap:0;background:#1e3a8a;padding:0 44px;}
-.tab{padding:14px 30px;font-size:18px;color:#bfdbfe;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;}
-.tab:hover{color:#fff;background:rgba(255,255,255,0.08);}
-.tab.active{color:#fff;border-bottom-color:#93c5fd;background:rgba(255,255,255,0.1);font-weight:600;}
+.updated-bar{background:#fff;border-bottom:1px solid #e5e7eb;padding:6px 44px;font-size:13px;color:#9ca3af;}
+.tabs{display:flex;gap:0;background:#fff;padding:0 44px;border-bottom:1px solid #e5e7eb;}
+.tab{padding:12px 20px;font-size:16px;color:#6b7280;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;}
+.tab:hover{color:#374151;}
+.tab.active{color:#1d4ed8;border-bottom-color:#1d4ed8;font-weight:600;}
 .page{display:none;}.page.active{display:block;}
 .wrap{max-width:1400px;margin:0 auto;padding:30px 44px;}
 
@@ -68,29 +69,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
 .kpi{background:#fff;border:0.5px solid #d0d7e0;border-radius:12px;padding:22px 24px;}
 .kpi-label{font-size:14px;color:#666;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;font-weight:600;}
-.kpi-value{font-size:36px;font-weight:600;line-height:1.15;}
+.kpi-value{font-size:28px;font-weight:600;line-height:1.15;}
 .kpi-sub{font-size:15px;margin-top:6px;}
 
 /* Alert boxes */
 .box{border-radius:10px;padding:14px 18px;margin-bottom:12px;}
 .box-warn{background:#FFFBEA;border:1px solid #E5C840;}
-.box-warn .bh{font-size:17px;font-weight:700;color:#7A5000;margin-bottom:6px;}
+.box-warn .bh{font-size:16px;font-weight:700;color:#7A5000;margin-bottom:6px;}
 .box-warn .bt{font-size:16px;color:#5C3C00;line-height:1.7;}
 .box-danger{background:#FFF2F2;border:1px solid #FFAAAA;}
-.box-danger .bh{font-size:17px;font-weight:700;color:#7F1D1D;margin-bottom:6px;}
+.box-danger .bh{font-size:16px;font-weight:700;color:#7F1D1D;margin-bottom:6px;}
 .box-danger .bt{font-size:16px;color:#7F1D1D;line-height:1.7;}
 .box-info{background:#EBF5FB;border:1px solid #7FB3D3;}
-.box-info .bh{font-size:17px;font-weight:700;color:#1a4e79;margin-bottom:6px;}
+.box-info .bh{font-size:16px;font-weight:700;color:#1a4e79;margin-bottom:6px;}
 .box-info .bt{font-size:16px;color:#1a4e79;line-height:1.7;}
 .box-green{background:#F0FAF3;border:1px solid #7DC89A;}
-.box-green .bh{font-size:17px;font-weight:700;color:#1a5e31;margin-bottom:6px;}
+.box-green .bh{font-size:16px;font-weight:700;color:#1a5e31;margin-bottom:6px;}
 .box-green .bt{font-size:16px;color:#1a5e31;line-height:1.7;}
 
 /* Layout */
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
 .card{background:#fff;border:0.5px solid #d0d7e0;border-radius:12px;padding:18px 22px;}
-.card h3{font-size:18px;font-weight:700;margin-bottom:4px;color:#1d4ed8;}
+.card h3{font-size:16px;font-weight:700;margin-bottom:4px;color:#1d4ed8;}
 .card .sub{font-size:14px;color:#888;margin-bottom:14px;}
 
 /* Legend */
@@ -139,16 +140,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   .kpi-row{grid-template-columns:repeat(2,1fr)!important;}
   .grid2,.grid3{grid-template-columns:1fr;}
   .wrap{padding:22px 28px;}
-  .kpi-value{font-size:30px;}
+  .kpi-value{font-size:26px;}
   .ch-wrap{height:260px!important;}
 }
 
 /* Mobile (≤ 600px) */
 @media(max-width:600px){
   body{font-size:14px;}
+  .updated-bar{padding:5px 12px;}
   .tabs{padding:0 6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
   .tabs::-webkit-scrollbar{display:none;}
-  .tab{padding:9px 14px;font-size:13px;white-space:nowrap;}
+  .tab{padding:9px 12px;font-size:14px;white-space:nowrap;}
   .kpi-row{grid-template-columns:1fr 1fr!important;gap:10px;}
   .kpi{padding:13px 14px;}
   .kpi-value{font-size:22px;}
@@ -178,19 +180,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </head>
 <body>
 
+<div class="updated-bar">Sist oppdatert: 31. mai 2026 · Kilde: Tripletex</div>
 <div class="tabs">
-  <div class="tab active" onclick="showPage('oversikt',this)">Oversikt</div>
-  <div class="tab" onclick="showPage('regnskap2026',this)">Regnskap 2026</div>
+  <div class="tab active" onclick="showPage('regnskap2026',this)">Oversikt</div>
   <div class="tab" onclick="showPage('givertjeneste',this)">Givertjeneste</div>
   <div class="tab" onclick="showPage('lonn',this)">Lønn</div>
   <div class="tab" onclick="showPage('budsjett',this)">Budsjett 2026</div>
   <div class="tab" onclick="showPage('drift',this)">Drift &amp; Investering</div>
+  <div class="tab" onclick="showPage('oversikt',this)">Historikk</div>
 </div>
 
-<!-- ══════════════════ PAGE 1: OVERSIKT ══════════════════ -->
-<div id="oversikt" class="page active">
+<!-- ══════════════════ PAGE: HISTORIKK (tidl. Oversikt) ══════════════════ -->
+<div id="oversikt" class="page">
 <div class="wrap">
-<div class="kpi-row">
+<div class="kpi-row" style="grid-template-columns:repeat(3,1fr);">
   <div class="kpi">
     <div class="kpi-label">Driftsinntekter 2025</div>
     <div class="kpi-value">2,39 mill. kr</div>
@@ -206,16 +209,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="kpi-value red">−935 718 kr</div>
     <div class="kpi-sub gray">inkl. engangsavskrivning</div>
   </div>
-  <div class="kpi">
-    <div class="kpi-label">Inntekter jan–mai 2026</div>
-    <div class="kpi-value red">726 426 kr</div>
-    <div class="kpi-sub red">▼ 16,0 % vs 2025 (jan–mai)</div>
-  </div>
 </div>
 
-<div class="box box-danger" style="margin-bottom:20px;">
-  <div class="bh">Viktig</div>
-  <div class="bt">Inntektene i jan–mai 2026 er 138 678 kr lavere enn samme periode i 2025 (726 426 kr vs 865 104 kr) – en nedgang på 16,0 %. Kollekten alene er ned 17,4 % (475 568 vs 576 021 kr). Kurs- og arrangementsinntekter er ned 44 % (87 222 kr vs 155 634 kr). Lønnskostnadene er 154 111 kr lavere enn i fjor grunnet 249 117 kr i sykepengerefusjoner. Merk: 100 815 kr av refusjonen i mai gjelder sept–des 2025 og kom inn som ett engangsbeløp. Justert for dette er driftsresultatet ca. −132 000 kr (ikke −31 000 kr). Om inntektstrenden fortsetter vil årsresultatet havne vesentlig under budsjett.</div>
+<div class="box box-info" style="margin-bottom:20px;">
+  <div class="bh">Om 2025-tallene</div>
+  <div class="bt">Årsresultatet for 2025 er påvirket av et engangstap på 692 500 kr (konstatert tap på fordringer). Normalisert resultat ekskluderer dette og gir et mer representativt bilde av den løpende driften. Driftsinntektene falt 10 % fra 2024, primært grunnet lavere utleie- og kursaktivitet.</div>
 </div>
 
 <div class="grid2">
@@ -260,8 +258,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </div>
 
 
-<!-- ══════════════════ PAGE: REGNSKAP 2026 ══════════════════ -->
-<div id="regnskap2026" class="page">
+<!-- ══════════════════ PAGE: OVERSIKT / REGNSKAP 2026 ══════════════════ -->
+<div id="regnskap2026" class="page active">
 <div class="wrap">
 <div class="kpi-row">
   <div class="kpi">
