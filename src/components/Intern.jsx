@@ -7,7 +7,7 @@ const TABS = [
   { id: 'kvalitetssystem', label: 'Kvalitetssystem' },
 ];
 
-const KS_EMBED_URL = 'https://betelmosjoen-my.sharepoint.com/:f:/g/personal/post_betelmosjoen_no/IgDqRz8RcS7FRL8N1vpnFXSOARzUCzkh9N-Mgn_ChSf4OrM?e=neHMJ9&action=embedview';
+const KS_URL = 'https://betelmosjoen-my.sharepoint.com/:f:/g/personal/post_betelmosjoen_no/IgDqRz8RcS7FRL8N1vpnFXSOARzUCzkh9N-Mgn_ChSf4OrM?e=neHMJ9';
 
 export default function Intern() {
   const [status, setStatus] = useState('loading'); // 'loading' | 'auth' | 'unauth'
@@ -42,7 +42,7 @@ export default function Intern() {
   }, [status]);
 
   useEffect(() => {
-    if ((activeTab === 'okonomi' || activeTab === 'kvalitetssystem') && tabBarRef.current) {
+    if (activeTab === 'okonomi' && tabBarRef.current) {
       window.scrollTo(0, 0);
       requestAnimationFrame(() => {
         const rect = tabBarRef.current?.getBoundingClientRect();
@@ -192,19 +192,28 @@ export default function Intern() {
       )}
 
       {activeTab === 'kvalitetssystem' && (
-        <div
-          className="fixed inset-x-0 z-30"
-          style={{
-            top: tabBottom || 120,
-            bottom: 'calc(3.5rem + env(safe-area-inset-bottom))',
-          }}
-        >
-          <iframe
-            src={KS_EMBED_URL}
-            className="w-full h-full border-0"
-            title="Kvalitetssystem"
-            allow="fullscreen"
-          />
+        <div className="flex flex-col items-center pt-10 px-4 text-center gap-6">
+          <div className="text-5xl">📁</div>
+          <div>
+            <h2 className="text-lg font-semibold text-gray-800 mb-1">Kvalitetssystem</h2>
+            <p className="text-sm text-gray-500 max-w-xs">
+              Dokumenter og mapper ligger i OneDrive. Åpnes i nytt vindu.
+            </p>
+          </div>
+          <a
+            href={KS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors shadow-sm"
+          >
+            <span>Åpne i OneDrive</span>
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+          <p className="text-xs text-gray-400">
+            Fremtidig plan: mappestruktur vises direkte her via Microsoft Graph API
+          </p>
         </div>
       )}
     </div>
