@@ -56,14 +56,11 @@ new Chart(document.getElementById('ch_reg_inkost'), {
 </script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19px;line-height:1.6;}
-.topbar{background:#1F4E79;color:#fff;padding:24px 52px;display:flex;align-items:baseline;justify-content:space-between;}
-.topbar h1{font-size:28px;font-weight:600;letter-spacing:.2px;}
-.topbar .meta{font-size:16px;color:#AED3EA;margin-top:4px;}
-.tabs{display:flex;gap:0;background:#163D62;padding:0 44px;}
-.tab{padding:14px 30px;font-size:17px;color:#AED3EA;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f9fafb;color:#1a1a1a;font-size:16px;line-height:1.6;}
+.tabs{display:flex;gap:0;background:#1e3a8a;padding:0 44px;}
+.tab{padding:14px 30px;font-size:17px;color:#bfdbfe;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;}
 .tab:hover{color:#fff;background:rgba(255,255,255,0.08);}
-.tab.active{color:#fff;border-bottom-color:#4FC3F7;background:rgba(255,255,255,0.1);font-weight:600;}
+.tab.active{color:#fff;border-bottom-color:#93c5fd;background:rgba(255,255,255,0.1);font-weight:600;}
 .page{display:none;}.page.active{display:block;}
 .wrap{max-width:1400px;margin:0 auto;padding:30px 44px;}
 
@@ -93,7 +90,7 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
 .card{background:#fff;border:0.5px solid #d0d7e0;border-radius:12px;padding:18px 22px;}
-.card h3{font-size:18px;font-weight:700;margin-bottom:4px;color:#1F4E79;}
+.card h3{font-size:18px;font-weight:700;margin-bottom:4px;color:#1d4ed8;}
 .card .sub{font-size:14px;color:#888;margin-bottom:14px;}
 
 /* Legend */
@@ -105,31 +102,31 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
 
 /* Table styles */
 .btable{width:100%;border-collapse:collapse;font-size:16px;margin-top:8px;}
-.btable th{background:#1F4E79;color:#fff;padding:10px 14px;text-align:left;font-weight:600;font-size:15px;}
+.btable th{background:#1d4ed8;color:#fff;padding:10px 14px;text-align:left;font-weight:600;font-size:15px;}
 .btable th:not(:first-child){text-align:right;}
-.btable th.bud-col{background:#2E75B6;border-left:3px solid #AED3EA;border-right:3px solid #AED3EA;}
+.btable th.bud-col{background:#3b82f6;border-left:3px solid #bfdbfe;border-right:3px solid #bfdbfe;}
 .btable td{padding:9px 14px;border-bottom:1px solid #eee;font-size:16px;}
 .btable td:not(:first-child){text-align:right;}
-.btable td.bud-col{background:#EBF3FB;font-weight:600;border-left:3px solid #AED3EA;border-right:3px solid #AED3EA;}
+.btable td.bud-col{background:#EBF3FB;font-weight:600;border-left:3px solid #bfdbfe;border-right:3px solid #bfdbfe;}
 .btable tr:nth-child(even) td.bud-col{background:#DDEEF9;}
 .btable tr.section td.bud-col{background:#C0D8EF;}
 .btable tr.total td.bud-col{background:#B8D0E8;}
 .btable tr.ok td.bud-col{background:#C8E6D4;}
 .btable tr:nth-child(even) td{background:#f8f9fa;}
-.btable tr.section td{background:#D6E4F0;color:#1F4E79;font-weight:700;font-size:16px;}
-.btable tr.total td{background:#C9D9EE;color:#1F4E79;font-weight:700;border-top:2px solid #185FA5;}
+.btable tr.section td{background:#D6E4F0;color:#1d4ed8;font-weight:700;font-size:16px;}
+.btable tr.total td{background:#C9D9EE;color:#1d4ed8;font-weight:700;border-top:2px solid #1d4ed8;}
 .btable tr.warn td{background:#FCE4D6;color:#A32D2D;font-weight:600;}
 .btable tr.ok td{background:#E2EFDA;color:#375623;font-weight:600;}
 .btable tr.info td{background:#FFF2CC;color:#7A5000;font-weight:600;}
 
 /* Investment table */
 .inv-table{width:100%;border-collapse:collapse;font-size:17px;margin-top:10px;}
-.inv-table th{background:#1F4E79;color:#fff;padding:12px 16px;text-align:left;font-weight:600;}
+.inv-table th{background:#1d4ed8;color:#fff;padding:12px 16px;text-align:left;font-weight:600;}
 .inv-table th:last-child{text-align:right;}
 .inv-table td{padding:11px 16px;border-bottom:1px solid #ddd;font-size:17px;}
 .inv-table td:last-child{text-align:right;font-weight:600;}
 .inv-table tr:nth-child(even) td{background:#f5f8fc;}
-.inv-table .total td{background:#C9D9EE;color:#1F4E79;font-weight:700;font-size:17px;border-top:2px solid #185FA5;}
+.inv-table .total td{background:#C9D9EE;color:#1d4ed8;font-weight:700;font-size:17px;border-top:2px solid #1d4ed8;}
 
 .foot{font-size:14px;color:#999;text-align:center;margin-top:14px;padding-bottom:8px;}
 
@@ -138,22 +135,17 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
 
 /* Tablet (≤ 960px) */
 @media(max-width:960px){
-  body{font-size:17px;}
+  body{font-size:15px;}
   .kpi-row{grid-template-columns:repeat(2,1fr)!important;}
   .grid2,.grid3{grid-template-columns:1fr;}
   .wrap{padding:22px 28px;}
   .kpi-value{font-size:30px;}
-  .topbar h1{font-size:24px;}
   .ch-wrap{height:260px!important;}
 }
 
 /* Mobile (≤ 600px) */
 @media(max-width:600px){
-  body{font-size:15px;}
-  .topbar{padding:14px 18px;flex-wrap:wrap;gap:2px;}
-  .topbar h1{font-size:19px;}
-  .topbar .meta{font-size:12px;}
-  .topbar div:last-child{display:none;}
+  body{font-size:14px;}
   .tabs{padding:0 6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
   .tabs::-webkit-scrollbar{display:none;}
   .tab{padding:9px 14px;font-size:13px;white-space:nowrap;}
@@ -185,13 +177,6 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
 </style>
 </head>
 <body>
-<div class="topbar">
-  <div>
-    <h1>Pinsekirken Betel – Regnskapsoversikt</h1>
-    <div class="meta">Regnskap t.o.m. 31. mai 2026 &nbsp;·&nbsp; Tall fra Tripletex</div>
-  </div>
-  <div style="font-size:14px;color:#AED3EA;text-align:right;">Org.nr. 971 491 345</div>
-</div>
 
 <div class="tabs">
   <div class="tab active" onclick="showPage('oversikt',this)">Oversikt</div>
@@ -237,7 +222,7 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
   <div class="card">
     <h3>Inntektssammensetting 2024 vs 2025</h3><div class="sub">Samme kategorier som budsjettfanen – tydelig fall i Utleie/Kurs</div>
     <div class="legend">
-      <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#185FA5;"></span>2024</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#1d4ed8;"></span>2024</span>
       <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#1D9E75;"></span>2025</span>
     </div>
     <div class="ch-wrap ch-hbar" style="position:relative;width:100%;height:290px;"><canvas id="ch1"></canvas></div>
@@ -255,7 +240,7 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
   <div class="card">
     <h3>Kostnadssammensetting 2024 vs 2025</h3><div class="sub">Per kategori – normalisert (ekskl. 692 500 kr engangstap 2025)</div>
     <div class="legend">
-      <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#185FA5;"></span>2024</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#1d4ed8;"></span>2024</span>
       <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#1D9E75;"></span>2025</span>
     </div>
     <div class="ch-wrap" style="position:relative;width:100%;height:290px;"><canvas id="ch4"></canvas></div>
@@ -263,7 +248,7 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
   <div class="card">
     <h3>Årsresultat – normalisert vs offisielt</h3><div class="sub">2024 og 2025</div>
     <div class="legend">
-      <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#185FA5;"></span>2024</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#1d4ed8;"></span>2024</span>
       <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#1D9E75;"></span>2025 normalisert</span>
       <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#F09595;"></span>2025 offisielt</span>
     </div>
@@ -402,7 +387,7 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
   <div class="sub">2024, 2025 og 2026 (jan–mai). Stiplet linje = budsjett 2026 (1 350 000 kr / 12 = 112 500 kr/mnd)</div>
   <div class="legend">
     <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#B5D4F4;"></span>2024</span>
-    <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#185FA5;"></span>2025</span>
+    <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#1d4ed8;"></span>2025</span>
     <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#EF9F27;"></span>2026</span>
     <span style="display:flex;align-items:center;gap:5px;"><span style="width:24px;height:0;border-top:2px dashed #E24B4A;display:inline-block;"></span>Budsjett/mnd</span>
   </div>
@@ -414,7 +399,7 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
   <div class="sub">Akkumulert sum gjennom året – tydelig at 2026 ligger under tidligere år</div>
   <div class="legend">
     <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#B5D4F4;"></span>2024</span>
-    <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#185FA5;"></span>2025</span>
+    <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#1d4ed8;"></span>2025</span>
     <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#EF9F27;"></span>2026</span>
   </div>
   <div class="ch-wrap" style="position:relative;width:100%;height:280px;"><canvas id="ch_kum"></canvas></div>
@@ -454,7 +439,7 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
     <h3>Lønnskostnader – netto</h3>
     <div class="sub">2024 og 2025 (netto etter sykepengerefusjon)</div>
     <div class="legend">
-      <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#185FA5;"></span>Netto lønnskostnad</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#1d4ed8;"></span>Netto lønnskostnad</span>
     </div>
     <div class="ch-wrap" style="position:relative;width:100%;height:310px;"><canvas id="ch_lonn"></canvas></div>
   </div>
@@ -541,7 +526,7 @@ body{font-family:Arial,sans-serif;background:#F0F4F8;color:#1a1a1a;font-size:19p
     <div class="sub">Regnskap 2025 vs Budsjett 2026</div>
     <div class="legend">
       <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#1D9E75;"></span>Regnskap 2025</span>
-      <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#185FA5;"></span>Budsjett 2026</span>
+      <span style="display:flex;align-items:center;gap:5px;"><span class="lsq" style="background:#1d4ed8;"></span>Budsjett 2026</span>
     </div>
     <div class="ch-wrap" style="position:relative;width:100%;height:310px;"><canvas id="ch_bud_inn"></canvas></div>
   </div>
@@ -632,7 +617,7 @@ function showPage(id, el) {
   el.classList.add('active');
 }
 
-Chart.defaults.font.family = 'Arial,sans-serif';
+Chart.defaults.font.family = "-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif";
 Chart.defaults.color = '#444';
 const isMobile = window.innerWidth < 600;
 const isTablet = window.innerWidth < 960;
@@ -647,7 +632,7 @@ new Chart(document.getElementById('ch1'), {
   data: {
     labels: ['Leieinntekter','Salg Kafé','Utleie/Kurs','Kollekt og gaver','Tilskudd/kompensasjon','Renteinntekter'],
     datasets: [
-      {label:'2024', data:[299800,32968,568997,1256119,497980,11046], backgroundColor:'#185FA5', borderRadius:4},
+      {label:'2024', data:[299800,32968,568997,1256119,497980,11046], backgroundColor:'#1d4ed8', borderRadius:4},
       {label:'2025', data:[309930,18255,252198,1314746,494485,38678], backgroundColor:'#1D9E75', borderRadius:4}
     ]
   },
@@ -685,7 +670,7 @@ new Chart(document.getElementById('ch4'), {
   data: {
     labels: ['Misjon','Lønn','Avskriv.','Drift','Revisor','Kurs-utg.','Forsikring','Bank/renter'],
     datasets: [
-      {label:'2024', data:[250770,1125564,219675,636976,29687,229001,66219,229852], backgroundColor:'#185FA5', borderRadius:4},
+      {label:'2024', data:[250770,1125564,219675,636976,29687,229001,66219,229852], backgroundColor:'#1d4ed8', borderRadius:4},
       {label:'2025', data:[231904,1144126,231731,592506,35344,126179,74123,226857], backgroundColor:'#1D9E75', borderRadius:4}
     ]
   },
@@ -707,7 +692,7 @@ new Chart(document.getElementById('ch5'), {
   data: {
     labels: ['Driftsresultat','Årsresultat'],
     datasets: [
-      {label:'2024', data:[58553,-149815], backgroundColor:'#185FA5', borderRadius:4},
+      {label:'2024', data:[58553,-149815], backgroundColor:'#1d4ed8', borderRadius:4},
       {label:'2025 normalisert', data:[-64996,-243218], backgroundColor:'#1D9E75', borderRadius:4},
       {label:'2025 offisielt', data:[-757496,-935718], backgroundColor:'#F09595', borderRadius:4}
     ]
@@ -737,7 +722,7 @@ new Chart(document.getElementById('ch3'), {
     labels: months,
     datasets: [
       {label:'2024', data:k24, backgroundColor:'#B5D4F4', borderRadius:3},
-      {label:'2025', data:k25, backgroundColor:'#185FA5', borderRadius:3},
+      {label:'2025', data:k25, backgroundColor:'#1d4ed8', borderRadius:3},
       {label:'2026', data:k26, backgroundColor:'#EF9F27', borderRadius:3},
       {type:'line', label:'Budsjett/mnd', data:Array(12).fill(112500),
         borderColor:'#E24B4A', borderDash:[5,4], borderWidth:2, pointRadius:0, fill:false}
@@ -763,7 +748,7 @@ new Chart(document.getElementById('ch_kum'), {
     labels: months,
     datasets: [
       {label:'2024', data:cum(k24), borderColor:'#B5D4F4', backgroundColor:'rgba(181,212,244,0.1)', fill:true, tension:0.3, pointRadius:3},
-      {label:'2025', data:cum(k25), borderColor:'#185FA5', backgroundColor:'rgba(24,95,165,0.1)', fill:true, tension:0.3, pointRadius:3},
+      {label:'2025', data:cum(k25), borderColor:'#1d4ed8', backgroundColor:'rgba(24,95,165,0.1)', fill:true, tension:0.3, pointRadius:3},
       {label:'2026', data:cum(k26), borderColor:'#EF9F27', backgroundColor:'rgba(239,159,39,0.15)', fill:true, tension:0.3, pointRadius:5, pointBackgroundColor:'#EF9F27'}
     ]
   },
@@ -787,7 +772,7 @@ new Chart(document.getElementById('ch_bud_inn'), {
     labels: ['Kollekt/gaver','Utleie/Kurs','Leieinnt.','Tilskudd/MVA','Renteinnt.'],
     datasets: [
       {label:'Regnskap 2025', data:[1314746,252198,309930,494485,38678], backgroundColor:'#1D9E75', borderRadius:4},
-      {label:'Budsjett 2026', data:[1350000,310000,325000,498000,30000], backgroundColor:'#185FA5', borderRadius:4}
+      {label:'Budsjett 2026', data:[1350000,310000,325000,498000,30000], backgroundColor:'#1d4ed8', borderRadius:4}
     ]
   },
   options: {
@@ -809,7 +794,7 @@ new Chart(document.getElementById('ch_bud_pie'), {
     labels: ['Kollekt/gaver 54 %','Utleie/Kurs 12 %','Leieinnt. 13 %','Tilskudd/MVA 20 %','Renter 1 %'],
     datasets: [{
       data: [1350000,310000,325000,498000,30000],
-      backgroundColor: ['#185FA5','#1D9E75','#EF9F27','#5B9BD5','#888780'],
+      backgroundColor: ['#1d4ed8','#1D9E75','#EF9F27','#5B9BD5','#888780'],
       borderWidth: 2, borderColor: '#fff'
     }]
   },
@@ -830,7 +815,7 @@ new Chart(document.getElementById('ch_lonn'), {
   data: {
     labels: ['2024 helår','2025 helår'],
     datasets: [
-      {label:'Netto lønnskostnad', data:[1130363,1145406], backgroundColor:['#185FA5','#185FA5'], borderRadius:4}
+      {label:'Netto lønnskostnad', data:[1130363,1145406], backgroundColor:['#1d4ed8','#1d4ed8'], borderRadius:4}
     ]
   },
   options: {

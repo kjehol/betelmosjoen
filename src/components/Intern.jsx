@@ -14,6 +14,8 @@ export default function Intern() {
   const [loginError, setLoginError] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
   const passwordRef = useRef(null);
+  const tabBarRef = useRef(null);
+  const [tabBottom, setTabBottom] = useState(0);
 
   useEffect(() => {
     fetch('/api/arshjul')
@@ -35,6 +37,16 @@ export default function Intern() {
       setTimeout(() => passwordRef.current?.focus(), 50);
     }
   }, [status]);
+
+  useEffect(() => {
+    if (activeTab === 'okonomi' && tabBarRef.current) {
+      window.scrollTo(0, 0);
+      requestAnimationFrame(() => {
+        const rect = tabBarRef.current?.getBoundingClientRect();
+        if (rect) setTabBottom(rect.bottom);
+      });
+    }
+  }, [activeTab]);
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -131,7 +143,7 @@ export default function Intern() {
       </div>
 
       {/* Faner */}
-      <div className="flex border-b border-gray-200 mb-6">
+      <div ref={tabBarRef} className="flex border-b border-gray-200 mb-6">
         {TABS.map(tab => (
           <button
             key={tab.id}
@@ -164,7 +176,7 @@ export default function Intern() {
         <div
           className="fixed inset-x-0 z-30"
           style={{
-            top: 'calc(3.5rem + 7.5rem)',
+            top: tabBottom || 120,
             bottom: 'calc(3.5rem + env(safe-area-inset-bottom))',
           }}
         >

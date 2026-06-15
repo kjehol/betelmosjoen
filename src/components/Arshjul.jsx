@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 
 const MÅNEDER = [
   'Januar', 'Februar', 'Mars', 'April', 'Mai', 'Juni',
@@ -12,9 +12,8 @@ const FARGER = [
   '#a78bfa', '#fb7185', '#0ea5e9', '#22c55e', '#eab308',
 ];
 
-// SVG constants
 const CX = 200, CY = 200, OUTER_R = 168, INNER_R = 80, LABEL_R = 128;
-const GAP = 1.8; // degrees gap between segments
+const GAP = 1.8;
 
 function polarToXY(deg, r) {
   const rad = (deg * Math.PI) / 180;
@@ -37,25 +36,38 @@ function segmentPath(i) {
   ].join(' ');
 }
 
-function labelPos(i) {
-  return polarToXY(-90 + i * 30 + 15, LABEL_R);
-}
-
-function countBadgePos(i) {
-  return polarToXY(-90 + i * 30 + 15, OUTER_R - 14);
+// Liten bue rett utenfor segmentet – brukes som «denne måneden»-markør
+function outerMarkerPath(i) {
+  const start = -90 + i * 30 + GAP + 3;
+  const end = -90 + (i + 1) * 30 - GAP - 3;
+  const r = OUTER_R + 9;
+  const p1 = polarToXY(start, r);
+  const p2 = polarToXY(end, r);
+  return `M ${p1.x} ${p1.y} A ${r} ${r} 0 0 1 ${p2.x} ${p2.y}`;
 }
 
 export default function Arshjul({ data = {} }) {
   const { aktiviteter: rawAkt = [], ksOppgaver: rawKS = [] } = data;
   data = { aktiviteter: rawAkt, ksOppgaver: rawKS };
+
   const [valgtMåned, setValgtMåned] = useState(null);
+  const [hoveredMåned, setHoveredMåned] = useState(null);
   const [visAkt, setVisAkt] = useState(true);
   const [visKS, setVisKS] = useState(true);
   const [filterAnsvarlig, setFilterAnsvarlig] = useState('');
+  const detailRef = useRef(null);
 
-  const denneMåneden = new Date().getMonth() + 1; // 1–12
+  const denneMåneden = new Date().getMonth() + 1;
 
-  // Build Hvem → farge map
+  // Auto-scroll til detaljpanel på mobil når måned velges
+  useEffect(() => {
+    if (valgtMåned && detailRef.current && window.innerWidth < 1024) {
+      setTimeout(() => {
+        detailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 60);
+    }
+  }, [valgtMåned]);
+
   const hvemListe = useMemo(() =>
     [...new Set(data.aktiviteter.map(a => a.hvem).filter(Boolean))].sort(),
     [data]);
@@ -66,12 +78,10 @@ export default function Arshjul({ data = {} }) {
     return map;
   }, [hvemListe]);
 
-  // Unique ansvarlig for filter
   const ansvarligListe = useMemo(() =>
     [...new Set([...data.aktiviteter, ...data.ksOppgaver].map(i => i.ansvarlig).filter(Boolean))].sort(),
     [data]);
 
-  // Group by month
   const månedData = useMemo(() => MÅNEDER.map((name, i) => {
     const nr = i + 1;
     return {
@@ -81,7 +91,6 @@ export default function Arshjul({ data = {} }) {
     };
   }), [data]);
 
-  // Løpende items (no fixed month)
   const løpende = useMemo(() => {
     const items = [
       ...(visAkt ? data.aktiviteter.filter(a => !a.månedNr) : []),
@@ -136,31 +145,39 @@ export default function Arshjul({ data = {} }) {
 
       {/* Hjul + detaljpanel */}
       <div className="flex flex-col lg:flex-row gap-6 items-start">
+
         {/* SVG-hjul */}
         <div className="w-full max-w-sm mx-auto lg:mx-0 flex-shrink-0">
-          <svg viewBox="0 0 400 400" className="w-full drop-shadow-sm">
+          <svg viewBox="0 0 400 400" className="w-full drop-shadow-sm select-none">
             {månedData.map((m, i) => {
               const domHvem = dominantHvem(m.akt);
-              const farge = domHvem ? (hvemFarge[domHvem] || '#93c5fd') : '#e5e7eb';
+              const farge = domHvem ? (hvemFarge[domHvem] || '#93c5fd') : '#d1d5db';
               const erValgt = valgtMåned === m.nr;
+              const erHover = hoveredMåned === m.nr;
               const erDenneMnd = denneMåneden === m.nr;
               const antall = visibleForMonth(m.nr).length;
-              const lp = labelPos(i);
-              const bp = countBadgePos(i);
+              const lp = polarToXY(-90 + i * 30 + 15, LABEL_R);
+              const bp = polarToXY(-90 + i * 30 + 15, OUTER_R - 14);
+
+              // Opacity: valgt=full, hover=nesten full, har data=75%, tom=30%
+              const opacity = erValgt ? 1 : erHover ? 0.92 : antall > 0 ? 0.72 : 0.28;
 
               return (
                 <g
                   key={i}
                   onClick={() => setValgtMåned(erValgt ? null : m.nr)}
+                  onMouseEnter={() => setHoveredMåned(m.nr)}
+                  onMouseLeave={() => setHoveredMåned(null)}
                   className="cursor-pointer"
-                  style={{ transition: 'opacity 0.15s' }}
+                  style={{ transition: 'opacity 0.12s' }}
+                  aria-label={`${m.name}: ${antall} oppgaver`}
                 >
                   <path
                     d={segmentPath(i)}
                     fill={farge}
-                    opacity={erValgt ? 1 : antall > 0 ? 0.75 : 0.25}
-                    stroke={erDenneMnd ? '#f97316' : 'white'}
-                    strokeWidth={erDenneMnd ? 3 : 1.5}
+                    opacity={opacity}
+                    stroke="white"
+                    strokeWidth="1.5"
                   />
                   {/* Månedsforkortelse */}
                   <text
@@ -169,7 +186,7 @@ export default function Arshjul({ data = {} }) {
                     textAnchor="middle"
                     dominantBaseline="middle"
                     fontSize="11"
-                    fontWeight={erDenneMnd ? '700' : '400'}
+                    fontWeight={erDenneMnd || erValgt ? '700' : '400'}
                     fill={antall > 0 ? '#111827' : '#9ca3af'}
                   >
                     {MND_ABBR[i]}
@@ -177,7 +194,7 @@ export default function Arshjul({ data = {} }) {
                   {/* Antall-badge */}
                   {antall > 0 && (
                     <>
-                      <circle cx={bp.x} cy={bp.y} r="9" fill="white" opacity="0.85" />
+                      <circle cx={bp.x} cy={bp.y} r="9" fill="white" opacity="0.88" />
                       <text
                         x={bp.x}
                         y={bp.y}
@@ -191,44 +208,59 @@ export default function Arshjul({ data = {} }) {
                       </text>
                     </>
                   )}
+                  {/* «Denne måneden»-markør: oransje bue utenfor segmentet */}
+                  {erDenneMnd && (
+                    <path
+                      d={outerMarkerPath(i)}
+                      fill="none"
+                      stroke="#f97316"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                    />
+                  )}
                 </g>
               );
             })}
 
             {/* Sentrum */}
             <circle cx={CX} cy={CY} r={INNER_R - 2} fill="white" />
-            <text
-              x={CX} y={CY - 10}
-              textAnchor="middle"
-              fontSize="18"
-              fontWeight="700"
-              fill="#1f2937"
-            >
-              {valgtMåned ? MÅNEDER[valgtMåned - 1].slice(0, 3) : MÅNEDER[denneMåneden - 1].slice(0, 3)}
-            </text>
-            <text
-              x={CX} y={CY + 12}
-              textAnchor="middle"
-              fontSize="10"
-              fill="#6b7280"
-            >
-              {valgtMåned
-                ? (valgtMåned === denneMåneden ? '← nå' : 'valgt')
-                : 'nå'}
-            </text>
+            {valgtMåned ? (
+              <>
+                <text x={CX} y={CY - 12} textAnchor="middle" fontSize="15" fontWeight="700" fill="#1f2937">
+                  {MÅNEDER[valgtMåned - 1]}
+                </text>
+                <text x={CX} y={CY + 8} textAnchor="middle" fontSize="9" fill="#6b7280">
+                  {valgtItems.length} oppgaver
+                </text>
+                <text x={CX} y={CY + 22} textAnchor="middle" fontSize="9" fill="#9ca3af">
+                  klikk igjen for å lukke
+                </text>
+              </>
+            ) : (
+              <>
+                <text x={CX} y={CY - 10} textAnchor="middle" fontSize="18" fontWeight="700" fill="#1f2937">
+                  {MÅNEDER[denneMåneden - 1].slice(0, 3)}
+                </text>
+                <text x={CX} y={CY + 10} textAnchor="middle" fontSize="10" fill="#6b7280">
+                  nå
+                </text>
+              </>
+            )}
           </svg>
+
+          {/* Hint-tekst */}
+          {!valgtMåned && (
+            <p className="text-center text-xs text-gray-400 mt-1">Klikk på en måned for detaljer</p>
+          )}
 
           {/* Fargeforklaring */}
           {hvemListe.length > 0 && (
             <div className="mt-3 px-1">
-              <p className="text-xs font-medium text-gray-500 mb-1.5">Fargeforklaring (Hvem)</p>
+              <p className="text-xs font-medium text-gray-500 mb-1.5">Fargeforklaring</p>
               <div className="flex flex-wrap gap-x-3 gap-y-1">
                 {hvemListe.map(hvem => (
                   <span key={hvem} className="flex items-center gap-1 text-xs text-gray-700">
-                    <span
-                      className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0"
-                      style={{ backgroundColor: hvemFarge[hvem] }}
-                    />
+                    <span className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: hvemFarge[hvem] }} />
                     {hvem}
                   </span>
                 ))}
@@ -239,7 +271,7 @@ export default function Arshjul({ data = {} }) {
 
         {/* Detaljpanel for valgt måned */}
         {valgtMåned && (
-          <div className="flex-1 min-w-0">
+          <div ref={detailRef} className="flex-1 min-w-0 scroll-mt-4">
             <div className="flex items-center gap-2 mb-3">
               <h3 className="text-lg font-semibold">{MÅNEDER[valgtMåned - 1]}</h3>
               {valgtMåned === denneMåneden && (
@@ -249,7 +281,7 @@ export default function Arshjul({ data = {} }) {
               )}
               <button
                 onClick={() => setValgtMåned(null)}
-                className="ml-auto text-gray-400 hover:text-gray-600 text-sm"
+                className="ml-auto text-gray-400 hover:text-gray-600 text-lg leading-none px-1"
                 aria-label="Lukk"
               >
                 ✕
@@ -264,47 +296,21 @@ export default function Arshjul({ data = {} }) {
                   <div
                     key={j}
                     className="p-3 rounded-lg bg-gray-50 border-l-4"
-                    style={{
-                      borderColor: item.kilde === 'ks'
-                        ? '#8b5cf6'
-                        : (hvemFarge[item.hvem] || '#3b82f6'),
-                    }}
+                    style={{ borderColor: item.kilde === 'ks' ? '#8b5cf6' : (hvemFarge[item.hvem] || '#3b82f6') }}
                   >
                     <div className="flex items-start gap-2">
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm text-gray-900">{item.tittel}</p>
-                        {item.hvem && (
-                          <p className="text-xs text-gray-500 mt-0.5">Hvem: {item.hvem}</p>
-                        )}
-                        {item.ansvarlig && (
-                          <p className="text-xs text-gray-500">Ansvarlig: {item.ansvarlig}</p>
-                        )}
-                        {item.periode && (
-                          <p className="text-xs text-gray-400">{item.periode}</p>
-                        )}
-                        {item.dato2026 && (
-                          <p className="text-xs text-blue-600 font-medium">Dato 2026: {item.dato2026}</p>
-                        )}
-                        {item.detaljer && (
-                          <p className="text-xs text-gray-600 mt-1">{item.detaljer}</p>
-                        )}
-                        {item.ksRef && (
-                          <p className="text-xs text-purple-600">KS-ref: {item.ksRef}</p>
-                        )}
-                        {item.frekvens && (
-                          <p className="text-xs text-gray-500">Frekvens: {item.frekvens}</p>
-                        )}
-                        {item.tilMøte && (
-                          <p className="text-xs text-gray-500">Til møte: {item.tilMøte}</p>
-                        )}
+                        {item.hvem && <p className="text-xs text-gray-500 mt-0.5">Hvem: {item.hvem}</p>}
+                        {item.ansvarlig && <p className="text-xs text-gray-500">Ansvarlig: {item.ansvarlig}</p>}
+                        {item.periode && <p className="text-xs text-gray-400">{item.periode}</p>}
+                        {item.dato2026 && <p className="text-xs text-blue-600 font-medium">Dato 2026: {item.dato2026}</p>}
+                        {item.detaljer && <p className="text-xs text-gray-600 mt-1">{item.detaljer}</p>}
+                        {item.ksRef && <p className="text-xs text-purple-600">KS-ref: {item.ksRef}</p>}
+                        {item.frekvens && <p className="text-xs text-gray-500">Frekvens: {item.frekvens}</p>}
+                        {item.tilMøte && <p className="text-xs text-gray-500">Til møte: {item.tilMøte}</p>}
                       </div>
-                      <span
-                        className={`text-xs px-1.5 py-0.5 rounded flex-shrink-0 font-medium ${
-                          item.kilde === 'ks'
-                            ? 'bg-purple-100 text-purple-700'
-                            : 'bg-blue-100 text-blue-700'
-                        }`}
-                      >
+                      <span className={`text-xs px-1.5 py-0.5 rounded flex-shrink-0 font-medium ${item.kilde === 'ks' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
                         {item.kilde === 'ks' ? 'KS' : 'Akt'}
                       </span>
                     </div>
@@ -321,20 +327,11 @@ export default function Arshjul({ data = {} }) {
             <h3 className="text-base font-semibold text-gray-700 mb-3">Løpende / hele året</h3>
             <div className="space-y-2">
               {løpende.map((item, i) => (
-                <div
-                  key={i}
-                  className="p-3 rounded-lg bg-gray-50 border-l-4 border-gray-300"
-                >
+                <div key={i} className="p-3 rounded-lg bg-gray-50 border-l-4 border-gray-300">
                   <p className="font-medium text-sm text-gray-900">{item.tittel}</p>
-                  {item.ansvarlig && (
-                    <p className="text-xs text-gray-500 mt-0.5">Ansvarlig: {item.ansvarlig}</p>
-                  )}
-                  {item.periode && (
-                    <p className="text-xs text-gray-400">{item.periode}</p>
-                  )}
-                  {item.kilde === 'ks' && item.ksRef && (
-                    <p className="text-xs text-purple-600">KS-ref: {item.ksRef}</p>
-                  )}
+                  {item.ansvarlig && <p className="text-xs text-gray-500 mt-0.5">Ansvarlig: {item.ansvarlig}</p>}
+                  {item.periode && <p className="text-xs text-gray-400">{item.periode}</p>}
+                  {item.kilde === 'ks' && item.ksRef && <p className="text-xs text-purple-600">KS-ref: {item.ksRef}</p>}
                 </div>
               ))}
             </div>
