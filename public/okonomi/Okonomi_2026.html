@@ -15,15 +15,15 @@ new Chart(document.getElementById('ch_reg_res'), {
     datasets: [
       {
         label: 'Resultat per m\u00e5ned',
-        data: [-101547,-56443,-37137,-51350,136045],
-        backgroundColor: [-101547,-56443,-37137,-51350,136045].map(v => v >= 0 ? '#1D9E75' : '#E24B4A'),
+        data: [-101547,-56443,-37137,-51350,134289],
+        backgroundColor: [-101547,-56443,-37137,-51350,134289].map(v => v >= 0 ? '#1D9E75' : '#E24B4A'),
         borderRadius: 4,
         order: 2
       },
       {
         type: 'line',
         label: 'Akkumulert resultat',
-        data: (()=>{let s=0;return[-101547,-56443,-37137,-51350,136045].map(v=>{s+=v;return s;});})(),
+        data: (()=>{let s=0;return[-101547,-56443,-37137,-51350,134289].map(v=>{s+=v;return s;});})(),
         borderColor: '#1d4ed8',
         backgroundColor: 'transparent',
         borderWidth: 2.5,
@@ -53,7 +53,7 @@ new Chart(document.getElementById('ch_reg_inkost'), {
     labels: ['Jan','Feb','Mar','Apr','Mai'],
     datasets: [
       {label:'Inntekter', data:[143458,119961,169906,126889,166212], backgroundColor:'#378ADD', borderRadius:4},
-      {label:'Kostnader', data:[245005,176404,207042,178238,30168], backgroundColor:'#E24B4A', borderRadius:4}
+      {label:'Kostnader', data:[245005,176404,207042,178238,31924], backgroundColor:'#E24B4A', borderRadius:4}
     ]
   },
   options: {
@@ -284,17 +284,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
   <div class="kpi">
     <div class="kpi-label">Driftsresultat jan–mai</div>
-    <div class="kpi-value red">−31 114 kr</div>
-    <div class="kpi-sub amber">justert: −131 929 kr *</div>
+    <div class="kpi-value red">−32 869 kr</div>
+    <div class="kpi-sub amber">justert: −133 684 kr *</div>
   </div>
   <div class="kpi">
     <div class="kpi-label">Snitt resultat per måned</div>
-    <div class="kpi-value red">−22 086 kr</div>
+    <div class="kpi-value red">−22 437 kr</div>
     <div class="kpi-sub amber">ekskl. mai: −61 619 kr/mnd *</div>
   </div>
   <div class="kpi">
     <div class="kpi-label">Prognose årsresultat</div>
-    <div class="kpi-value red">ca. −265 000 kr</div>
+    <div class="kpi-value red">ca. −269 000 kr</div>
     <div class="kpi-sub amber">justert ekskl. mai: ~−740 000 kr</div>
   </div>
 </div>
@@ -323,12 +323,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <tr class="section"><td colspan="7">KOSTNADER</td></tr>
       <tr><td>Misjon og aktiviteter</td><td style="text-align:right">60 105</td><td style="text-align:right">—</td><td style="text-align:right">9 779</td><td style="text-align:right">8 316</td><td style="text-align:right">—</td><td class="bud-col" style="text-align:right">78 200</td></tr>
       <tr><td>Lønnskostnader</td><td style="text-align:right">120 399</td><td style="text-align:right">74 345</td><td style="text-align:right">101 952</td><td style="text-align:right">92 364</td><td style="text-align:right">−21 929 *</td><td class="bud-col" style="text-align:right">367 131</td></tr>
-      <tr><td>Øvrige driftskostnader</td><td style="text-align:right">48 504</td><td style="text-align:right">85 630</td><td style="text-align:right">80 517</td><td style="text-align:right">61 206</td><td style="text-align:right">36 352</td><td class="bud-col" style="text-align:right">312 209</td></tr>
-      <tr class="total"><td>Sum driftskostnader</td><td style="text-align:right">229 008</td><td style="text-align:right">159 975</td><td style="text-align:right">192 248</td><td style="text-align:right">161 886</td><td style="text-align:right">14 423</td><td class="bud-col" style="text-align:right">757 539</td></tr>
+      <tr><td>Øvrige driftskostnader</td><td style="text-align:right">48 504</td><td style="text-align:right">85 630</td><td style="text-align:right">80 517</td><td style="text-align:right">61 206</td><td style="text-align:right">38 108</td><td class="bud-col" style="text-align:right">313 964</td></tr>
+      <tr class="total"><td>Sum driftskostnader</td><td style="text-align:right">229 008</td><td style="text-align:right">159 975</td><td style="text-align:right">192 248</td><td style="text-align:right">161 886</td><td style="text-align:right">16 179</td><td class="bud-col" style="text-align:right">759 295</td></tr>
 
-      <tr class="warn"><td><strong>Driftsresultat</strong></td><td style="text-align:right"><strong>−85 550</strong></td><td style="text-align:right"><strong>−40 014</strong></td><td style="text-align:right"><strong>−22 343</strong></td><td style="text-align:right"><strong>−34 997</strong></td><td style="text-align:right;color:#1a6e3a"><strong>+151 790</strong></td><td class="bud-col" style="text-align:right"><strong>−31 114</strong></td></tr>
+      <tr class="warn"><td><strong>Driftsresultat</strong></td><td style="text-align:right"><strong>−85 550</strong></td><td style="text-align:right"><strong>−40 014</strong></td><td style="text-align:right"><strong>−22 343</strong></td><td style="text-align:right"><strong>−34 997</strong></td><td style="text-align:right;color:#1a6e3a"><strong>+150 034</strong></td><td class="bud-col" style="text-align:right"><strong>−32 869</strong></td></tr>
       <tr><td>Finanskostnader (renter)</td><td style="text-align:right">15 997</td><td style="text-align:right">16 429</td><td style="text-align:right">14 794</td><td style="text-align:right">16 352</td><td style="text-align:right">15 745</td><td class="bud-col" style="text-align:right">79 318</td></tr>
-      <tr class="warn"><td><strong>Årsresultat</strong></td><td style="text-align:right"><strong>−101 547</strong></td><td style="text-align:right"><strong>−56 443</strong></td><td style="text-align:right"><strong>−37 137</strong></td><td style="text-align:right"><strong>−51 350</strong></td><td style="text-align:right;color:#1a6e3a"><strong>+136 045</strong></td><td class="bud-col" style="text-align:right"><strong>−110 432</strong></td></tr>
+      <tr class="warn"><td><strong>Årsresultat</strong></td><td style="text-align:right"><strong>−101 547</strong></td><td style="text-align:right"><strong>−56 443</strong></td><td style="text-align:right"><strong>−37 137</strong></td><td style="text-align:right"><strong>−51 350</strong></td><td style="text-align:right;color:#1a6e3a"><strong>+134 289</strong></td><td class="bud-col" style="text-align:right"><strong>−112 187</strong></td></tr>
     </tbody>
   </table></div>
   <p style="font-size:12px;color:#666;margin-top:8px;">Øvrige driftskostnader inkluderer: kafédrift, bygg/eiendom, renhold, strøm og VA, lyd og media, IT/programvare, kommunikasjon, revisor/regnskap, kurs-utgifter, reise, blomster, kontingenter og bankgebyrer.</p>
@@ -882,15 +882,15 @@ new Chart(document.getElementById('ch_reg_res'), {
     datasets: [
       {
         label: 'Resultat per m\u00e5ned',
-        data: [-101547,-56443,-37137,-51350,136045],
-        backgroundColor: [-101547,-56443,-37137,-51350,136045].map(v => v >= 0 ? '#1D9E75' : '#E24B4A'),
+        data: [-101547,-56443,-37137,-51350,134289],
+        backgroundColor: [-101547,-56443,-37137,-51350,134289].map(v => v >= 0 ? '#1D9E75' : '#E24B4A'),
         borderRadius: 4,
         order: 2
       },
       {
         type: 'line',
         label: 'Akkumulert resultat',
-        data: (()=>{let s=0;return[-101547,-56443,-37137,-51350,136045].map(v=>{s+=v;return s;});})(),
+        data: (()=>{let s=0;return[-101547,-56443,-37137,-51350,134289].map(v=>{s+=v;return s;});})(),
         borderColor: '#1d4ed8',
         backgroundColor: 'transparent',
         borderWidth: 2.5,
@@ -920,7 +920,7 @@ new Chart(document.getElementById('ch_reg_inkost'), {
     labels: ['Jan','Feb','Mar','Apr','Mai'],
     datasets: [
       {label:'Inntekter', data:[143458,119961,169906,126889,166212], backgroundColor:'#378ADD', borderRadius:4},
-      {label:'Kostnader', data:[245005,176404,207042,178238,30168], backgroundColor:'#E24B4A', borderRadius:4}
+      {label:'Kostnader', data:[245005,176404,207042,178238,31924], backgroundColor:'#E24B4A', borderRadius:4}
     ]
   },
   options: {
